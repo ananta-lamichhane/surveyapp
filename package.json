@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "nouislider": "^15.5.1",
+    "surveyjs-widgets": "^1.9.13",
+    "homepage":"https://ananta-lamichhane.github.io/surveyapp"
+  }
+}
