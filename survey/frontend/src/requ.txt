@@ -1,0 +1,91 @@
+Tasks
+---------------------------
+
+-> star based rating -- because intuitive
+-> progress bar -- integrate
+
+-> finish up the api -- t.b.d 
+-- sequece diagram -- also for the thesis (on basis of the project)
+    (nearly identitical to the project ?)
+
+-> submitting results and displaying next item post vs get:
+    get request at the start only
+    subsequent requests are post and server answers with next item to be displayed
+
+
+questionnaire vs survey what makes sense to name the class
+-- design decision
+-- questionnaire as a child class to survey poses prblems
+        difficult to use as database model
+        does not provide practical improvements
+        instead survey id as a parameter to the questioannaire
+    workflow:
+        1. create a survey object (and save to the database)
+        2. use the survey objects' id to create 1 or more questionnaire items
+        3. dataset path and load_dataset() can be used from the survey class
+
+
+
+
+-> class diagram with methods:
+    only few classes (and database tables)
+
+ -- abstract class (?)
+
+ -- what methods so that survey can be run?
+  -> instantiating and saving the survey + questioannaires to the db is enough
+
+
+
+requirements
+-- Participant should be able to:
+1.  get the URL to the survey (via Email)
+2.  click on the provided URL and go directly to the survey start page.
+3.  fill up a survey and submit the answers (ratings)
+4.  get a list of recommendations and fill up the ansers and submit.
+5.  continue with the survey on the spot where they left off if the survey was not completed last time.
+6.  close the survey at any time.
+
+-- researcher should be able to
+1. create a survey by specifying a dataset, number of survey questions and number of tokens (participants)
+2. crate desired number of users (identified by a token) and a questionnaire corresponding to each user.
+3. deploy the survey on a chosen URL, typcially https://domain.com/survey
+4. invite users to participate in the survey (send emails with survey URLs).
+5. see the results of (partially) filled up questioannaire
+6. perform offline evaluation by specifying the parameters.
+7. export the results of offline evaluation and the survey as csv.
+8. Mark the survey as closed / deactivated.
+
+-- additional requirements
+1. Should work with multiple / custom datasets (provided same user-item matrix specification).
+2. Should provide functionality to implement own matchmaking, first/ next item selection strategy.
+3. Should be scalable (should support multiple surveys and questionnaires)
+
+
+
+Workflow:
+Resercher
+1. Researcher uses the dashboard to fill in details (dataset path, survey name, num of items, num of tokens)
+2. Submits the form to create a Survey and questionnaires which can be viewed on dashboard
+3. Performs offline evaluation to create recommendation lists for each offline user or uploads lists.
+3. Sends email to a list of participants with a unique token and URL.
+4. Monitors the progress of the survey (filled in answers, active status) on the dashboard.
+5. Exports the survey results as a csv
+
+Participant:
+Normal:
+1. Opens the link sent via Email which takes to a webpage with the welcome page.
+2. Starts rating the items displayed on the page and clicks next for next item until the last
+3. Clicks complete on the last item to be taken to the recommendations page.
+4. Rates the recommendations and clicks next until last recommendations are shown.
+5. Clicks complete to complete the survey
+6. Closes the tab
+
+Restart:
+1. Opens the link with the URL sent via Email.
+2. Clicks next on the welcome page.
+3. Edits (clicks new rating) to provide new rating to the item or clicks next if the displayed rating is accepted.
+4. Repeats step 3 until the last page where submit is displayed and is taken to recommendations page.
+5. Edits the ratings on recommendations page or accepts them without editing and clicks next
+6. Repeats 5 until last recommendations page and clicks on submit to finish the survey.
+7. Closes the tab.
