@@ -1,3 +1,4 @@
+
 import sys
 import pandas as pd
 from ..utils.utils import omdb_client
@@ -11,8 +12,8 @@ class Survey_Model(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(256), unique=True)
     dataset_path = db.Column(db.String(256))
-    num_items = db.Column(db.Integer())
-    num_tokens = db.Column(db.Integer())
+    description = db.Column(db.String(1024))
+
 
 
 
@@ -121,10 +122,86 @@ class Questionnaire_Model(db.Model):
 
 
 class RecommendationList_Model(db.Model):
+    __tablename__= 'reclist'
     id = db.Column(db.Integer(), primary_key=True)
-    survey_id = db.Column(db.Integer(), db.ForeignKey('survey.id'))
+    dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
+    offline_eval_id = db.Column(db.Integer(), db.ForeignKey('ofline_eval.id'))
     offline_user_id = db.Column(db.Integer())
     recommendation_list = db.Column(db.String(1024))
 
     def __str__(self):
         return f"id: {self.id}\nsurvey_id: {self.survey_id}\noffline_user_id: {self.offline_user_id}\nrecommendation_list:\n{self.recommendation_list}"
+
+class Questionnaire(db.Model):
+    __tablename__ = 'questionnaire'
+    id = db.Column(db.Integer(), primary_key=True)
+    survey_id = db.Column(db.Integer(), db.ForeignKey('survey.id'))
+    token = db.Column(db.String(256), unique=True)
+    num_questions = db.Column(db.Integer())
+    __mapper_args__ ={
+        'polymorphic_identity': 'questionnaire',
+        'polymorphic_on': 'type'
+    }
+class Reclist_Questionnaire(Questionnaire):
+    __mapper_args__={
+        'polymorphic_identity': 'reclist_questionnaire'
+    }
+
+
+
+class Question(db.Model):
+    __tablename__ = 'question'
+    id = db.Column(db.Integer(), primary_key=True)
+    item_id = db.Column(db.Integer())
+    questionnaire_id = db.Column(db.Integer(), db.ForeignKey('questionnaire.id'))
+
+class Reclist_Question(db.Model):
+    __tablename__='reclist_question'
+    id = db.Column(db.Integer(), primary_key=True)
+    reclist_id = db.Column(db.Integer(), db.ForeignKey('reclist.id'))
+    reclist_questionnaire_id = db.Column(db.Integer(), db.ForeignKey('reclist_questionnaire.id'))
+
+class Response(db.Model):
+    __tablename__ = 'response'
+    id = db.Column(db.Integer(), primary_key=True)
+    item_id = db.Column(db.Integer())
+    particpant_id = db.Colum(db.Integer(), db.ForeignKey('survey_participant.id'))
+    rating = db.Column(db.Float())
+    __mapper_args__ ={
+        'polymorphic_identity': 'response',
+        'polymorphic_on': 'type'
+    }
+class Reclist_Response(Response):
+    reclist_id = db.Column(db.Integer(), db.ForeignKey('reclist.id'))
+    __mapper_args__={
+        'polymorphic_identity': 'reclist_response'
+    }
+
+class Survey_Participant(db.Model)
+    __tablename__ = 'survey_participant'
+    id = db.Column(db.Integer(), primary_key=True)
+    survey_id = db.Column(db.Integer(), db.ForeignKey('survey.id'))
+    token = db.Column(db.String(256))
+
+
+
+class Dataset(db.Model):
+    __tablename__= 'dataset'
+    id = db.Column(db.Integer(), primary_key=True)
+    file_path = db.Column(db.String(1024))
+    num_users = db.Column(db.Integer())
+    num_items = db.Column(db.Integer())
+
+    def load_dataset(self):
+        return "dataset"
+
+
+
+
+
+
+
+
+    
+
+

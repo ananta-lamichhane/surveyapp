@@ -14,11 +14,13 @@ offline_eval_bp = Blueprint('offline_eval', __name__)
 def handle_offline_eval():
     if request.method == "GET":
     ##placeholder for handling get request
-        print("offlien eval get")
+        print("offline eval get")
         return "hello from offline eval get"
 
 
     elif request.method == "POST":
+        ## extract parameters sent from the frontend and perform offline eval.
+        #perform_offline_eval()
     ## placeholder for handling post request.
         print("offline eval post")
         return "hello from offline eval post"
