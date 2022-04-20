@@ -1,13 +1,14 @@
 import React from 'react'
-import {useState } from 'react'
+import {useState, useEffect } from 'react'
 import 'survey-react/survey.css'
 import * as Survey from 'survey-react'
 import createRatingsWidget from './ratingWidget'
 import WelcomePage from './welcome_page'
 import PostData from '../utils/postdata'
-import {CreateNewQuestion, CreateNewPanel} from '../utils/create_new_question'
+import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
-import RecommendationPageModel from './recommendation_survey.js.js'
+import RecomSurvey from "./recommendation_survey"
+//import RecommendationPageModel from './recommendation_survey.js.js'
 
 //choose from the built in themes of the surveyjs library
 Survey
@@ -25,16 +26,14 @@ Survey
 createRatingsWidget()
 //TODO fetch it from the backend (admin dashboard)
 var qnr=1
-var max_items = 3
+var max_items = 5
 var curr_item = 10
 const MainSurvey =  () => 
 
 {
     
-    const [searchParams] = useSearchParams()
-    const [surveyDone, setSurveyDone] = useState(false) //sets a bool value if the first survey, i.e. questionnaire is done, helps to determine when to show the rcommendations.
 
-    // main framework for the display contains only title and placeholder for pages
+   //welcome page on the main survey
     var welcomePage = {
         "title": "Recommender Systems Survey",
         "name": "recsysSurvey",
@@ -43,8 +42,22 @@ const MainSurvey =  () =>
         ]
     }
 
+    const [searchParams] = useSearchParams()
+    const [surveyDone, setSurveyDone] = useState(false) //sets a bool value if the first survey, i.e. questionnaire is done, helps to determine when to show the rcommendations.
     const [allData, setAllData] = useState(welcomePage)
+    const [numItems, setNumItems] = useState()
+
+     useEffect(() => {
+        fetch('http://localhost:5000/questionnaire?token='+ searchParams.get('token'))
+        .then(response =>response.json()).then(data =>{
+            setNumItems(data)
+            
+        })
+    }, [])
+
     var model2 = new Survey.Model(allData)
+
+
     model2.showQuestionNumbers = "true"
     // do not show the thank you for completing the survey page.
     model2.showCompletedPage = false
@@ -52,54 +65,58 @@ const MainSurvey =  () =>
         //custom naming of the css classes
     model2.onUpdatePanelCssClasses.add(function (survey, options){
           //  console.log("current page no from update classes: "+ model2.currentPageNo)
-            
+
             var classes = options.cssClasses
             if(model2.currentPageNo !== 0){
                 classes.panel.container += " pic_and_description_container";
+             
+            }else{
+                var next = document.getElementsByClassName('sv_next_btn')
+                console.log(next)
             }
           
     })
 
     // use this function to load initial values into the survey
-    var surveyValueChanged = function (sender, options) {
-        var el = document.getElementById(options.name);
-        if (el) {
-            el.value = options.value;
-        }
-    };
+
 
     //supply initial values to the survey should be done before first render
 
 
-    // on first render fetches the first item from the backend and adds it at the end of the list
-    //start of the survey provides additional information
-    // total number of questions, etc.
-      model2.onAfterRenderSurvey.add(function(e){
-         var tok = searchParams.get('token')
-        fetch('http://localhost:5000/questionnaire?token='+tok).then(res => res.json()).then(data =>{
-            model2.addPage(CreateNewQuestion(data, qnr, max_items))
-            curr_item = data.item_id
-           // qnr++
-        })
+    /* While the survey is rendering for the first time, create template pages
+        Where the only information is Item <i> out of <totalitems>.
+    */
+    model2.onAfterRenderSurvey.add(function(e){
+        for(var i=0; i<numItems; i++){
+            //add total number of 'empty' pages 
+            model2.addPage(CreateTemplatePage(i+1,numItems))
+            model2.pageNextText = "Start"
+        }
     })
-
-
 
 
     //every time when next is clicked fetches next item and adds it to the end of the list
     model2.onCurrentPageChanging.add(function(e){
-        console.log("current qnr: " + (model2.currentPageNo+1) + "current max: "+ max_items )
-        console.log("page change .....")
+        model2.pageNextText = "Next"
+        var val = model2.currentPage.getValue()
         // currData includes the item ids and ratings for all items rated until now
         var payload = {
             'token': searchParams.get('token'),
-            'ratings': model2.data
+            'ratings': val,
+            'next_question_no': model2.currentPageNo
         }
-        // TODO: Send this as a post to the backend
-        if(model2.currentPageNo+1 < max_items){
+
+        if(model2.currentPageNo+1 < max_items !==1){
+            console.log("current page number" + (model2.currentPageNo+1))
              PostData('http://localhost:5000/questionnaire', JSON.stringify(payload))
             .then(data =>{
-                model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
+                model2.activePage.addPanel(CreateNewPanel(data,2,10))
+                model2.activePage.addNewQuestion('customrating', )
+                //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
+                console.log("------------")
+                console.log(data)
+                console.log("------------")
+
             });
              
         
@@ -107,6 +124,12 @@ const MainSurvey =  () =>
         
     
     }) 
+        var surveyValueChanged = function (sender, options) {
+            var el = document.getElementById(options.name);
+            if (el) {
+                el.value = options.value;
+            }
+        };
 
     /*
         Example of prepopulated data (if we need to reload the data from backend 
@@ -122,40 +145,31 @@ const MainSurvey =  () =>
 
 
 
+ 
+
     return <div className='mainSurvey'>
-         {!surveyDone &&       
+        {/* Load the survey only when the survey details have finised fetching
+        ie. numItems is populated */}
+        
+         {!surveyDone &&  (numItems >0) &&   
         <Survey.Survey
         model = {model2}
         onComplete = {
-            (res)=>{
-            console.log(res.data)
-            var payload = {
-                'token': searchParams.get('token'),
-                'ratings': res.data
-            }
-            // Use fetch API or Axios to send the data to the backend
-            PostData('http://localhost:5000/questionnaire', JSON.stringify(payload))
-            .then(resp => { 
-            // response from the backend
-              console.log(resp); // JSON data parsed by `data.json()` call
-            });
-            
+           res=>{
             // set survey to done so that the recommendation page can be shown
             setSurveyDone(true)
             }   
         }
         onValueChanged={surveyValueChanged}
-        /> } 
+    /> } 
 
         {/* Display recommendation page if the surveydone state is set to true*/}
-        {surveyDone && <>
-           {// <RecommendationSurvey />
-            }
-            <Survey.Survey
-            model= {RecommendationPageModel}
-            />
-            </>
+        {surveyDone &&
+        <div>
+            {<RecomSurvey />}
+        </div>
         }
+    
     
      </div>
 

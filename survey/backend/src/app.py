@@ -1,0 +1,74 @@
+
+from flask import Flask, jsonify, request
+import json
+from flask_cors import CORS, cross_origin
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
+
+#from survey.backend.src.database.models.survey import Survey
+#from .utils.utils import generate_random_tokens
+
+from .flask_configs import Flask_Configs
+
+
+db = SQLAlchemy()
+def create_app():
+
+    app= Flask(__name__)
+
+    ### Load app configurations from another file
+
+    app.config.from_object(Flask_Configs)
+    #app.config['SQLALCHEMY_DATABASE_URI']= "sqlite:///"+"../data/test.db"
+
+   ## import all models before initializing the database
+    from .database.models.survey import Survey
+    from .database.models.dataset import Dataset
+    from .database.models.offline_eval import Offline_eval
+    from .database.models.participant import Survey_Participant
+    from .database.models.question import Question
+    from .database.models.questionnaire import Questionnaire
+    from .database.models.reclist import RecommendationList_Model
+    from .database.models.reclist_questionnaire import Reclist_Questionnaire
+    from .database.models.reclist_question import Reclist_Question
+    from .database.models.reclist_response import Reclist_Response
+    from .database.models.strategy import BaseStrategy, NaiveStrategy
+    from .database.models.machmaking import MatchmakingBase, NaiveMatchmaking
+    from .database.models.response import Response
+    
+    ##initialize database
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
+
+    ##configure cors so that the react frontend can communicate with it.
+    cors = CORS(app)
+  #  from database.models import Survey_Model, Questionnaire_Model
+
+    ## import the blueprints for individual routes from routes directory
+    from .routes.questionnaire import questionnaire_bp
+    from .routes.offline_eval import offline_eval_bp
+    from .routes.recommendation import recommendation_bp
+    from .routes.survey import survey_bp
+
+    ## register blueprints so that they can be accessed as routes to the webapps
+    app.register_blueprint(questionnaire_bp)
+    app.register_blueprint(survey_bp)
+    app.register_blueprint(offline_eval_bp)
+    app.register_blueprint(recommendation_bp)
+
+    ## create the actual tables in the db
+  
+
+
+    return app
+
+
+app = create_app()
+
+
+
+
+## running the app on localhost and default port 5000.
+if '__name__' == '__main__':
+    app.run(debug=True)

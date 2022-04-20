@@ -2,7 +2,9 @@
 import './App.css';
 import {MainSurvey} from './components/main_survey';
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
-
+import Dashboard from './components/dashboard/survey_control'
+import { SurveyCreationForm } from './components/survey_creation_form';
+const dashboard = Dashboard
 
 
 function App() {
@@ -18,7 +20,15 @@ function App() {
       </>
     }
    />
-      <Route path = "/" element={<h2>Admin area</h2>} />
+      <Route path = "/" element={
+      <div>
+        <Dashboard />
+      </div>} />
+
+      <Route path = "/create" element={
+      <div>
+        <SurveyCreationForm />
+      </div>} />
 
       <Route path="/welcome" element={
         <div className='Welcome_Page_Placeholder'>

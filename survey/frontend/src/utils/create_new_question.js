@@ -71,6 +71,31 @@ function CreateNewQuestion(rawData, itemnr, totalitems){
     return page
 }
 
+function CreateTemplatePage(itemnr, totalitems){
+    var progressBar = `
+    	<div class= "progress-text">
+            <h6>Item ${itemnr} of ${totalitems}</h6>
+        </div>
+    `
+        var newPage = {
+            "name": "page",
+            "elements": [
+                {
+                    "type": "html",
+                    "name": "info",
+                    "html": progressBar
+                }
+                
+
+            ]
+        }
+    //console.log("newpage")
+   // console.log(newPage)
+    var page = new Survey.PageModel("newPage")
+    page.fromJSON(newPage)
+    return page
+}
+
 
 
 function CreateNewPanel(rawData, itemnr, totalitems){
@@ -95,7 +120,7 @@ function CreateNewPanel(rawData, itemnr, totalitems){
             <h6>Item ${itemnr} of ${totalitems}</h6>
         </div>
     `
-        var newPage = {
+        var newPanel = {
 
                     "type": "panel",
                     "innerIndent": 1,
@@ -132,10 +157,10 @@ function CreateNewPanel(rawData, itemnr, totalitems){
     //console.log("newpage")
    // console.log(newPage)
     var panel = new Survey.PanelModel('newpanel')
-    panel.fromJSON(newPage)
+    panel.fromJSON(newPanel)
     return panel
 }
 
 
 
-export {CreateNewQuestion, CreateNewPanel}
+export {CreateNewQuestion, CreateTemplatePage, CreateNewPanel}

@@ -30,9 +30,17 @@ code {
   text-align: center;
   font-size: x-large;
 }
-.pic_and_description_container > *{
+ .recom_pic_and_description > *{
   display:flex;
+  flex-wrap: wrap;
 }
+
+
+.pic_and_description_container > *{
+ display:flex;
+
+}
+
 
 .description_text{
   text-align: left;
@@ -79,7 +87,7 @@ code {
 /* The star of the show */
 .rate > label:before {
     display: inline-block;
-    font-size: 4rem;
+    font-size: 3rem;
     padding: .3rem .2rem;
     margin: 0;
     cursor: pointer;
