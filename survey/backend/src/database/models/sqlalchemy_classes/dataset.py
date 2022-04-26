@@ -1,9 +1,9 @@
 import pandas as pd
-from ...app import db
+from ....app import db
 import json
 class Dataset(db.Model):
     __tablename__= 'dataset'
-    name = db.Column(db.String(128))
+    name = db.Column(db.String(128), unique=True)
     id = db.Column(db.Integer(), primary_key=True)
     file_path = db.Column(db.String(1024))
     num_users = db.Column(db.Integer())

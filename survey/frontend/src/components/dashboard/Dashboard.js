@@ -17,7 +17,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { MainListItems } from './CommonComponents/listItems';
+import { MainListItems } from './CommonComponents/createLeftNavPanel';
 import { SurveyPage } from './SurveyComponents/SurveyPage';
 import { OfflineEvalPage } from './OfflineEvalComponents/OfflineEvalPage';
 import { DatasetsPage } from './DatasetsComponents/DatasetsPage';

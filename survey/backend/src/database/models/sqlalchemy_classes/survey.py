@@ -1,4 +1,4 @@
-from ...app import db
+from ....app import db
 import json
 class Survey(db.Model):
     __tablename__ = 'survey'

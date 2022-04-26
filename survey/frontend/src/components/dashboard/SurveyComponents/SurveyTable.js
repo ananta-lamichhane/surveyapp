@@ -18,7 +18,7 @@ export default function SurveyTable({data}) {
  if(data){
     for(var s of data.surveys){
     var survey = JSON.parse(s)
-    rows.push(createData(survey.id, survey.name, survey.description, 10, 10))
+    rows.push(createData(survey.id, survey.name, survey.description, survey.num_tokens, 10))
   }
 }
 

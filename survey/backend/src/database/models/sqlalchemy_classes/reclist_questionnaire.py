@@ -1,4 +1,4 @@
-from ... app import db
+from ....app import db
 import json
 class Reclist_Questionnaire(db.Model):
     __tablename__ = 'reclist_questionnaire'

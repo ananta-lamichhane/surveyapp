@@ -1,5 +1,5 @@
 from lib2to3.pgen2 import token
-from ...app import db
+from ....app import db
 import json
 class Questionnaire(db.Model):
     __tablename__ = 'questionnaire'

@@ -22,19 +22,20 @@ def create_app():
     #app.config['SQLALCHEMY_DATABASE_URI']= "sqlite:///"+"../data/test.db"
 
    ## import all models before initializing the database
-    from .database.models.survey import Survey
-    from .database.models.dataset import Dataset
-    from .database.models.offline_eval import Offline_eval
-    from .database.models.participant import Survey_Participant
-    from .database.models.question import Question
-    from .database.models.questionnaire import Questionnaire
-    from .database.models.reclist import RecommendationList_Model
-    from .database.models.reclist_questionnaire import Reclist_Questionnaire
-    from .database.models.reclist_question import Reclist_Question
-    from .database.models.reclist_response import Reclist_Response
-    from .database.models.strategy import BaseStrategy, NaiveStrategy
-    from .database.models.machmaking import MatchmakingBase, NaiveMatchmaking
-    from .database.models.response import Response
+    from .database.models.sqlalchemy_classes.survey import Survey
+    from .database.models.sqlalchemy_classes.dataset import Dataset
+    from .database.models.sqlalchemy_classes.offline_eval import Offline_eval
+    from .database.models.sqlalchemy_classes.participant import Survey_Participant
+    from .database.models.sqlalchemy_classes.question import Question
+    from .database.models.sqlalchemy_classes.questionnaire import Questionnaire
+    from .database.models.sqlalchemy_classes.reclist import RecommendationList_Model
+    from .database.models.sqlalchemy_classes.reclist_questionnaire import Reclist_Questionnaire
+    from .database.models.sqlalchemy_classes.reclist_question import Reclist_Question
+    from .database.models.sqlalchemy_classes.reclist_response import Reclist_Response
+    from .database.models.abstract_classes.strategy import BaseStrategy, NaiveStrategy
+    from .database.models.abstract_classes.machmaking import MatchmakingBase, NaiveMatchmaking
+    from .database.models.sqlalchemy_classes.response import Response
+    from .database.models.sqlalchemy_classes.algorithm import Algorithm
     
     ##initialize database
     db.init_app(app)

@@ -2,10 +2,10 @@ import React from 'react'
 import {useState, useEffect } from 'react'
 import 'survey-react/survey.css'
 import * as Survey from 'survey-react'
-import createRatingsWidget from './ratingWidget'
-import WelcomePage from './welcome_page'
-import PostData from '../utils/postdata'
-import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../utils/create_new_question'
+import createRatingsWidget from '../customWidgets/ratingWidget'
+import WelcomePage from '../surveyJSTemplateJSONS/welcome_page'
+import PostData from '../../utils/postdata'
+import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
 //import RecommendationPageModel from './recommendation_survey.js.js'
@@ -38,7 +38,7 @@ const MainSurvey =  () =>
         "title": "Recommender Systems Survey",
         "name": "recsysSurvey",
         "pages": [
-              WelcomePage()
+              WelcomePage("Recommender System Survey")
         ]
     }
 
@@ -46,11 +46,13 @@ const MainSurvey =  () =>
     const [surveyDone, setSurveyDone] = useState(false) //sets a bool value if the first survey, i.e. questionnaire is done, helps to determine when to show the rcommendations.
     const [allData, setAllData] = useState(welcomePage)
     const [numItems, setNumItems] = useState()
+    const [surveyName, setSurveyName] = useState("")
 
      useEffect(() => {
         fetch('http://localhost:5000/questionnaire?token='+ searchParams.get('token'))
         .then(response =>response.json()).then(data =>{
-            setNumItems(data)
+            setNumItems(data.num_items)
+         //   setSurveyName(data.survey_name)
             
         })
     }, [])
@@ -89,6 +91,7 @@ const MainSurvey =  () =>
     model2.onAfterRenderSurvey.add(function(e){
         for(var i=0; i<numItems; i++){
             //add total number of 'empty' pages 
+            console.log("adding "+numItems+" pages")
             model2.addPage(CreateTemplatePage(i+1,numItems))
             model2.pageNextText = "Start"
         }
@@ -98,12 +101,11 @@ const MainSurvey =  () =>
     //every time when next is clicked fetches next item and adds it to the end of the list
     model2.onCurrentPageChanging.add(function(e){
         model2.pageNextText = "Next"
-        var val = model2.currentPage.getValue()
+        var val = model2.data
         // currData includes the item ids and ratings for all items rated until now
         var payload = {
             'token': searchParams.get('token'),
             'ratings': val,
-            'next_question_no': model2.currentPageNo
         }
 
         if(model2.currentPageNo+1 < max_items !==1){

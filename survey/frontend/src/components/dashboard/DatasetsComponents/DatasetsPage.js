@@ -19,8 +19,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-
-import CustomModal from './CreateNewFormModal';
+import { Button } from '@mui/material';
 
 import DatasetsTable from './DatasetsTable';
 
@@ -40,10 +39,21 @@ export const DatasetsPage = ({data}) => {
         >
         <Toolbar />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-
                         
-   
-    
+        <Grid item xs={12} md={4} lg={3}>
+            <Paper
+                sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+               // height: 240,
+                }}
+            >
+                <Button variant="contained" onClick={() => window.open('/create/dataset', "_self") }>Upload new dataset</Button>
+                
+            </Paper>
+           
+        </Grid>
           
         <Grid item xs={12} md={8} lg={9}>
 

@@ -1,4 +1,4 @@
-from ...app import db
+from ....app import db
 
 class Offline_eval(db.Model):
     __tablename__= 'offline_eval'
@@ -6,7 +6,6 @@ class Offline_eval(db.Model):
     parameters = db.Column(db.String(1024))
     results = db.Column(db.String(1024))
     dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
-
     def create_recom_lists(self):
 
         ### create recommendation lists with random 10 items for test

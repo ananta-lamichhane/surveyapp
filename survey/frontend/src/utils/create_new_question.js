@@ -99,11 +99,11 @@ function CreateTemplatePage(itemnr, totalitems){
 
 
 function CreateNewPanel(rawData, itemnr, totalitems){
-    var movie_info = "<div class='description_text'><h2>"+ rawData.description.title+"</h2>"+
-    "<h4>Year: " + rawData.description.year +
-    "<h4>Director: " + rawData.description.director + "</h3>" +
-    "<h4>Actors: " + rawData.description.actors + "</h3>" +
-    "<p Plot: >" + rawData.description.plot + "</p></div>"
+    var movie_info = "<div class='description_text'><h2>"+ rawData.next_item.description.title+"</h2>"+
+    "<h4>Year: " + rawData.next_item.description.year +
+    "<h4>Director: " + rawData.next_item.description.director + "</h3>" +
+    "<h4>Actors: " + rawData.next_item.description.actors + "</h3>" +
+    "<p Plot: >" + rawData.next_item.description.plot + "</p></div>"
  /*
     var card_html = `<div class="card" style="width: 18rem;">
  <div class="card-body">
@@ -132,7 +132,7 @@ function CreateNewPanel(rawData, itemnr, totalitems){
                         {
                             "type": "image",
                             "name": "banner",
-                            "imageLink": rawData.description.poster,
+                            "imageLink": rawData.next_item.description.poster,
                             "imageWidth": "300px",
                             "imageHeight": "400px",
                         },
@@ -145,7 +145,7 @@ function CreateNewPanel(rawData, itemnr, totalitems){
                         },
                         {
                             "type": "customrating",
-                            "name": "" + rawData.item_id,
+                            "name": "" + rawData.next_item.item_id,
                             "title": "Please rate the given movie on a scale of 5",
                             "isRequired": true,
                             "value": 2

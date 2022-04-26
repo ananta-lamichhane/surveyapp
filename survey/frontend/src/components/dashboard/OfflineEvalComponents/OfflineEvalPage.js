@@ -7,6 +7,7 @@ import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import { Button } from '@mui/material';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -21,7 +22,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 
-import CustomModal from './CreateNewFormModal';
+
 
 import OfflineEvalTable from './OfflineEvalTable';
 
@@ -52,7 +53,7 @@ export const OfflineEvalPage = () => {
                // height: 240,
                 }}
             >
-                <CustomModal />
+                <Button variant="contained" onClick={() => window.open('/create/offline_eval') }>Conduct an Offline Evaluation</Button>
                 
             </Paper>
            

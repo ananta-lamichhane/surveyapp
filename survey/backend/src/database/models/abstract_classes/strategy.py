@@ -1,7 +1,7 @@
-from ...app import db
+from ....app import db
 import abc
 import pandas as pd
-from .dataset import Dataset
+from ..sqlalchemy_classes.dataset import Dataset
 
 ## abstract SQLAlchemy Model class
 ## this class does not exist as table in db, only the instantiations do

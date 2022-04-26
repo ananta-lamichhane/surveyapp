@@ -3,10 +3,10 @@ import React from 'react'
 import {useState, useEffect } from 'react'
 import 'survey-react/survey.css'
 import * as Survey from 'survey-react'
-import createRatingsWidget from './ratingWidget'
-import WelcomePage from './welcome_page'
-import PostData from '../utils/postdata'
-import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../utils/create_new_question'
+import createRatingsWidget from '../customWidgets/ratingWidget'
+import WelcomePage from '../surveyJSTemplateJSONS/welcome_page'
+import PostData from '../../utils/postdata'
+import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 
 
@@ -36,7 +36,8 @@ const RecomSurvey =  () => {
         fetch('http://localhost:5000/recommendation?token='+ searchParams.get('token'))
         .then(response =>response.json()).then(data =>{
             setRecomLists(createRecomElements(data))
-            console.log(data)    
+           // console.log(data)  
+           // console.log(data[0].items[1].description.poster)  
         })
     }, [])
 
@@ -60,17 +61,41 @@ const RecomSurvey =  () => {
                     {
                         "type": "rating",
                         "name": "satisfaction",
-                        "title": "How satisfied are you with the Product?",
+                        "title": "Question about diversity?",
                         "isRequired": true,
-                        "mininumRateDescription": "Not Satisfied",
-                        "maximumRateDescription": "Completely satisfied"
+                        "mininumRateDescription": "Lowest",
+                        "maximumRateDescription": "Highest"
                     }, {
                         "type": "rating",
-                        "name": "recommend friends",
+                        "name": "novelty",
              
-                        "title": "How likely are you to recommend the Product to a friend or co-worker?",
-                        "mininumRateDescription": "Will not recommend",
-                        "maximumRateDescription": "I will recommend"
+                        "title": "Question about novelty?",
+                        "mininumRateDescription": "Lowest",
+                        "maximumRateDescription": "Highest"
+                    },
+                    {
+                        "type": "rating",
+                        "name": "serendipity",
+             
+                        "title": "Question about serendipity?",
+                        "mininumRateDescription": "Lowest",
+                        "maximumRateDescription": "Highest"
+                    },
+                    {
+                        "type": "rating",
+                        "name": "utility",
+             
+                        "title": "Question about utility?",
+                        "mininumRateDescription": "Lowest",
+                        "maximumRateDescription": "Highest"
+                    },
+                    {
+                        "type": "rating",
+                        "name": "unexpectedness",
+             
+                        "title": "Question about unexpectedness?",
+                        "mininumRateDescription": "Lowest",
+                        "maximumRateDescription": "Highest"
                     }
                 ]
             }
@@ -82,13 +107,13 @@ const RecomSurvey =  () => {
                                     "type": "html",
                                     "name": "myhtml",
                                     "html": `
-                                    <div class="card" style="width: 16rem;">
+                                    <div class="card" style="width: 10rem;">
                                         <img src="${rawData[i].items[j].description.poster}" class="card-img-top" alt="movie poster">
                                         <div class="card-body">
-                                            <h5 class="card-title">${rawData[i].items[i].description.title}</h5>
+                                            <h5 class="card-title">${rawData[i].items[j].description.title}</h5>
                                         </div>
                                         <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">Year:${rawData[i].items[i].description.year}</li>
+                                        <li class="list-group-item">Year:${rawData[i].items[j].description.year}</li>
                                         </ul>
                                         <div class="card-body">
                                             <a href="#" class="card-link">IMDB Page</a>
@@ -125,7 +150,7 @@ const RecomSurvey =  () => {
 
         
   })
-     return recomLists && <div className='mainSurvey'>
+     return <div className='mainSurvey'>
         <div>
             <Survey.Survey model={recommendationSurveyModel} 
             onComplete = {
