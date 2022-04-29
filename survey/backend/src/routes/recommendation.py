@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import json
 import os
+from flask_cors import cross_origin
 
 
 from ..database.models.sqlalchemy_classes.reclist import RecommendationList_Model
@@ -20,6 +21,7 @@ recommendation_bp = Blueprint('recommendation', __name__)
 
 
 @recommendation_bp.route('/recommendation', methods = ['POST', 'GET'])
+@cross_origin
 def handle_recommendations():
 
     if request.method == "GET":

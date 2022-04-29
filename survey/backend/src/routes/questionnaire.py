@@ -7,6 +7,7 @@ from sqlalchemy import exc
 import importlib
 import imp
 
+from flask_cors import cross_origin
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
 from ..database.models.sqlalchemy_classes.dataset import Dataset
@@ -24,6 +25,7 @@ questionnaire_bp = Blueprint('questionnaire', __name__)
 
 
 @questionnaire_bp.route('/questionnaire', methods = ['POST', 'GET'])
+@cross_origin
 def handle_questionnaire():
 
     if request.method == "GET":

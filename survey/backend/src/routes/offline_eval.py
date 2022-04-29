@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 import json
 import sqlalchemy.exc as exc
 from werkzeug.utils import secure_filename
+from flask_cors import cross_origin
 
 import sqlalchemy
 
@@ -24,6 +25,7 @@ offline_eval_bp = Blueprint('offline_eval', __name__)
 
 
 @offline_eval_bp.route('/offline_eval', methods = ['POST', 'GET'])
+@cross_origin
 def handle_offline_eval():
     if request.method == "GET":
     ##placeholder for handling get reques
