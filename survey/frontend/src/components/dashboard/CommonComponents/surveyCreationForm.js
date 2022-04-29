@@ -56,6 +56,24 @@ var templateJSON = {
                         "choices": backendData?(backendData.datasets).map(e => JSON.parse(e).name):[]
                     },
                     {
+                        "type": "dropdown",
+                        "name": "surveyMatchmakingStrategy",
+                        "title": "Matchmaking strategy",
+                        "isRequired": true,
+                        "colCount": 0,
+                        "hasNone": false,
+                        "choices": backendData?(backendData.strategies.matchmaking).map(e => (e)):[]
+                    },
+                    {
+                        "type": "dropdown",
+                        "name": "surveyItemSelectionStrategy",
+                        "title": "Item selection strategy",
+                        "isRequired": true,
+                        "colCount": 0,
+                        "hasNone": false,
+                        "choices": backendData?(backendData.strategies.item_selection).map(e => (e)):[]
+                    },
+                    {
                         "type": "text",
                         "name": "surveyNumParticipants",
                         "title": "Number of participants",

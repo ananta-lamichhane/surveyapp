@@ -1,8 +1,11 @@
 
+import os
 from flask import Blueprint, request, jsonify
 import json
 from ..app import db
 from sqlalchemy import exc
+import importlib
+import imp
 
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
@@ -10,9 +13,10 @@ from ..database.models.sqlalchemy_classes.dataset import Dataset
 from ..database.models.abstract_classes.strategy import NaiveStrategy
 from ..database.models.sqlalchemy_classes.participant import Survey_Participant
 from ..database.models.sqlalchemy_classes.response import Response
-
 from ..utils.utils import create_item_descritptions
+from .. import test_import
 
+from ..strategies.matchmaking.naive_matchmaking_strategy import Strategy
 ## createa a blueprint for this route to be easily added to root later.
 questionnaire_bp = Blueprint('questionnaire', __name__)
 
@@ -24,6 +28,7 @@ def handle_questionnaire():
 
     if request.method == "GET":
         token = request.args.get('token')
+        print(f"token = {token}")
         survey_info = send_survey_details(token)
         return json.dumps(survey_info)
     
@@ -135,8 +140,6 @@ def send_survey_details(participant_token):
 ## along with all current ratings of the user from the db
 def send_next_item_and_current_ratings(participant_token):
     rel_participant = db.session.query(Survey_Participant).filter_by(token=participant_token).first()
-
-
     ## find out all current ratings given by the same user
     all_curr_ratings = db.session.query(Response).filter_by(participant_id = rel_participant.id).first().ratings
 
@@ -144,13 +147,29 @@ def send_next_item_and_current_ratings(participant_token):
     rel_ques = db.session.query(Questionnaire).filter_by(token=participant_token).first()
     rel_survey = db.session.query(Survey).filter_by(id=rel_ques.survey_id).first()
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
-    rel_strategy = NaiveStrategy(rel_dataset.file_path)
+    rel_strategy_name = rel_survey.item_selection_strategy
+    print(f"strategy name = {rel_strategy_name}")
+
+
+
+    ## new item selection strategies are stored in the src/matchmaking folder
+    ## each file has a different name but contains a class called Strategy in it
+
+    ## load the related strategy file (module) from the directory
+    loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'src.strategies.item_selection')
     
+    ## load the Strategy class from the loaded module
+    strategy_class_obj = getattr(loaded_module, 'Strategy')
+
+    ## instantiate the loaded class with the dataset path in question
+    strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
+    if strategy_class_instance:
     ## if the question number shows it's first question asked
-    next_item = create_item_descritptions(rel_strategy.get_next_item())
-    payload ={"current_ratings": all_curr_ratings, "next_item": next_item}
+        next_item = create_item_descritptions(strategy_class_instance.get_next_item())
+        payload ={"current_ratings": all_curr_ratings, "next_item": next_item}
+        return payload
     
-    return payload
+    return {}
 
 
 
@@ -189,3 +208,9 @@ def save_ratings(particiapant_token, ratings):
             print(f"Error: {e}")
        # print(f"itemid = {itemid}\nrating: {rating}")
     #print(f"itmeid = part_id: {}\nitemid: {itemid}\nrating:{rating}")
+
+## src.strategies.matchmaking
+def load_class_dynamically(module_name, relative_path_name, class_name):
+    mod =  rel_strategy = importlib.import_module(f'.{module_name}', relative_path_name)
+    class_object = getattr(mod, class_name)
+    return class_object

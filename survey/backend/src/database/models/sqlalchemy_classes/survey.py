@@ -7,7 +7,10 @@ class Survey(db.Model):
     num_items = db.Column(db.Integer())
     num_tokens = db.Column(db.Integer())
     description = db.Column(db.String(1024))
+    matchmaking_strategy = db.Column(db.String(128))
+    item_selection_strategy = db.Column(db.String(128))
     tokens = db.Column(db.String(4096))
+
     dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
 
     def __str__(self):
@@ -18,5 +21,7 @@ class Survey(db.Model):
             'num_tokens': self.num_tokens,
             'description': self.description,
             'tokens': self.tokens,
-            'dataset_id': self.dataset_id
+            'dataset_id': self.dataset_id,
+            'matchmaking_strategy': self.matchmaking_strategy,
+            'item_selection_strategy': self.item_selection_strategy
         })

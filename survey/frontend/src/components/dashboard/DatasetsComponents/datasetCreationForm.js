@@ -75,19 +75,11 @@ var templateJSON = {
     var CreateNewOfflineEvalModel = new Survey.Model(templateJSON)
 
 
-    CreateNewOfflineEvalModel
-    .onComplete
-    .add(function (sender) {
-       // document
-           // .querySelector('#surveyResult')
-           // .textContent = "Result JSON:\n" + JSON.stringify(sender.data, null, 3);
-           console.log(sender.data)
-    });
 
 // This global variable is used for storing choosen files while survey is not completed
 var temporaryFilesStorage = {};
 
-CreateNewOfflineEvalModel
+ CreateNewOfflineEvalModel
     .onComplete
     .add(function (result) {
         // In this handler we upload the files to the server from the temporary storage
@@ -229,17 +221,7 @@ CreateNewOfflineEvalModel
 
     return (
         <div>
-        <Survey.Survey model={CreateNewOfflineEvalModel} 
-        onComplete = {
-            res=>{
-             // set survey to done so that the recommendation page can be shown
-             console.log(res.data)
-             PostData('http://localhost:5000/offline_eval', JSON.stringify(res.data))
-             .then(data =>{
-                 console.log(data)
-             })
-             }   
-         }/>
+        <Survey.Survey model={CreateNewOfflineEvalModel} />
     </div>
     )
 }

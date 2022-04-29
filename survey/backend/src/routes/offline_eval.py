@@ -41,12 +41,12 @@ def handle_offline_eval():
         ## extract parameters sent from the frontend and perform offline eval.
         ## create recommendation lists and save to the database.
         #perform_offline_eval()
-        filename = list(request.files.keys())[0]
-        dataset_file = request.files[filename]
-        save_dataset_file(dataset_file, ".i")
-        print(request.args)
-        #data_from_frontend = json.loads(request.get_json())
-        #print(data_from_frontend)
+        #filename = list(request.files.keys())[0]
+        #dataset_file = request.files[filename]
+       # save_dataset_file(dataset_file, ".i")
+        print(request.files)
+        data_from_frontend = json.loads(request.get_json())
+        print(data_from_frontend)
         #eval_name = data_from_frontend['offlineEvalName']
         #algos_for_reclist = data_from_frontend['offlineEvalAlgorithms']
         #eval_metrics = data_from_frontend['offlineEvalMetrics']

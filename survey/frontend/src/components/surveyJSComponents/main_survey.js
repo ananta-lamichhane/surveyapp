@@ -47,6 +47,7 @@ const MainSurvey =  () =>
     const [allData, setAllData] = useState(welcomePage)
     const [numItems, setNumItems] = useState()
     const [surveyName, setSurveyName] = useState("")
+    const [visitedPages, setVisitedPages] = useState([])
 
      useEffect(() => {
         fetch('http://localhost:5000/questionnaire?token='+ searchParams.get('token'))
@@ -88,7 +89,8 @@ const MainSurvey =  () =>
     /* While the survey is rendering for the first time, create template pages
         Where the only information is Item <i> out of <totalitems>.
     */
-    model2.onAfterRenderSurvey.add(function(e){
+    model2.onAfterRenderSurvey.add(function(option){
+
         for(var i=0; i<numItems; i++){
             //add total number of 'empty' pages 
             console.log("adding "+numItems+" pages")
@@ -99,31 +101,39 @@ const MainSurvey =  () =>
 
 
     //every time when next is clicked fetches next item and adds it to the end of the list
-    model2.onCurrentPageChanging.add(function(e){
-        model2.pageNextText = "Next"
-        var val = model2.data
-        // currData includes the item ids and ratings for all items rated until now
-        var payload = {
-            'token': searchParams.get('token'),
-            'ratings': val,
+    model2.onCurrentPageChanging.add(function(survey,options){
+
+        if (options.isNextPage){
+           // setVisitedPages([...visitedPages, (model2.currentPageNo +1)])
+            model2.pageNextText = "Next"
+            console.log(visitedPages)
+            
+            var val = model2.data
+            // currData includes the item ids and ratings for all items rated until now
+            var payload = {
+                'token': searchParams.get('token'),
+                'ratings': val,
+            }
+
+            if(model2.currentPageNo+1 < max_items !==1){
+                
+                //TODO: only fire the post request if the page has not been visited previously
+            
+                console.log("current page number" + (model2.currentPageNo+1))
+                PostData('http://localhost:5000/questionnaire', JSON.stringify(payload))
+                .then(data =>{
+                    model2.activePage.addPanel(CreateNewPanel(data,2,10))
+                    model2.activePage.addNewQuestion('customrating', )
+                    //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
+                    console.log("------------")
+                    console.log(data)
+                    console.log("------------")
+
+                });
+            }
+            
+
         }
-
-        if(model2.currentPageNo+1 < max_items !==1){
-            console.log("current page number" + (model2.currentPageNo+1))
-             PostData('http://localhost:5000/questionnaire', JSON.stringify(payload))
-            .then(data =>{
-                model2.activePage.addPanel(CreateNewPanel(data,2,10))
-                model2.activePage.addNewQuestion('customrating', )
-                //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
-                console.log("------------")
-                console.log(data)
-                console.log("------------")
-
-            });
-             
-        
-    }
-        
     
     }) 
         var surveyValueChanged = function (sender, options) {

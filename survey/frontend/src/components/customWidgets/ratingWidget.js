@@ -61,8 +61,6 @@ var createRatingsWidget = (wigetName) =>{
             
             // assing question value (answer) when clicked / unclicked
             dontknow.onchange = function(){
-                console.log("this")
-            
                 question.value = dontknow.value
             }
 
@@ -257,7 +255,6 @@ var createRatingsWidget = (wigetName) =>{
             var f = document.getElementById('fieldSet'+rand)
             var allbuttons = f.getElementsByClassName('rating')
             f.onclick = function(){
-                console.log("clicked"+rand)
                 for(var i=0;i<allbuttons.length; i++){
                     if(allbuttons[i].checked === true){
                         var trueRating = 5.0 - i/2

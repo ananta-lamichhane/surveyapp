@@ -49,7 +49,7 @@ export const DatasetsPage = ({data}) => {
                // height: 240,
                 }}
             >
-                <Button variant="contained" onClick={() => window.open('/create/dataset', "_self") }>Upload new dataset</Button>
+                <Button variant="contained" onClick={() => alert("To upload a dataset. Create a folder in data/datasets/ with desired name. Place the ratings matrix as ratings.csv and refresh this page.") }>Add a new dataset</Button>
                 
             </Paper>
            

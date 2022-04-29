@@ -1,5 +1,5 @@
 from pathlib import Path
-from tkinter import E
+import string
 from flask import Blueprint, request, jsonify
 import json
 import os
@@ -9,7 +9,7 @@ import sqlalchemy.exc as exc
 from ..database.models.sqlalchemy_classes.algorithm import Algorithm
 from ..app import db
 from ..utils.utils import generate_random_tokens
-from ..utils.utils import create_item_descritptions
+from ..utils.utils import create_item_descritptions, list_directory_files, list_subdirectoreis
 
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
@@ -43,12 +43,6 @@ def handle_survey():
     if request.method == "GET":
 
 
-        ## hard code a database, this will be handled later by offline_eval route.
-        dataset_file_path = os.path.abspath('../data/datasets/movielens_small/ratings.csv')
-        dataset_name = "movielensSmall"
-        create_new_dataset(dataset_name, dataset_file_path)
-
-
         data_to_frontend = collect_frontend_dashboard_data()
 
         return data_to_frontend
@@ -73,9 +67,11 @@ def handle_survey():
         dataset = data_from_frontend['surveyDataset']
         num_participants = int(data_from_frontend['surveyNumParticipants'])
         num_questions = int(data_from_frontend['surveyNumQuestions'])
-
-        survey_creation_result = create_new_survey(survey_name, survey_description, dataset, num_participants, num_questions)
+        item_selection_strategy = data_from_frontend['surveyItemSelectionStrategy']
+        matchmaking_strategy = data_from_frontend['surveyMatchmakingStrategy']
+        survey_creation_result = create_new_survey(survey_name, survey_description, dataset, num_participants, num_questions, item_selection_strategy, matchmaking_strategy)
         
+        print()
         ### format of the data sent to the frontend: string representation of the just created survey
         return (survey_creation_result)
     else:
@@ -94,23 +90,54 @@ def collect_frontend_dashboard_data():
                 'surveys': [],
                 'datasets': [],
                 'offline_evals': [],
-                'algorithms': []
+                'algorithms': [],
+                'strategies':{
+                    'matchmaking':[],
+                    'item_selection':[]
+                }
                 }
     ## list all surveys
     all_surveys = db.session.query(Survey).all()
-    for s in all_surveys:
-        ## add json formatted string representation of those surveys to the list
-        all_data['surveys'].append(str(s))
-    all_datasets = db.session.query(Dataset).all()
+    if all_surveys:
+        for s in all_surveys:
+            ## add json formatted string representation of those surveys to the list
+            all_data['surveys'].append(str(s))
 
-    ## ifo about all datasets
-    for d in all_datasets:
-        all_data['datasets'].append(str(d))
     
     ## info about all algorithms
     all_algorithms = db.session.query(Algorithm).all()
-    for a in all_algorithms:
-        all_data['algorithms'].append(str(a))
+    if all_algorithms:
+        for a in all_algorithms:
+            all_data['algorithms'].append(str(a))
+
+    all_datasets_in_db = db.session.query(Dataset).all()
+    dataset_dirs = list_subdirectoreis('../data/datasets')
+    if dataset_dirs:
+        for d in dataset_dirs:
+            create_new_dataset(d, f'../data/datasets/{d}/ratings.csv')
+    if all_datasets_in_db:
+        for  d1 in all_datasets_in_db:
+            if d1.name not in dataset_dirs:
+                try:
+                    db.session.delete(d1)
+                    db.session.commit()
+                    print(f"deleted database {d1.name}")
+                except exc.SQLAlchemyError as e:
+                    db.session.rollback()
+                    print(e)
+
+    all_datasets = db.session.query(Dataset).all()
+
+    ## ifo about all datasets
+    if all_datasets:
+        for d in all_datasets:
+            all_data['datasets'].append(str(d))
+    all_matchmaking_strategies = list_directory_files('./strategies/matchmaking')
+    all_item_selection_strategies = list_directory_files('./strategies/item_selection')
+    for s in all_matchmaking_strategies:
+        all_data['strategies']['matchmaking'].append(s)
+    for s in all_item_selection_strategies:
+        all_data['strategies']['item_selection'].append(s)
     return json.dumps(all_data)
 
 
@@ -129,7 +156,7 @@ def create_new_dataset(name, file_path):
         
 
 
-def create_new_survey(name, description, dataset_name, num_participants, num_questions):
+def create_new_survey(name, description, dataset_name, num_participants, num_questions, item_selection_strategy, matchmaking_strategy):
     ## the survey get method should deliver all relevant info to all the surveys from the
     ## frontend
     ## which should then get populated into the dashboard
@@ -142,7 +169,7 @@ def create_new_survey(name, description, dataset_name, num_participants, num_que
     ## print(str(tokens))
     
     ## create survey with its database being the one created above
-    test_survey1 = Survey(name=name, num_tokens=num_participants, dataset_id=res_dataset.id,description=description, tokens=json.dumps(tokens))
+    test_survey1 = Survey(name=name, num_tokens=num_participants, dataset_id=res_dataset.id,description=description, matchmaking_strategy=matchmaking_strategy, item_selection_strategy=item_selection_strategy, tokens=json.dumps(tokens))
     try:
         db.session.add(test_survey1)
         db.session.commit()
@@ -154,7 +181,7 @@ def create_new_survey(name, description, dataset_name, num_participants, num_que
     result_test = db.session.query(Survey).filter_by(name=name).first()
 
     ## create a questionnaire for every token
-    for t in range(num_participants):
+    for t in tokens:
         ques1 = Questionnaire(survey_id=result_test.id, token=t, num_questions=num_questions)
         try:
             db.session.add(ques1)

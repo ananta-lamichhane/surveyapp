@@ -61,8 +61,8 @@ def handle_recommendations():
             ## save to the db
             return "result of the operation"
 
-        ## placeholder for handling post request.
-        print("recommendation post")
+
+        ### hard coded offline user value for now.
         send_recommendations(token, 43)
         return "hello from recommendations post"
 
@@ -106,7 +106,10 @@ def send_recommendations(token, offline_user_id):
         movie_desc = create_item_descritptions(item)
         reclist_items.append(movie_desc)
     reclist_with_descriptions['items'] = reclist_items
+
+    ## create two reclists with same items for demo purposes
+    all_reclists.append(reclist_with_descriptions)
     all_reclists.append(reclist_with_descriptions)
     
     print(reclist_with_descriptions)
-    return json.dumps([reclist_with_descriptions])
+    return json.dumps(all_reclists)

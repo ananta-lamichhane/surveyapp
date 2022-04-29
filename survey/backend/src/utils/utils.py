@@ -75,3 +75,21 @@ def create_item_descritptions(item_id):
         return description
     except FileNotFoundError as e:
         return e
+
+
+def list_subdirectoreis(dir_path):
+    directories = []
+    for file in os.listdir(dir_path):
+        d=os.path.join(dir_path, file)
+        if os.path.isdir(d) and file != "__init__.py":
+            directories.append(file)
+    return directories
+
+
+def list_directory_files(dir_path):
+    files = []
+    for file in os.listdir(dir_path):
+        f=os.path.join(dir_path, file)
+        if os.path.isfile(f) and file != '__init__.py':
+            files.append(file.split('.')[0])
+    return files
