@@ -81,7 +81,7 @@ function DashboardContent(props) {
 
   const [backendData, setBackendData] = useState()
   useEffect(() => {
-    fetch('http://localhost:5000/survey')
+    fetch(process.env.REACT_APP_API_URL+'/survey')
     .then(response =>response.json()).then(data =>{
     console.log(data)
     setBackendData(data)

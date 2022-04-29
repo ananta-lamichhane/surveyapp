@@ -13,7 +13,7 @@ import { create } from '@mui/material/styles/createTransitions'
 export const SurveyCreationForm = () =>{
 const [backendData, setBackendData] = useState()
 useEffect(() => {
-    fetch('http://localhost:5000/survey')
+    fetch(process.env.REACT_APP_API_URL+'/survey')
     .then(response =>response.json()).then(data =>{
         console.log(JSON.parse(data.datasets[0]).id)
         setBackendData(data)
@@ -188,7 +188,7 @@ var templateJSON = {
             res=>{
              // set survey to done so that the recommendation page can be shown
              console.log(res.data)
-             PostData('http://localhost:5000/survey', JSON.stringify(res.data))
+             PostData(process.env.REACT_APP_API_URL +'/survey', JSON.stringify(res.data))
              .then(data =>{
                  Navigate("/")
              })

@@ -33,7 +33,7 @@ const RecomSurvey =  () => {
     const [searchParams] = useSearchParams()
     const [recomLists, setRecomLists] = useState()
     useEffect(() => {
-        fetch('http://localhost:5000/recommendation?token='+ searchParams.get('token'))
+        fetch(process.env.REACT_APP_API_URL+'/recommendation?token='+ searchParams.get('token'))
         .then(response =>response.json()).then(data =>{
             setRecomLists(createRecomElements(data))
            // console.log(data)  

@@ -50,7 +50,7 @@ const MainSurvey =  () =>
     const [visitedPages, setVisitedPages] = useState([])
 
      useEffect(() => {
-        fetch('http://localhost:5000/questionnaire?token='+ searchParams.get('token'))
+        fetch(process.env.REACT_APP_API_URL +'/questionnaire?token='+ searchParams.get('token'))
         .then(response =>response.json()).then(data =>{
             setNumItems(data.num_items)
          //   setSurveyName(data.survey_name)
@@ -116,11 +116,11 @@ const MainSurvey =  () =>
             }
 
             if(model2.currentPageNo+1 < max_items !==1){
-                
+                console.log(process.env)
                 //TODO: only fire the post request if the page has not been visited previously
             
                 console.log("current page number" + (model2.currentPageNo+1))
-                PostData('http://localhost:5000/questionnaire', JSON.stringify(payload))
+                PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
                 .then(data =>{
                     model2.activePage.addPanel(CreateNewPanel(data,2,10))
                     model2.activePage.addNewQuestion('customrating', )

@@ -108,7 +108,7 @@ var temporaryFilesStorage = {};
                 formData.append(file.name, file);
             });
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:5000/offline_eval"); // https://surveyjs.io/api/MySurveys/uploadFiles
+            xhr.open("POST", process.env.REACT_APP_API_URL +"/offline_eval"); // https://surveyjs.io/api/MySurveys/uploadFiles
             xhr.onload = function () {
                 var data = JSON.parse(xhr.responseText);
                 question.value = filesToUpload.map(function (file) {

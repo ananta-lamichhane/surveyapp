@@ -43,7 +43,6 @@ def create_app():
         db.create_all()
 
     ##configure cors so that the react frontend can communicate with it.
-    cors = CORS(app)
   #  from database.models import Survey_Model, Questionnaire_Model
 
     ## import the blueprints for individual routes from routes directory
@@ -60,7 +59,7 @@ def create_app():
 
     ## create the actual tables in the db
   
-
+    cors = CORS(app)
 
     return app
 
@@ -72,4 +71,4 @@ app = create_app()
 
 ## running the app on localhost and default port 5000.
 if '__name__' == '__main__':
-    app.run(debug=True)
+    app.run(host= '0.0.0.0', port= '5000',debug=True)

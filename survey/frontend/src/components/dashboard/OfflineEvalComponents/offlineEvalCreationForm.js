@@ -10,7 +10,7 @@ import { create } from '@mui/material/styles/createTransitions'
 export const OfflineEvalCreationForm = () =>{
 const [backendData, setBackendData] = useState()
 useEffect(() => {
-    fetch('http://localhost:5000/survey')
+    fetch(process.env.REACT_APP_API_URL +'/survey')
     .then(response =>response.json()).then(data =>{
         console.log(JSON.parse(data.datasets[0]).id)
         setBackendData(data)
@@ -96,7 +96,7 @@ var templateJSON = {
             res=>{
              // set survey to done so that the recommendation page can be shown
              console.log(res.data)
-             PostData('http://localhost:5000/offline_eval', JSON.stringify(res.data))
+             PostData(process.env.REACT_APP_API_URL+'/offline_eval', JSON.stringify(res.data))
              .then(data =>{
                  Navigate("/")
              })
