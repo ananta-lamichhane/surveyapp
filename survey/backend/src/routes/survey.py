@@ -35,7 +35,7 @@ survey_bp = Blueprint('survey', __name__)
 '''
 
 @survey_bp.route('/survey', methods = ['POST', 'GET'])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def handle_survey():
     '''
         Survey get is called by the survey dashboard to get information not only about the surveys
