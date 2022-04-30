@@ -25,7 +25,7 @@ questionnaire_bp = Blueprint('questionnaire', __name__)
 
 
 @questionnaire_bp.route('/questionnaire', methods = ['POST', 'GET'])
-@cross_origin
+@cross_origin()
 def handle_questionnaire():
 
     if request.method == "GET":
