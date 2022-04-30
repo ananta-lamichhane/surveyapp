@@ -59,7 +59,7 @@ def create_app():
 
     ## create the actual tables in the db
   
-    cors = CORS(app)
+    cors = CORS(app, supports_credentials=True)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
     return app
