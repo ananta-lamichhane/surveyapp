@@ -3,6 +3,7 @@ import string
 from flask import Blueprint, request, jsonify
 import json
 import os
+from flask_cors import cross_origin
 from surprise import SVD, SVDpp, NMF, SlopeOne, KNNBaseline, KNNBasic, KNNWithMeans, KNNWithZScore, CoClustering, BaselineOnly, NormalPredictor
 import sqlalchemy.exc as exc
 
@@ -34,6 +35,7 @@ survey_bp = Blueprint('survey', __name__)
 '''
 
 @survey_bp.route('/survey', methods = ['POST', 'GET'])
+@cross_origin
 def handle_survey():
     '''
         Survey get is called by the survey dashboard to get information not only about the surveys

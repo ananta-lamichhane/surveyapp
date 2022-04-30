@@ -10,7 +10,7 @@ import SurveyTable from './SurveyTable';
 export const SurveyPage = ({data}) => {
     console.log(data)
     return(
-        <Box
+        data && <Box
         component="main"
         sx={{
         backgroundColor: (theme) =>
