@@ -113,10 +113,10 @@ def collect_frontend_dashboard_data():
             all_data['algorithms'].append(str(a))
 
     all_datasets_in_db = db.session.query(Dataset).all()
-    dataset_dirs = list_subdirectoreis(os.path.abspath('../data/datasets'))
+    dataset_dirs = list_subdirectoreis(os.path.abspath('backend/data/datasets'))
     if dataset_dirs:
         for d in dataset_dirs:
-            create_new_dataset(d, f'{os.path.abspath("../data/datasets")}/{d}/ratings.csv')
+            create_new_dataset(d, f'{os.path.abspath("backend/data/datasets")}/{d}/ratings.csv')
     if all_datasets_in_db:
         for  d1 in all_datasets_in_db:
             if d1.name not in dataset_dirs:
@@ -134,8 +134,8 @@ def collect_frontend_dashboard_data():
     if all_datasets:
         for d in all_datasets:
             all_data['datasets'].append(str(d))
-    all_matchmaking_strategies = list_directory_files('./strategies/matchmaking')
-    all_item_selection_strategies = list_directory_files('./strategies/item_selection')
+    all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking')
+    all_item_selection_strategies = list_directory_files('backend/src/strategies/item_selection')
     for s in all_matchmaking_strategies:
         all_data['strategies']['matchmaking'].append(s)
     for s in all_item_selection_strategies:
