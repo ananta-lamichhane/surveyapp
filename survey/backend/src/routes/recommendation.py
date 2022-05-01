@@ -21,7 +21,7 @@ recommendation_bp = Blueprint('recommendation', __name__)
 
 
 @recommendation_bp.route('/recommendation', methods = ['POST', 'GET'])
-@cross_origin
+@cross_origin(supports_credentials=True)
 def handle_recommendations():
 
     if request.method == "GET":
