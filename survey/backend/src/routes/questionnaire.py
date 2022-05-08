@@ -158,8 +158,8 @@ def send_next_item_and_current_ratings(participant_token):
     ## each file has a different name but contains a class called Strategy in it
 
     ## load the related strategy file (module) from the directory
-    loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'src.strategies.item_selection')
-    
+    #loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'src.strategies.item_selection')
+    loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
     ## load the Strategy class from the loaded module
     strategy_class_obj = getattr(loaded_module, 'Strategy')
 
@@ -212,6 +212,9 @@ def save_ratings(particiapant_token, ratings):
     #print(f"itmeid = part_id: {}\nitemid: {itemid}\nrating:{rating}")
 
 ## src.strategies.matchmaking
+
+
+
 def load_class_dynamically(module_name, relative_path_name, class_name):
     mod =  rel_strategy = importlib.import_module(f'.{module_name}', relative_path_name)
     class_object = getattr(mod, class_name)

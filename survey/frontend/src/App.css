@@ -41,6 +41,10 @@ code {
 
 }
 
+.poster_container{
+  display: flex;
+}
+
 
 .description_text{
   text-align: left;
@@ -51,15 +55,35 @@ code {
   background-color: blue !important;
 }
 
+
 .rec_panel_container >*{
   display: flex;
   width: 100%;
   flex-direction: row;
   flex-wrap: wrap;
+  overflow-x: scroll;
 
 }
 
+/*info card that shows when clicked on reclist poster*/
+.card {
+  width: 300px;
+  text-align: left;
+  align-self: flex-end;
+}
 
+/*reclist image and text*/
+.image_and_text{
+  margin-left: 10px;
+  margin-right: 10px;
+  align-self: flex-start;
+}
+
+/*div cotnaining reclist images and title ,e.g. Recommendation List 1*/
+.reclist_with_title{
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 
 
 

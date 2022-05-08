@@ -74,6 +74,22 @@ var templateJSON = {
                         "choices": backendData?(backendData.strategies.item_selection).map(e => (e)):[]
                     },
                     {
+                        "type": "panel",
+                        "name": "onlineEvalPanel",
+                        "elements":[
+                            {
+                                "type": "checkbox",
+                                "name": "onlineEvalReclists",
+                                "title": "Choose recommendation lists to compare",
+                                "isRequired": true,
+                                "colCount": 4,
+                                "choices":backendData?(backendData.reclists).map(e => (e)):[]
+                            }
+    
+    
+                        ]
+                    },
+                    {
                         "type": "text",
                         "name": "surveyNumParticipants",
                         "title": "Number of participants",
@@ -97,34 +113,7 @@ var templateJSON = {
             "navigationTitle": "Online Evaluation",
             //"navigationDescription": "Your feedback",
             "elements":[
-                {
-                    "type": "radiogroup",
-                    "name": "onlineEvalChoice",
-                    "title": "Do you want to perform online evaluation?",
-                    "isRequired": true,
-                    "colCount": 4,
-                    "choices": [
-                        "Yes",
-                        "No"
-                    ]
-                },
-                {
-                    "type": "panel",
-                    "name": "onlineEvalPanel",
-                    "visibleIf": "{onlineEvalchoice}='Yes'",
-                    "elements":[
-                        {
-                            "type": "checkbox",
-                            "name": "onlineEvalAlgorithms",
-                            "title": "Choose algorithms to compare (on the basis of recommendation lists)",
-                            "isRequired": true,
-                            "colCount": 4,
-                            "choices": backendData?(backendData.algorithms).map(e => JSON.parse(e).name):[]
-                        }
 
-
-                    ]
-                }
             ]
         },
         {   

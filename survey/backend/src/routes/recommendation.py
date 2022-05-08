@@ -2,8 +2,12 @@ from flask import Blueprint, request, jsonify
 import json
 import os
 from flask_cors import cross_origin
+import pandas as pd
+from sqlalchemy import exc
 
 
+from ..database.models.sqlalchemy_classes.participant import Survey_Participant
+from ..database.models.sqlalchemy_classes.reclist_response import Reclist_Response
 from ..database.models.sqlalchemy_classes.reclist import RecommendationList_Model
 from ..app import db
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
@@ -11,7 +15,7 @@ from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.dataset import Dataset
 from ..utils.utils import create_item_descritptions
 from ..database.models.abstract_classes.machmaking import NaiveMatchmaking
-
+from ..strategies.matchmaking.naive_matchmaking_strategy import Strategy
 
 ## createa a blueprint for this route to be easily added to root later.
 recommendation_bp = Blueprint('recommendation', __name__)
@@ -37,16 +41,20 @@ def handle_recommendations():
         rel_survey = db.session.query(Survey).filter_by(id=rel_questionnaire.survey_id).first()
         rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
 
+        rel_reclist_files = json.loads(rel_survey.reclist_filenames)
 
         ## we need a dataset (file path) to instantiate the abstract base class matchmaking into NaiveMatchmaking
-        dataset_path = rel_dataset.file_path
-        matchmaking_strategy = NaiveMatchmaking(dataset_path)
+        
+
 
         ## use the perform_matchmaking() function to find the user id of the matched offline user
-        matched_offline_user_id = matchmaking_strategy.perform_matchmaking()
-        #matched_offline_user_id = do_matchmaking()
-
-        return send_recommendations(token, matched_offline_user_id)
+        #matchmaking_stretegy_name = rel_survey.matchmaking_stretegy
+        
+        ## temporary solution for strategy TODO
+        strategy = Strategy(os.path.abspath('../data/datasets/movielens_small/ratings.csv'))
+        matched_offline_user_id = strategy.perform_matchmaking()
+        print(f'matched offline user id = {matched_offline_user_id}')
+        return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
 
 
     elif request.method == "POST":
@@ -55,18 +63,17 @@ def handle_recommendations():
         ## reocmmendation lists that were shown
 
         ## token number, reclist num, rating provided by the frontend in POST data.
-        token = request.args.get("token")
+        data_from_frontend =request.get_json()
+        reclist_filenames = data_from_frontend['reclist_filenames']
+        offline_user_id = data_from_frontend['offline_user_id']
+        ratings = data_from_frontend['ratings']
+        token = data_from_frontend['token']
 
-        def save_recom_ratings():
-            ## tale the body of the post request.
-            ## convert into reclist_rating object
-            ## save to the db
-            return "result of the operation"
-
+        save_recom_ratings(token, offline_user_id, json.dumps(reclist_filenames), json.dumps(ratings))
 
         ### hard coded offline user value for now.
-        send_recommendations(token, 43)
-        return "hello from recommendations post"
+        
+        return {'message':'done'}
 
     
     else:
@@ -81,37 +88,37 @@ def handle_recommendations():
 
 
 ## creates item descriptions of the items
-def send_recommendations(token, offline_user_id):
+def send_recommendations(token, offline_user_id, reclist_files):
     rel_questionnaire = db.session.query(Questionnaire).filter_by(token=token).first()
     rel_survey = db.session.query(Survey).filter_by(id = rel_questionnaire.survey_id).first()
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
 
-    df = rel_dataset.load_dataset()
+    payload = []
+    for filename in reclist_files:
+        df_filepath =os.path.abspath(f'backend/data/recommendation_lists/{filename}.csv')
+        print(f'--------filepath-----\n{df_filepath}\n-----filepath---')
+        df = pd.read_csv(df_filepath, dtype='str')
+        #df = pd.read_csv(f'../data/recommendation_lists/{filename}.csv')
+        reclist_of_offline_userid  = df.loc[df['userId'] == offline_user_id+1].iloc[:,1:].values.flatten().tolist()
+        payload.append({
+                        'reclist_filename':filename,
+                        'offline_user_id': offline_user_id,
+                        'items': [create_item_descritptions(item) for item in reclist_of_offline_userid]
+        })
 
-    ###
-    # placeholder for all recommendation lists
-    '''
-        recommendation lists format:
-        
-    '''
-    all_reclists = []
-    ## TODO: change this reclist needs to be specific to an user + algorithm + offline_eval (?)
-    rel_reclist = db.session.query(RecommendationList_Model).filter_by(offline_user_id=offline_user_id).first()
+    return json.dumps(payload)
 
-    ## select a random item
-    reclist_with_descriptions = {}
-    reclist_with_descriptions['reclist_id'] = rel_reclist.id
-    reclist_items = []
 
+def save_recom_ratings(token, offline_user_id, reclist_file_paths, ratings):
+    rel_questionnaire = db.session.query(Questionnaire).filter_by(token=token).first()
+    rel_survey = db.session.query(Survey).filter_by(id = rel_questionnaire.survey_id).first()
+    rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
+    rel_survey_participant = db.session.query(Survey_Participant).filter_by(token=token).first().id
+    response = Reclist_Response(participant_id=rel_survey_participant, reclist_filenames=reclist_file_paths, offline_user_id=offline_user_id, ratings=ratings)
+    try:
+        db.session.add(response)
+        db.session.commit()
+    except exc.SQLAlchemyError as e:
+        db.session.rollback()
+        print(f'ERROR:\nfilename:recommendation.py\nfunction:save_recom_ratings\nerror:{e}')
     
-    for item in json.loads(rel_reclist.recommendation_list):
-        movie_desc = create_item_descritptions(item)
-        reclist_items.append(movie_desc)
-    reclist_with_descriptions['items'] = reclist_items
-
-    ## create two reclists with same items for demo purposes
-    all_reclists.append(reclist_with_descriptions)
-    all_reclists.append(reclist_with_descriptions)
-    
-    print(reclist_with_descriptions)
-    return json.dumps(all_reclists)

@@ -21,7 +21,7 @@ class Strategy(MatchmakingBase):
         try:
             dataset = pd.read_csv(filepath_or_buffer= self.__dataset_path, sep=',', dtype='str')
         except FileNotFoundError as e:
-            print("file not found")
+            print("ERROR:\nnaive_mathmaking_strategy:file not found")
             return e
 
         ## select a random item

@@ -21,7 +21,7 @@ class Strategy(BaseStrategy):
             dataset = pd.read_csv(filepath_or_buffer= self.__dataset_path, sep=',', dtype='str')
           
         except FileNotFoundError as e:
-            print("file not found")
+            print("ERROR:\nnaive_item_selection:file not found")
             return e
 
         ## select a random item
@@ -32,7 +32,3 @@ class Strategy(BaseStrategy):
         return rand_movie_id_int
 
 
-class SohphisticatedStrategy(BaseStrategy):
-    
-    def get_next_item(self, dataset_path):
-        return 'last item sophesticated strat'

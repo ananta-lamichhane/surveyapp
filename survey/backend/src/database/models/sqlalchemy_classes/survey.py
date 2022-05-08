@@ -10,6 +10,7 @@ class Survey(db.Model):
     matchmaking_strategy = db.Column(db.String(128))
     item_selection_strategy = db.Column(db.String(128))
     tokens = db.Column(db.String(4096))
+    reclist_filenames = db.Column(db.String(1028))
 
     dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
 
@@ -23,5 +24,6 @@ class Survey(db.Model):
             'tokens': self.tokens,
             'dataset_id': self.dataset_id,
             'matchmaking_strategy': self.matchmaking_strategy,
-            'item_selection_strategy': self.item_selection_strategy
+            'item_selection_strategy': self.item_selection_strategy,
+            'reclist_filenames': self.reclist_filenames
         })

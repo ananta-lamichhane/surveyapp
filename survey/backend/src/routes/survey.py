@@ -6,11 +6,14 @@ import os
 from flask_cors import cross_origin
 from surprise import SVD, SVDpp, NMF, SlopeOne, KNNBaseline, KNNBasic, KNNWithMeans, KNNWithZScore, CoClustering, BaselineOnly, NormalPredictor
 import sqlalchemy.exc as exc
+import pandas as pd
+
+#from backend.src.database.models.sqlalchemy_classes.reclist import RecommendationList_Model
 
 from ..database.models.sqlalchemy_classes.algorithm import Algorithm
 from ..app import db
 from ..utils.utils import generate_random_tokens
-from ..utils.utils import create_item_descritptions, list_directory_files, list_subdirectoreis
+from ..utils.utils import create_item_descritptions, generate_random_reclists,list_directory_files, list_subdirectoreis
 
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
@@ -43,6 +46,7 @@ def handle_survey():
         so all information is provied when this route is called
     '''
     if request.method == "GET":
+        #generate_random_reclists('../data/datasets/movielens_small/ratings.csv', '../data/recommendation_lists/random_reclist2.csv',10)
 
 
         data_to_frontend = collect_frontend_dashboard_data()
@@ -70,8 +74,11 @@ def handle_survey():
         num_participants = int(data_from_frontend['surveyNumParticipants'])
         num_questions = int(data_from_frontend['surveyNumQuestions'])
         item_selection_strategy = data_from_frontend['surveyItemSelectionStrategy']
+        reclists_for_eval = data_from_frontend['onlineEvalReclists']
         matchmaking_strategy = data_from_frontend['surveyMatchmakingStrategy']
-        survey_creation_result = create_new_survey(survey_name, survey_description, dataset, num_participants, num_questions, item_selection_strategy, matchmaking_strategy)
+        
+        
+        survey_creation_result = create_new_survey(survey_name, survey_description, dataset, num_participants, num_questions, item_selection_strategy, matchmaking_strategy, reclists_for_eval)
         
         print()
         ### format of the data sent to the frontend: string representation of the just created survey
@@ -92,7 +99,7 @@ def collect_frontend_dashboard_data():
                 'surveys': [],
                 'datasets': [],
                 'offline_evals': [],
-                'algorithms': [],
+                'reclists': [],
                 'strategies':{
                     'matchmaking':[],
                     'item_selection':[]
@@ -107,13 +114,14 @@ def collect_frontend_dashboard_data():
 
     
     ## info about all algorithms
-    all_algorithms = db.session.query(Algorithm).all()
-    if all_algorithms:
-        for a in all_algorithms:
-            all_data['algorithms'].append(str(a))
+   # all_algorithms = db.session.query(Algorithm).all()
+    #if all_algorithms:
+    #    for a in all_algorithms:
+    #        all_data['algorithms'].append(str(a))
 
     all_datasets_in_db = db.session.query(Dataset).all()
-    dataset_dirs = list_subdirectoreis(os.path.abspath('backend/data/datasets'))
+    #dataset_dirs = list_subdirectoreis(os.path.abspath('backend/data/datasets'))
+    dataset_dirs = list_subdirectoreis(os.path.abspath('../data/datasets'))
     if dataset_dirs:
         for d in dataset_dirs:
             create_new_dataset(d, f'{os.path.abspath("backend/data/datasets")}/{d}/ratings.csv')
@@ -130,12 +138,18 @@ def collect_frontend_dashboard_data():
 
     all_datasets = db.session.query(Dataset).all()
 
+    ## get name of all reclist files from the directory
+    all_reclists = list_directory_files(os.path.abspath('../data/recommendation_lists'))
+    for l in all_reclists:
+        all_data['reclists'].append(l)
     ## ifo about all datasets
     if all_datasets:
         for d in all_datasets:
             all_data['datasets'].append(str(d))
-    all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking')
-    all_item_selection_strategies = list_directory_files('backend/src/strategies/item_selection')
+    all_matchmaking_strategies = list_directory_files('strategies/matchmaking')
+    all_item_selection_strategies = list_directory_files('strategies/item_selection')
+    #all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking')
+    #all_item_selection_strategies = list_directory_files('backend/src/strategies/item_selection')
     for s in all_matchmaking_strategies:
         all_data['strategies']['matchmaking'].append(s)
     for s in all_item_selection_strategies:
@@ -155,13 +169,10 @@ def create_new_dataset(name, file_path):
         except exc.SQLAlchemyError as e:
             db.session.rollback()
             print(e)
-        
 
 
-def create_new_survey(name, description, dataset_name, num_participants, num_questions, item_selection_strategy, matchmaking_strategy):
-    ## the survey get method should deliver all relevant info to all the surveys from the
-    ## frontend
-    ## which should then get populated into the dashboard
+def create_new_survey(name, description, dataset_name, num_participants, num_questions, item_selection_strategy, matchmaking_strategy, reclists_for_online_eval):
+ 
 
     ## find out the related dataset
     res_dataset = db.session.query(Dataset).filter_by(name=dataset_name).first()
@@ -171,7 +182,7 @@ def create_new_survey(name, description, dataset_name, num_participants, num_que
     ## print(str(tokens))
     
     ## create survey with its database being the one created above
-    test_survey1 = Survey(name=name, num_tokens=num_participants, dataset_id=res_dataset.id,description=description, matchmaking_strategy=matchmaking_strategy, item_selection_strategy=item_selection_strategy, tokens=json.dumps(tokens))
+    test_survey1 = Survey(name=name, num_tokens=num_participants, dataset_id=res_dataset.id,description=description, matchmaking_strategy=matchmaking_strategy, item_selection_strategy=item_selection_strategy, tokens=json.dumps(tokens), reclist_filenames=json.dumps(reclists_for_online_eval))
     try:
         db.session.add(test_survey1)
         db.session.commit()

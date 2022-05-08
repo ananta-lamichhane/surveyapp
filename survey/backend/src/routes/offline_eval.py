@@ -3,6 +3,7 @@ import json
 import sqlalchemy.exc as exc
 from werkzeug.utils import secure_filename
 from flask_cors import cross_origin
+import csv
 
 import sqlalchemy
 
@@ -49,15 +50,15 @@ def handle_offline_eval():
         print(request.files)
         data_from_frontend = json.loads(request.get_json())
         print(data_from_frontend)
-        #eval_name = data_from_frontend['offlineEvalName']
-        #algos_for_reclist = data_from_frontend['offlineEvalAlgorithms']
-        #eval_metrics = data_from_frontend['offlineEvalMetrics']
-        #eval_dataset = data_from_frontend['offlineEvalDataset']
-        #reclist_length = int(data_from_frontend['reclistLength'])
+        eval_name = data_from_frontend['offlineEvalName']
+        algos_for_reclist = data_from_frontend['offlineEvalAlgorithms']
+        eval_metrics = data_from_frontend['offlineEvalMetrics']
+        eval_dataset = data_from_frontend['offlineEvalDataset']
+        reclist_length = int(data_from_frontend['reclistLength'])
 
 
-        #for algo in algos_for_reclist:
-           # create_and_save_algorith(algo, "placeholder")
+        for algo in algos_for_reclist:
+            create_and_save_algorith(algo, "placeholder")
            # algo_id = db.session.query(Algorithm).filter_by(name=algo).first().id
            # create_recommendation_lists(eval_dataset, algo_id,reclist_length)
 
@@ -147,22 +148,25 @@ def create_recommendation_lists(dataset, algorithm_id,reclist_length=10):
     
     ## container for best predicted item ids
     preds = []
-    for u in users:
-        
-        u_recs = []
-        for i in items:
-            pred = algo.predict(str(u), str(i), r_ui=4, verbose=False)
-            u_recs.append(pred)
-       # print(u_recs)
-        u_recs.sort(key = lambda x:x.est, reverse=True)
-        preds.append({'userId': u, 'reclist':[u.iid for u in u_recs[0:reclist_length-1]]})
-        reclist = RecommendationList_Model(dataset_id=dataset.id, algorithm_id=algorithm_id, offline_user_id=u, recommendation_list = json.dumps([u.iid for u in u_recs[0:reclist_length-1]])  )
-        try:
-            db.session.add(reclist)
-            db.session.commit()
-        except exc.SQLAlchemyError as e:
-            print(e)
-            db.session.rollback()
+    with open('./testcsv.csv', 'w') as f:
+        csv_write = csv.writer(f)
+        for u in users:
+            
+            u_recs = []
+            for i in items:
+                pred = algo.predict(str(u), str(i), r_ui=4, verbose=False)
+                u_recs.append(pred)
+        # print(u_recs)
+            u_recs.sort(key = lambda x:x.est, reverse=True)
+            preds.append({'userId': u, 'reclist':[u.iid for u in u_recs[0:reclist_length-1]]})
+            reclist = RecommendationList_Model(dataset_id=dataset.id, algorithm_id=algorithm_id, offline_user_id=u, recommendation_list = json.dumps([u.iid for u in u_recs[0:reclist_length-1]])  )
+            try:
+                csv_write.writerow([u] + (preds))
+                db.session.add(reclist)
+                db.session.commit()
+            except exc.SQLAlchemyError as e:
+                print(e)
+                db.session.rollback()
         
     all_reclists = db.session.query(RecommendationList_Model).all()
     for r in all_reclists:

@@ -81,7 +81,7 @@ function DashboardContent(props) {
 
   const [backendData, setBackendData] = useState()
   useEffect(() => {
-    fetch('https://api.ananta.tk/survey')
+    fetch(process.env.REACT_APP_API_URL+'/survey')
     .then(response =>response.json()).then(data =>{
     console.log(data)
     setBackendData(data)
