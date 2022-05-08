@@ -139,7 +139,8 @@ def collect_frontend_dashboard_data():
     all_datasets = db.session.query(Dataset).all()
 
     ## get name of all reclist files from the directory
-    all_reclists = list_directory_files(os.path.abspath('../data/recommendation_lists'))
+    #all_reclists = list_directory_files(os.path.abspath('../data/recommendation_lists'))
+    all_reclists = list_directory_files(os.path.abspath('backend/data/recommendation_lists'))
     for l in all_reclists:
         all_data['reclists'].append(l)
     ## ifo about all datasets
