@@ -23,7 +23,7 @@ class BaseStrategy(metaclass = abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def get_next_item(self):
+    def get_next_item(self, current_ratings):
         pass
 
 

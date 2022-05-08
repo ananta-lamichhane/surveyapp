@@ -101,7 +101,7 @@ const RecomSurvey =  () => {
                 ]
             }
 
-
+            recomSurvey.pages.push(recomPage)
             // for each reclist that is sent (mostly two)
             // iterate in reverese order so we can add each list to the begining of array
             for( var i=rawData.length-1; i>=0 ; i--){
@@ -109,11 +109,11 @@ const RecomSurvey =  () => {
                 setReclsitFilenames(reclistFilenames => [rawData[i].reclist_filename,...reclistFilenames ])
             // create a template html with images and movie title in a div to overcome
             // surveyjs challenges
+            //<button class="scroll_right_button" id="scroll_right_btn_${i+1}" onclick="document.getElementById('question_${i+1}').scrollLeft+=window.innerWidth">Scroll Right</button>
 
             var template = `
             <div class="reclist_with_title">
             <h3>Recommendation List ${i+1}</h3>
-            <button class="scroll_right_button" id="scroll_right_btn_${i+1}" onclick="document.getElementById('question_${i+1}').scrollLeft+=window.innerWidth">Scroll Right</button>
             <div class=poster_container>
             `
 
@@ -176,7 +176,7 @@ const RecomSurvey =  () => {
             recomPage.elements.unshift(instruction)
 
             // then add this page to the whole survey (mostly relevant if multiple pages)
-            recomSurvey.pages.push(recomPage)
+           // recomSurvey.pages.push(recomPage)
     return recomSurvey
     }
 

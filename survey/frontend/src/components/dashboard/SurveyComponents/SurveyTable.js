@@ -8,8 +8,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useState, useEffect } from 'react';
 
-function createData(id, name, dataset, num_participants, progress) {
-  return { id, name, dataset, num_participants, progress };
+function createData(id, name, dataset, num_participants, num_questions) {
+  return { id, name, dataset, num_participants, num_questions };
 }
 
 export default function SurveyTable({data}) {
@@ -18,7 +18,7 @@ export default function SurveyTable({data}) {
  if(data){
     for(var s of data.surveys){
     var survey = JSON.parse(s)
-    rows.push(createData(survey.id, survey.name, survey.description, survey.num_tokens, 10))
+    rows.push(createData(survey.id, survey.name, survey.description, survey.num_tokens, 5))
   }
 }
 
@@ -31,7 +31,7 @@ export default function SurveyTable({data}) {
             <TableCell align="left">Name</TableCell>
             <TableCell align="left">Description</TableCell>
             <TableCell align="right">No. Participants</TableCell>
-            <TableCell align="right">Progress</TableCell>
+            <TableCell align="right">No. Questions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -46,7 +46,7 @@ export default function SurveyTable({data}) {
               <TableCell align="left">{row.name}</TableCell>
               <TableCell align="left">{row.dataset}</TableCell>
               <TableCell align="right">{row.num_participants}</TableCell>
-              <TableCell align="right">{row.progress}</TableCell>
+              <TableCell align="right">{row.num_questions}</TableCell>
             </TableRow>
           ))}
         </TableBody>

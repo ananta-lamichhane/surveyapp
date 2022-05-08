@@ -145,6 +145,7 @@ def send_next_item_and_current_ratings(participant_token):
     ## find out all current ratings given by the same user
     all_curr_ratings = db.session.query(Response).filter_by(participant_id = rel_participant.id).first().ratings
 
+    print(f"--------{all_curr_ratings}----------")
      ## traverse the db to related strategy using the token number
     rel_ques = db.session.query(Questionnaire).filter_by(token=participant_token).first()
     rel_survey = db.session.query(Survey).filter_by(id=rel_ques.survey_id).first()
@@ -167,8 +168,8 @@ def send_next_item_and_current_ratings(participant_token):
     strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
     if strategy_class_instance:
     ## if the question number shows it's first question asked
-        next_item = create_item_descritptions(strategy_class_instance.get_next_item())
-        payload ={"current_ratings": all_curr_ratings, "next_item": next_item}
+        next_item = create_item_descritptions(strategy_class_instance.get_next_item(all_curr_ratings))
+        payload ={"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
     
     return {}
@@ -185,15 +186,15 @@ def send_next_item_and_current_ratings(participant_token):
         data: rating data present as a JSON with format {itemid:rating}
 """
 def save_ratings(particiapant_token, ratings):
-    print(ratings)
+    print(f'save ratings:\n current = {ratings}')
     partcipant = db.session.query(Survey_Participant).filter_by(token=particiapant_token).first()
         ## find if a response associated to the user and item exists yet
         ## response should be unique to the participant ID / Token
     resp = db.session.query(Response).filter_by(participant_id = partcipant.id).first()
-    
+
     ## if no response related to the user and item yet create one and save in the db
     if not resp:
-        response = Response(ratings=str(ratings), participant_id=partcipant.id)
+        response = Response(ratings=json.dumps(ratings), participant_id=partcipant.id)
         try:
             db.session.add(response)
             db.session.commit()
@@ -203,14 +204,18 @@ def save_ratings(particiapant_token, ratings):
     ## if the response object already exists, update the rating value only
     else:
         try:
-            resp.ratings = str(ratings)
+            print("don't edit")
+            curr_ratings = json.loads(resp.ratings)
+            resp.ratings = json.dumps(curr_ratings | ratings)
             db.session.commit()
         except exc.SQLAlchemyError as e:
             db.session.rollback()
             print(f"Error: {e}")
        # print(f"itemid = {itemid}\nrating: {rating}")
     #print(f"itmeid = part_id: {}\nitemid: {itemid}\nrating:{rating}")
-
+    all_curr_ratings= db.session.query(Response).filter_by(participant_id=partcipant.id).all()
+    for r in all_curr_ratings:
+        print(str(r))
 ## src.strategies.matchmaking
 
 

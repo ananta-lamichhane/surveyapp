@@ -130,7 +130,17 @@ const MainSurvey =  () =>
                 
                 if(visited.includes(model2.currentPageNo)){
                     console.log("item already rated")
+                    var allqs = model2.currentPage.questions
+                    allqs.forEach(e =>{
+                        e.readOnly = true
+                    })
                 }else{
+                    var allqs = model2.currentPage.questions
+                    allqs.forEach(e =>{
+                        console.log(e)
+                        e.readOnly = true
+                        console.log(e.readOnly)
+                    })
                     console.log("current page number" + (model2.currentPageNo+1))
                     PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
                     .then(data =>{
@@ -139,6 +149,8 @@ const MainSurvey =  () =>
                         //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
                         console.log("------------")
                         console.log(data)
+
+                        model2.data = data.current_ratings
                         console.log("------------")
     
                     });
