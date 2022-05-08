@@ -51,7 +51,8 @@ def handle_recommendations():
         #matchmaking_stretegy_name = rel_survey.matchmaking_stretegy
         
         ## temporary solution for strategy TODO
-        strategy = Strategy(os.path.abspath('../data/datasets/movielens_small/ratings.csv'))
+        #strategy = Strategy(os.path.abspath('../data/datasets/movielens_small/ratings.csv'))
+        strategy = Strategy(os.path.abspath('backend/data/datasets/movielens_small/ratings.csv'))
         matched_offline_user_id = strategy.perform_matchmaking()
         print(f'matched offline user id = {matched_offline_user_id}')
         return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
@@ -81,7 +82,6 @@ def handle_recommendations():
 
 
 
-
 #######################################################################################
 ###                                 HELPER FUNCTIONS                                 ##
 #######################################################################################
@@ -97,9 +97,9 @@ def send_recommendations(token, offline_user_id, reclist_files):
     for filename in reclist_files:
         df_filepath =os.path.abspath(f'backend/data/recommendation_lists/{filename}.csv')
         print(f'--------filepath-----\n{df_filepath}\n-----filepath---')
-        df = pd.read_csv(df_filepath, dtype='str')
+        df = pd.read_csv(df_filepath,dtype='str')
         #df = pd.read_csv(f'../data/recommendation_lists/{filename}.csv')
-        reclist_of_offline_userid  = df.loc[df['userId'] == offline_user_id+1].iloc[:,1:].values.flatten().tolist()
+        reclist_of_offline_userid  = df.loc[df['userId'] == str(offline_user_id+1)].iloc[:,1:].values.flatten().tolist()
         payload.append({
                         'reclist_filename':filename,
                         'offline_user_id': offline_user_id,

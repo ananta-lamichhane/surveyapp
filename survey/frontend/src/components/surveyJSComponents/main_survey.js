@@ -100,12 +100,17 @@ const MainSurvey =  () =>
     })
 
 
+    
     //every time when next is clicked fetches next item and adds it to the end of the list
+    
+    //keep track of visited page numbers so that data is not fetched twice
+    var visited = []
     model2.onCurrentPageChanging.add(function(survey,options){
 
         if (options.isNextPage){
            // setVisitedPages([...visitedPages, (model2.currentPageNo +1)])
             model2.pageNextText = "Next"
+            
             console.log(visitedPages)
             
             var val = model2.data
@@ -117,19 +122,31 @@ const MainSurvey =  () =>
 
             if(model2.currentPageNo+1 < max_items !==1){
                 console.log(process.env)
+                
+               // setVisitedPages(visitedPages =>[...visitedPages, model2.currentPageNo+1])
                 //TODO: only fire the post request if the page has not been visited previously
-            
-                console.log("current page number" + (model2.currentPageNo+1))
-                PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
-                .then(data =>{
-                    model2.activePage.addPanel(CreateNewPanel(data,2,10))
-                    model2.activePage.addNewQuestion('customrating', )
-                    //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
-                    console.log("------------")
-                    console.log(data)
-                    console.log("------------")
+                console.log('visited pages')
+                console.log(visited)
+                
+                if(visited.includes(model2.currentPageNo)){
+                    console.log("item already rated")
+                }else{
+                    console.log("current page number" + (model2.currentPageNo+1))
+                    PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
+                    .then(data =>{
+                        model2.activePage.addPanel(CreateNewPanel(data,2,10))
+                        model2.activePage.addNewQuestion('customrating', )
+                        //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
+                        console.log("------------")
+                        console.log(data)
+                        console.log("------------")
+    
+                    });
+                    
+                }
+                visited.push(model2.currentPageNo)
+                
 
-                });
             }
             
 

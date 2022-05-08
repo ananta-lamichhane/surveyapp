@@ -65,27 +65,6 @@ var createRatingsWidget = (wigetName) =>{
             }
 
             // extra variable to keep track of the radio button state
-            var checkchecked = false
-
-            // initialize radio button check
-            dontknow.checked = checkchecked
-            dontknow.onclick = function(){
-            
-            if(checkchecked === true){
-                checkchecked = false
-                dontknow.checked = checkchecked
-                question.value = -1
-
-                
-                
-            }else{
-                checkchecked = true
-                dontknow.checked = checkchecked
-                question.value = 0
-
-                
-            }
-            }
 
 
 
@@ -254,9 +233,39 @@ var createRatingsWidget = (wigetName) =>{
 
             var f = document.getElementById('fieldSet'+rand)
             var allbuttons = f.getElementsByClassName('rating')
+
+
+            var checkchecked = false
+
+            // initialize radio button check
+            dontknow.checked = checkchecked
+
+            dontknow.onclick = function(){
+            
+                if(checkchecked === true){
+                    checkchecked = false
+                    dontknow.checked = checkchecked
+                    question.value = -1 
+                }else{
+                    checkchecked = true
+                    dontknow.checked = checkchecked
+                    question.value = 0
+                    for(var i=0;i<allbuttons.length; i++){
+                        allbuttons[i].checked = false
+                    }
+
+                    
+                }
+            }
+
+
+
+
+
             f.onclick = function(){
                 for(var i=0;i<allbuttons.length; i++){
                     if(allbuttons[i].checked === true){
+                        console.log("button "+ i + " checked")
                         var trueRating = 5.0 - i/2
                         dontknow.checked = false
                         question.value = trueRating

@@ -65,6 +65,15 @@ code {
 
 }
 
+/*The div which contains Don't know radio button and its label*/
+.dontKnowDiv{
+  display: grid;
+}
+
+#dontknow{
+  align-self: center;
+}
+
 /*info card that shows when clicked on reclist poster*/
 .card {
   width: 300px;
