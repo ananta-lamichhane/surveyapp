@@ -145,7 +145,7 @@ def send_next_item_and_current_ratings(participant_token):
     ## find out all current ratings given by the same user
     all_curr_ratings = db.session.query(Response).filter_by(participant_id = rel_participant.id).first().ratings
 
-    print(f"--------{all_curr_ratings}----------")
+
      ## traverse the db to related strategy using the token number
     rel_ques = db.session.query(Questionnaire).filter_by(token=participant_token).first()
     rel_survey = db.session.query(Survey).filter_by(id=rel_ques.survey_id).first()
@@ -161,6 +161,8 @@ def send_next_item_and_current_ratings(participant_token):
     ## load the related strategy file (module) from the directory
     loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.item_selection')
     #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
+    
+    
     ## load the Strategy class from the loaded module
     strategy_class_obj = getattr(loaded_module, 'Strategy')
 
@@ -172,7 +174,7 @@ def send_next_item_and_current_ratings(participant_token):
         payload ={"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
     
-    return {}
+    return {'Error':'Eror in send_next_item_and_current_ratings in /questionnaire'}
 
 
 
@@ -183,7 +185,7 @@ def send_next_item_and_current_ratings(participant_token):
     parameters:
         participant_token: token number used by the participant to identify themselves
                             extracted from the URL the participant uses to log on to the survey
-        data: rating data present as a JSON with format {itemid:rating}
+        ratings: rating data present as a JSON with format {itemid:rating}
 """
 def save_ratings(particiapant_token, ratings):
     print(f'save ratings:\n current = {ratings}')

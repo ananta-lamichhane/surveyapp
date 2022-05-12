@@ -22,10 +22,10 @@ useEffect(() => {
 var algorithms = ["NormalPredictor", "BaselineOnly", "KNNBasic", "KNNWithMeans", "KNNWithZScore",
     "KNNBaseline", "SVD", "SVDpp", "NMF", "SlopeOne", "CoClustering"]
 var templateJSON = {
-    "title": "Create and deploy a new survey",
+    "title": "Create a new survey",
     "name": "recSysSurvey",
-    "showProgressBar": "top",
-    "progressBarType": "buttons",
+    //"showProgressBar": "top",
+    //"progressBarType": "buttons",
     "pages": [
         {
             "navigationTitle": "General Information",
@@ -33,9 +33,17 @@ var templateJSON = {
           //  "title": "General Information",
             "elements":[
                 {
+
                     "type": "panel",
                     "name": "placeholder",
-                    "elements":[{
+                    "elements":[
+                        {"type": "html",
+                        "name": "surveyCreationInstructions",
+                        "html": `
+                                <h5>Please provide the following information to create a survey.<h5>
+                                `
+                        },
+                        {
                         "type": "text",
                         "name": "surveyName",
                         "title": "Survey Name",
@@ -108,14 +116,7 @@ var templateJSON = {
                 }
             ]
         },
-        {   
-           // "title": "Deploy Survey",
-            "navigationTitle": "Online Evaluation",
-            //"navigationDescription": "Your feedback",
-            "elements":[
-
-            ]
-        },
+        /*
         {   
             // "title": "Deploy Survey",
              "navigationTitle": "Deploy Survey",
@@ -162,7 +163,7 @@ var templateJSON = {
                      ]
                  }
              ]
-         }
+         }*/
     ]
 }
 

@@ -1,4 +1,8 @@
-.App {
+.sv_header__text{
+  text-align: center;
+}
+
+.progress-text{
   text-align: center;
 }
 
@@ -35,19 +39,30 @@ code {
   flex-wrap: wrap;
 }
 
+/*
+  Helps with responsive design.
+  If horizontal screen size less than 900px, show elements vertically
+*/
+@media screen and (max-width: 900px) {
+  .pic_and_description_container > :first-child{
+    display: flex;
+    flex-direction: column;
+  }
+}
 
-.pic_and_description_container > *{
+.pic_and_description_container > :first-child {
  display:flex;
+ 
 
 }
 
 .poster_container{
   display: flex;
 }
-
+*/
 
 .description_text{
-  text-align: left;
+  text-align: left !important;
 }
 
 .sv_next_btn{

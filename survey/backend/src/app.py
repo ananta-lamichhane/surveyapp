@@ -35,7 +35,7 @@ def create_app():
     from .database.models.abstract_classes.strategy import BaseStrategy, NaiveStrategy
     from .database.models.abstract_classes.machmaking import MatchmakingBase, NaiveMatchmaking
     from .database.models.sqlalchemy_classes.response import Response
-    from .database.models.sqlalchemy_classes.algorithm import Algorithm
+    #from .database.models.sqlalchemy_classes.algorithm import Algorithm
     
     ##initialize database
     db.init_app(app)

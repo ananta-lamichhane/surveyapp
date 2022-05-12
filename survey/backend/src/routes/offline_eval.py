@@ -7,7 +7,7 @@ import csv
 
 import sqlalchemy
 
-from ..database.models.sqlalchemy_classes.algorithm import Algorithm
+#from ..database.models.sqlalchemy_classes.algorithm import Algorithm
 
 from ..database.models.sqlalchemy_classes.dataset import Dataset
 from ..database.models.sqlalchemy_classes.offline_eval import Offline_eval

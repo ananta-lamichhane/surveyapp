@@ -51,7 +51,7 @@ def create_item_descritptions(item_id):
         #links_file_abspath = os.path.abspath("../data/datasets/movielens_small/links.csv")
         imdb_id_links = pd.read_csv(links_file_abspath,dtype='str')
         ## build imdb ids from the imdb <-> omdb <-> movieId relationships extracted from links.csv
-        print(imdb_id_links.head(5))
+    
         imdb_id_int = imdb_id_links.loc[imdb_id_links['movieId'] == str(item_id)]['imdbId'].values[0]
         imdb_id = 'tt'+imdb_id_int
 

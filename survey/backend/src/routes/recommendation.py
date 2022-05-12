@@ -4,6 +4,7 @@ import os
 from flask_cors import cross_origin
 import pandas as pd
 from sqlalchemy import exc
+import importlib
 
 
 from ..database.models.sqlalchemy_classes.participant import Survey_Participant
@@ -36,26 +37,28 @@ def handle_recommendations():
         ## before sending the recommendatios, matchmaking is to be done using the data gathered from the participant
         
         ## find related dataset based on the token
-        ## TODO: think of more elegant way to traverse to related dataset from token
+     
         rel_questionnaire = db.session.query(Questionnaire).filter_by(token=token).first()
         rel_survey = db.session.query(Survey).filter_by(id=rel_questionnaire.survey_id).first()
         rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
-
+        rel_matchmaking_strategy = rel_survey.matchmaking_strategy
         rel_reclist_files = json.loads(rel_survey.reclist_filenames)
+          ## new item selection strategies are stored in the src/matchmaking folder
+        ## each file has a different name but contains a class called Strategy in it
 
-        ## we need a dataset (file path) to instantiate the abstract base class matchmaking into NaiveMatchmaking
-        
+        ## load the related strategy file (module) from the directory
+        loaded_module = importlib.import_module(f'.{rel_matchmaking_strategy}', 'backend.src.strategies.matchmaking')
+        #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
+        ## load the Strategy class from the loaded module
+        strategy_class_obj = getattr(loaded_module, 'Strategy')
 
+        ## instantiate the loaded class with the dataset path in question
+        strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
+        if strategy_class_instance:
+            matched_offline_user_id = strategy_class_instance.perform_matchmaking()
+            return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
 
-        ## use the perform_matchmaking() function to find the user id of the matched offline user
-        #matchmaking_stretegy_name = rel_survey.matchmaking_stretegy
-        
-        ## temporary solution for strategy TODO
-        #strategy = Strategy(os.path.abspath('../data/datasets/movielens_small/ratings.csv'))
-        strategy = Strategy(os.path.abspath('backend/data/datasets/movielens_small/ratings.csv'))
-        matched_offline_user_id = strategy.perform_matchmaking()
-        print(f'matched offline user id = {matched_offline_user_id}')
-        return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
+        return {'Error': 'Please check function send_recommendation of /recommendation route.'}
 
 
     elif request.method == "POST":
@@ -70,15 +73,12 @@ def handle_recommendations():
         ratings = data_from_frontend['ratings']
         token = data_from_frontend['token']
 
-        save_recom_ratings(token, offline_user_id, json.dumps(reclist_filenames), json.dumps(ratings))
-
-        ### hard coded offline user value for now.
-        
-        return {'message':'done'}
-
-    
+        if save_recom_ratings(token, offline_user_id, json.dumps(reclist_filenames), json.dumps(ratings)) == 0:
+            return {'Success': 'Ratings saved successfully'}
+        else:
+            return {'Error:': 'Ratings could not be saved. Check save save_recom_ratings function in /recommendation route.'}
     else:
-        return "An error has occured."
+        return {'Error':'Request could not be handled by both GET and POST in /recommendation route.'}
 
 
 
@@ -96,7 +96,6 @@ def send_recommendations(token, offline_user_id, reclist_files):
     payload = []
     for filename in reclist_files:
         df_filepath =os.path.abspath(f'backend/data/recommendation_lists/{filename}.csv')
-        print(f'--------filepath-----\n{df_filepath}\n-----filepath---')
         df = pd.read_csv(df_filepath,dtype='str')
         #df = pd.read_csv(f'../data/recommendation_lists/{filename}.csv')
         reclist_of_offline_userid  = df.loc[df['userId'] == str(offline_user_id+1)].iloc[:,1:].values.flatten().tolist()
@@ -105,7 +104,7 @@ def send_recommendations(token, offline_user_id, reclist_files):
                         'offline_user_id': offline_user_id,
                         'items': [create_item_descritptions(item) for item in reclist_of_offline_userid]
         })
-
+    
     return json.dumps(payload)
 
 
@@ -118,7 +117,8 @@ def save_recom_ratings(token, offline_user_id, reclist_file_paths, ratings):
     try:
         db.session.add(response)
         db.session.commit()
+        return 0
     except exc.SQLAlchemyError as e:
         db.session.rollback()
         print(f'ERROR:\nfilename:recommendation.py\nfunction:save_recom_ratings\nerror:{e}')
-    
+        return -1

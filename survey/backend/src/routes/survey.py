@@ -10,7 +10,7 @@ import pandas as pd
 
 #from backend.src.database.models.sqlalchemy_classes.reclist import RecommendationList_Model
 
-from ..database.models.sqlalchemy_classes.algorithm import Algorithm
+#from ..database.models.sqlalchemy_classes.algorithm import Algorithm
 from ..app import db
 from ..utils.utils import generate_random_tokens
 from ..utils.utils import create_item_descritptions, generate_random_reclists,list_directory_files, list_subdirectoreis
@@ -54,8 +54,12 @@ def handle_survey():
         return data_to_frontend
 
 
-    elif request.method == "POST":
+
+
+
         '''
+            process the information sent from the survey creation form and create
+            the database entries to initialize the survey
             format of data from the frontend
             {
                 'surveyName': 'survey1',
@@ -65,6 +69,8 @@ def handle_survey():
                 'surveyNumQuestions': 10
             }
         '''
+    elif request.method == "POST":
+
 
         data_from_frontend = json.loads(request.get_json())
         print(data_from_frontend)
@@ -84,7 +90,7 @@ def handle_survey():
         ### format of the data sent to the frontend: string representation of the just created survey
         return (survey_creation_result)
     else:
-        return "An error has occured."
+        return {'Error':'Could not be processed either GET or POST in route /survey'}
 
 
 
@@ -94,6 +100,12 @@ def handle_survey():
 ##                                  HELPER FUNCTIONS                                ##
 ######################################################################################
 
+
+''''
+Collect the information about the surveys, datasets, offline evaluations, strategies, and more
+to the frontend.
+
+'''
 def collect_frontend_dashboard_data():
     all_data = {
                 'surveys': [],
@@ -112,12 +124,6 @@ def collect_frontend_dashboard_data():
             ## add json formatted string representation of those surveys to the list
             all_data['surveys'].append(str(s))
 
-    
-    ## info about all algorithms
-   # all_algorithms = db.session.query(Algorithm).all()
-    #if all_algorithms:
-    #    for a in all_algorithms:
-    #        all_data['algorithms'].append(str(a))
 
     all_datasets_in_db = db.session.query(Dataset).all()
     dataset_dirs = list_subdirectoreis(('backend/data/datasets'))
@@ -158,6 +164,18 @@ def collect_frontend_dashboard_data():
     return json.dumps(all_data)
 
 
+
+
+
+
+
+
+'''
+    Take the file path of a dataset and add it to the database.
+    NOTE: the actual database object is not saved, just the path is saved in the DB
+    dataset.load_dataset() loads the said dataset from the file path as a pandas dataframe
+
+'''
 def create_new_dataset(name, file_path):
     ds_in_db = db.session.query(Dataset).filter_by(name=name).first()
     if ds_in_db:
@@ -172,6 +190,19 @@ def create_new_dataset(name, file_path):
             print(e)
 
 
+
+
+
+
+
+
+'''
+Create database objects initializing a survey
+Also create specified number of survey questionnaire and participant objects
+Create specified number of random strings to act as unique tokens and assign these
+to the questionnaire and participant objects.
+
+'''
 def create_new_survey(name, description, dataset_name, num_participants, num_questions, item_selection_strategy, matchmaking_strategy, reclists_for_online_eval):
  
 

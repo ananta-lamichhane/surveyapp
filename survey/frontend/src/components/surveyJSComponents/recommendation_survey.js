@@ -60,44 +60,51 @@ const RecomSurvey =  () => {
                 "name": "page" + i,
                 "elements":[
                     {
-                        "type": "rating",
-                        "name": "satisfaction",
-                        "title": "Question about diversity?",
-                        "isRequired": true,
-                        "mininumRateDescription": "Lowest",
-                        "maximumRateDescription": "Highest"
-                    }, {
-                        "type": "rating",
-                        "name": "novelty",
-             
-                        "title": "Question about novelty?",
-                        "mininumRateDescription": "Lowest",
-                        "maximumRateDescription": "Highest"
-                    },
-                    {
-                        "type": "rating",
-                        "name": "serendipity",
-             
-                        "title": "Question about serendipity?",
-                        "mininumRateDescription": "Lowest",
-                        "maximumRateDescription": "Highest"
-                    },
-                    {
-                        "type": "rating",
-                        "name": "utility",
-             
-                        "title": "Question about utility?",
-                        "mininumRateDescription": "Lowest",
-                        "maximumRateDescription": "Highest"
-                    },
-                    {
-                        "type": "rating",
-                        "name": "unexpectedness",
-             
-                        "title": "Question about unexpectedness?",
-                        "mininumRateDescription": "Lowest",
-                        "maximumRateDescription": "Highest"
+                        "type": "panel",
+                        "name": "questionsPanel",
+                        "elements":[
+                            {
+                                "type": "rating",
+                                "name": "satisfaction",
+                                "title": "Question about diversity?",
+                                "isRequired": true,
+                                "mininumRateDescription": "Lowest",
+                                "maximumRateDescription": "Highest"
+                            }, {
+                                "type": "rating",
+                                "name": "novelty",
+                     
+                                "title": "Question about novelty?",
+                                "mininumRateDescription": "Lowest",
+                                "maximumRateDescription": "Highest"
+                            },
+                            {
+                                "type": "rating",
+                                "name": "serendipity",
+                     
+                                "title": "Question about serendipity?",
+                                "mininumRateDescription": "Lowest",
+                                "maximumRateDescription": "Highest"
+                            },
+                            {
+                                "type": "rating",
+                                "name": "utility",
+                     
+                                "title": "Question about utility?",
+                                "mininumRateDescription": "Lowest",
+                                "maximumRateDescription": "Highest"
+                            },
+                            {
+                                "type": "rating",
+                                "name": "unexpectedness",
+                     
+                                "title": "Question about unexpectedness?",
+                                "mininumRateDescription": "Lowest",
+                                "maximumRateDescription": "Highest"
+                            }
+                        ]
                     }
+                   
                 ]
             }
 
@@ -234,3 +241,20 @@ export default RecomSurvey
 
 
     
+
+
+// issue with race condition in 
+// folding back of  the information
+// recommendation
+
+
+// miller number 4-5 items displayed at once 
+// attention 
+// non-contexualization what is the survey about and contact information
+// start with overall statisfaction
+// vertical and horizontal
+// switch the UI
+// fix width of 
+// start and next thing
+// movie rating based on description
+// distance between the UI elements
