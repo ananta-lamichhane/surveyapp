@@ -133,8 +133,8 @@ function CreateNewPanel(rawData, itemnr, totalitems){
                             "type": "image",
                             "name": "banner",
                             "imageLink": rawData.next_item.description.poster,
-                            "imageWidth": "300px",
-                            "imageHeight": "400px",
+                         //   "imageWidth": "300px",
+                          //  "imageHeight": "400px",
                         },
 
                         // description of the given movie

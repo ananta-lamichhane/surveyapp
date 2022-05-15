@@ -39,6 +39,18 @@ code {
   flex-wrap: wrap;
 }
 
+
+
+.loadingDiv{
+  text-align: center;
+}
+
+/*increase size of buttons*/
+.sv_prev_btn, .sv_next_btn, .sv_complete_btn {
+  height: 50px;
+  font-size: larger;
+}
+
 /*
   Helps with responsive design.
   If horizontal screen size less than 900px, show elements vertically
@@ -48,8 +60,90 @@ code {
     display: flex;
     flex-direction: column;
   }
+  
+
+  .description_text >h4{
+    font-size: large;
+  }
+
+
 }
 
+.img-fluid{
+
+  -webkit-transition: slide 1.5s backwards;
+  -moz-transition: slide 1.5s backwards;
+  -ms-transition: slide 1.5s backwards;
+  -o-transition: slide 1.5s backwards;
+  transition: slide 1.5s backwards;
+
+}
+
+.carousel-control-prev, .carousel-control-next{
+  width: 5%;
+}
+
+.carousel-caption{
+
+  
+  position: absolute;
+  color: black;
+
+  left:0;
+  top:0;
+  bottom:0;
+  right:0;
+  opacity:0%;
+  z-index: -111;
+  -webkit-transition: slide 1.5s forwards;
+  -moz-transition: slide 1.5s forwards;
+  -ms-transition: slide 1.5s forwards;
+  -o-transition: slide 1.5s forwards;
+  transition: slide 1.5s forwards;
+
+}
+.img-fluid:hover+.card{
+  opacity: 100%;
+
+}
+
+
+.img-fluid:hover ~ .movieTitleReclist{
+  opacity: 0%;
+
+}
+.img-fluid:hover ~ #movieTitleReclist{
+  opacity: 0%;
+}
+.img-fluid:hover{
+  opacity: 0%;
+}
+
+.sv_qstn {
+  text-align: center;
+}
+
+
+
+
+
+/*limit the width so that the content is not too much stretched
+  in ultrawide monitors
+*/
+@media screen and (min-width: 1500px) {
+  .sv_main{
+    max-width: 70%;
+  }
+
+
+}
+
+
+.sv_image_image {
+  text-align: center;
+  height: 300px;
+  max-height: 300px;
+}
 .pic_and_description_container > :first-child {
  display:flex;
  
@@ -59,7 +153,7 @@ code {
 .poster_container{
   display: flex;
 }
-*/
+
 
 .description_text{
   text-align: left !important;
@@ -71,7 +165,7 @@ code {
 }
 
 
-.rec_panel_container >*{
+.rec_panel_container {
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -81,27 +175,35 @@ code {
 }
 
 /*The div which contains Don't know radio button and its label*/
-.dontKnowDiv{
-  display: grid;
-}
 
 #dontknow{
-  align-self: center;
+  margin:3px;
+}
+
+.dontKnowLabel{
+  margin-left: 10%;
+
 }
 
 /*info card that shows when clicked on reclist poster*/
-.card {
-  width: 300px;
-  text-align: left;
-  align-self: flex-end;
-}
+
 
 /*reclist image and text*/
 .image_and_text{
   margin-left: 10px;
   margin-right: 10px;
   align-self: flex-start;
+  max-width: 300px;
+  height: 300px;
+  width: 240px;
+  
 }
+
+
+
+
+
+
 
 /*div cotnaining reclist images and title ,e.g. Recommendation List 1*/
 .reclist_with_title{

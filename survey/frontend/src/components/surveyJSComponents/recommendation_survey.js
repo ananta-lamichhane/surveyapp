@@ -18,6 +18,46 @@ import { useSearchParams } from "react-router-dom";
 createRatingsWidget()
 
 
+
+/*Create a model consistent with the already existing survey
+which shows the loading recommendation page.
+The model does not contain any navigation buttons or questions, just a spinner
+with text in form of a HTML component which instructs the participant to wait for the
+recommendations
+*/
+const loadingModelJSON = {
+    "title": "Recommender Systems Survey",
+    "name": "recSysSurvey",
+    "pages": [
+        {
+            "name": "loadingPage",
+            elements:[
+                //spinner element along with a text instruction
+                {
+                    "name": "myhtml",
+                    "type": "html",
+                    "html": 
+                    `
+                    <div class='loadingDiv'>
+                        <h3>Please wait. Your recommendations are being loaded.</h3>
+                        <div class="d-flex justify-content-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                }
+            ]
+        }
+
+    ]
+}
+var loadingSurveyModel = new Survey.Model(loadingModelJSON)
+//disable the button
+loadingSurveyModel.showNavigationButtons = false
+
+
 const RecomSurvey =  () => {
 
     // saves the query parameters of get requests, especially used to get and pass the token
@@ -39,6 +79,54 @@ const RecomSurvey =  () => {
     CREATE INDIVIDUAL PAGE ELEMENTS AFTER RECEIVING THE JSON DATA FROM THE BACKEND
     */
 
+
+    function createImageDivsStringActive(rawData, reclistIndex){
+        var i = reclistIndex
+        var res = ""
+
+        for( var j=0; j< Math.floor(rawData[i].items.length/2); j++){
+            var divString = `
+            <div class="col">
+                <p id="movieTitleReclist" class="movieTitleReclist"><strong>${rawData[i].items[j].description.title}</strong> </p>
+                <img class="img-fluid" src="${rawData[i].items[j].description.poster}"  alt="Image 1"/>
+                <div class="overflow-auto carousel-caption d-none d-md-block card">
+                    <h6>Director: ${rawData[i].items[j].description.director}</h5>
+                    <h6>Actors: ${rawData[i].items[j].description.actors}</h5>
+                    <p> ${rawData[i].items[j].description.plot}</p>
+                </div>
+                </div>
+            `
+
+            res = res + divString
+        }
+       
+        return res
+    }
+
+    function createImageDivsStringPassive(rawData, reclistIndex){
+        var i = reclistIndex
+        var res = ""
+
+        for( var j=Math.ceil(rawData[i].items.length/2); j< rawData[i].items.length; j++){
+            var divString = `
+            <div class="col">
+                <p id="movieTitleReclist" class = "movieTitleReclist"><strong>${rawData[i].items[j].description.title}</strong> </p>
+                <img class="img-fluid" src="${rawData[i].items[j].description.poster}"  alt="Image 1"/>
+                <div class="overflow-auto carousel-caption d-none d-md-block card">
+                    <h6>Director: ${rawData[i].items[j].description.director}</h5>
+                    <h6>Actors: ${rawData[i].items[j].description.actors}</h5>
+                    <p> ${rawData[i].items[j].description.plot}</p>
+                </div>
+            
+                </div>
+            `
+
+            res = res + divString
+        }
+ 
+        return res
+    }
+
     function createRecomElements(rawData){
         console.log("rawData is")
         console.log(rawData)
@@ -57,12 +145,91 @@ const RecomSurvey =  () => {
         // or all reclists at once and questionnaire at last, the former is implemented here
           var  recomPage = {
               // (subjective rating questions about the reclist (s))
-                "name": "page" + i,
+                "name": "pageSome",
                 "elements":[
                     {
                         "type": "panel",
                         "name": "questionsPanel",
                         "elements":[
+                            {
+                                "type": "html",
+                                "name": "posterCarousel",
+                                "title":"Recommendation List 1",
+                                "html": `<h5>Please first observe the following recommendation lists
+                                        then answer the questions. Click on the buttons to scroll left/right.</h5>`
+                            },
+                            {
+                                "type": "html",
+                                "name": "posterCarousel",
+                                "title":"Recommendation List 1",
+                                "html": 
+                                `
+                                <h5>Recommendation List 1 </h5>
+                                <div id="gallery" class="carousel slide" data-interval="false">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div class="row">
+                                                
+                                                ${createImageDivsStringActive(rawData,0)}
+                                            </div>
+                                        </div>
+
+                                        <div class="carousel-item">
+                                            <div class="row">
+                                            ${createImageDivsStringPassive(rawData,0)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a class="carousel-control-prev" href="#gallery" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+
+                                    <a class="carousel-control-next" href="#gallery" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+
+                                `
+                            },
+                            {
+                                "type": "html",
+                                "name": "posterCarousel",
+                                "title":"Recommendation List 1",
+                                "html": 
+                                `
+                                <h5>Recommendation List 2 </h5>
+                                <div id="gallery2" class="carousel slide" data-interval="false">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <div class="row">
+                                                
+                                                ${createImageDivsStringActive(rawData,1)}
+                                            </div>
+                                        </div>
+
+                                        <div class="carousel-item">
+                                            <div class="row">
+                                            ${createImageDivsStringPassive(rawData,1)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a class="carousel-control-prev" href="#gallery2" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+
+                                    <a class="carousel-control-next" href="#gallery2" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+
+                                `
+                            },
                             {
                                 "type": "rating",
                                 "name": "satisfaction",
@@ -111,7 +278,7 @@ const RecomSurvey =  () => {
             recomSurvey.pages.push(recomPage)
             // for each reclist that is sent (mostly two)
             // iterate in reverese order so we can add each list to the begining of array
-            for( var i=rawData.length-1; i>=0 ; i--){
+           /* for( var i=rawData.length-1; i>=0 ; i--){
                 console.log("filename = "+ rawData[i].reclist_filename)
                 setReclsitFilenames(reclistFilenames => [rawData[i].reclist_filename,...reclistFilenames ])
             // create a template html with images and movie title in a div to overcome
@@ -126,27 +293,24 @@ const RecomSurvey =  () => {
 
             // loop through all the movies ad create hmtl div with relevant infos
             for( var j=0; j< rawData[i].items.length; j++){
+                
 
-                    var myHtml = `<div class="image_and_text" id="image_and_text"> 
-                   
+                    var myHtml = `
+                    <div class="img_and_card" id="img_and_card">
                     
-                    
-                        <a class="textButton" title="Click to show more information" data-toggle="collapse" href="#collapseExample${i}_${j}" role="button" aria-expanded="false" aria-controls="collapseExample${i}_${j}">
-                        <img src="${rawData[i].items[j].description.poster}" alt="poster" width="150px", height="auto">
-                            ${rawData[i].items[j].description.title}
-                            
-                        </a>
-
-                        
-                    </div>
-                        <div class="collapse" id="collapseExample${i}_${j}">
-                        <div class="card card-body">
+                        <div class="image_and_text" id="image_and_text">
+                            <img  src="${rawData[i].items[j].description.poster}" alt="poster">
+                            <h5>${rawData[i].items[j].description.title}</h5>
+                                
+                        </div>
+                        <div class="card card-body" style="width:18rem">
                             <h5>Director: ${rawData[i].items[j].description.director}</h5>
                             <h5>Actors: ${rawData[i].items[j].description.actors} </h5>
                             <h5>Genres: ${rawData[i].items[j].description.genre} </h5>
                             <p>${rawData[i].items[j].description.plot} </p>
+                       
                         </div>
-                        </div>
+                    </div>
                     `
                     template = template + myHtml
                 }
@@ -183,7 +347,7 @@ const RecomSurvey =  () => {
             recomPage.elements.unshift(instruction)
 
             // then add this page to the whole survey (mostly relevant if multiple pages)
-           // recomSurvey.pages.push(recomPage)
+           // recomSurvey.pages.push(recomPage)*/
     return recomSurvey
     }
 
@@ -208,7 +372,7 @@ const RecomSurvey =  () => {
       question.id = "question_" + index
 
   });
-     return <div className='mainSurvey'>
+      return recomLists? (<div className='mainSurvey'>
         <div>
             <Survey.Survey model={recommendationSurveyModel} 
             onComplete = {
@@ -231,7 +395,11 @@ const RecomSurvey =  () => {
         </div>
 
 
+        </div>):(
+        <div className='loadingDivContainer'>
+        <Survey.Survey model={loadingSurveyModel}/>
         </div>
+)
         
     
 }

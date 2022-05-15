@@ -46,18 +46,23 @@ var createRatingsWidget = (wigetName) =>{
             var fieldset = document.createElement("fieldset")
                 fieldset.className = "rate"
                 fieldset.id = "fieldSet"+ rand
+
             var dontknow =  document.createElement("input")
-                dontknow.type = "radio"
+                dontknow.type = "checkbox"
                 dontknow.id = "dontknow"
                 dontknow.name = "dontknow_radio"
                 dontknow.className = "form-check-input"
                 dontknow.value = "0"
             
 
-            var dontknowlabel = document.createElement("label")
+                var dontknowlabel = document.createElement("label")
                 dontknowlabel.htmlFor = "dontknow"
+                dontknowlabel.className = "form-check-label dontKnowLabel"
                 dontknowlabel.title = "Dont know"
-                dontknowlabel.innerText = "Don't know"
+                dontknowlabel.innerText = "I haven't watched the movie yet."
+
+              //  var dontknowlabel = document.createElement("p")
+              //  dontknowlabel.innerText = "I haven't watched the movie yet."
             
             // assing question value (answer) when clicked / unclicked
             dontknow.onchange = function(){
@@ -223,9 +228,10 @@ var createRatingsWidget = (wigetName) =>{
 
 
         // append the crated fieldset to the div
+        dontknowdiv.appendChild(dontknow)
+        dontknowdiv.appendChild(dontknowlabel)
             mainDiv.appendChild(fieldset)
-            dontknowdiv.appendChild(dontknow)
-            dontknowdiv.appendChild(dontknowlabel)
+
             mainDiv.appendChild(dontknowdiv)
             
             //el.parentElement.insertBefore(mainDiv, el);
