@@ -16,7 +16,7 @@ Survey
     .StylesManager
     .applyTheme("orange")
 
-// call the create rating function to crate the custom widget
+
 
 
 
@@ -27,12 +27,10 @@ Survey
 
 
 
-
+// call the create rating function to crate the custom widget
 createRatingsWidget()
-//TODO fetch it from the backend (admin dashboard)
-var qnr=1
-var max_items = 5
-var curr_item = 10
+
+
 const MainSurvey =  () => 
 
 {
@@ -141,13 +139,17 @@ const MainSurvey =  () =>
             model2.addPage(CreateTemplatePage(i+1,numItems))
             model2.pageNextText = "Start"
         }
-        console.log(prevSession)
+      
         if(prevSession){
-            if (prevSession.length>numItems){
+
+
+            //if all items were already filled in complete this survey without
+            //go directly to recommendation survey
+            if (prevSession.length>=numItems){
+                alert("You've already finished rating items, you'll be redirected to the recommendations.")
                 model2.doComplete()
             }
             // if there was previous session, add all the elements to the survey
-            console.log(prevSession)
             for(var i=0; i<prevSession.length; i++){
                 var page = model2.getPage(i+1)
                 page.addPanel(CreateNewPanel(prevSession[i]))
@@ -186,26 +188,20 @@ const MainSurvey =  () =>
                 'ratings': val,
             }
             var prevSessionLength = prevSession?prevSession.length:0
-            console.log("current page" + model2.currentPageNo)
-            console.log("alredy filled in "+ prevSessionLength)
-            if(model2.currentPageNo+1 < max_items !==1 && model2.currentPageNo+1 > prevSessionLength){
+
+            if(model2.currentPageNo+1 < numItems !==1 && model2.currentPageNo+1 > prevSessionLength){
               
-                if(visited.includes(model2.currentPageNo)){
+                if(!visited.includes(model2.currentPageNo)){
                     
-                
-                }else{
-                    var allqs = model2.currentPage.questions
-                    
-                    console.log("current page number" + (model2.currentPageNo+1))
                     PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
                     .then(data =>{
                         model2.activePage.addPanel(CreateNewPanel(data))
                         model2.activePage.addNewQuestion('customrating', )
-                        //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
+                
                         console.log("------------")
                         console.log(data)
 
-                        model2.data = data.current_ratings
+
                         console.log("------------")
     
                     });
@@ -220,37 +216,31 @@ const MainSurvey =  () =>
 
         }
     
-    }) 
-        var surveyValueChanged = function (sender, options) {
-            var el = document.getElementById(options.name);
-            if (el) {
-                el.value = options.value;
-            }
-        };
+    })
 
-     if(fetchFinished){
+    model2.onComplete.add(function(sender,option){
+        PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify({
+            'token': searchParams.get('token'),
+            'ratings': model2.data,
+        }))
+        .then(data =>{
+            console.log("setting survey done")
+            setSurveyDone(true)
+            console.log(data)
+
+        })
+        
+    })
+
+
+     if(fetchFinished ){
         return(
       <div className='mainSurvey'>
         {/* Load the survey only when the survey details have finised fetching
         ie. numItems is populated */}
         
-         {!surveyDone &&  (numItems >0) &&   
-        <Survey.Survey
-        model = {model2}
-        onComplete = {
-            PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify({
-                'token': searchParams.get('token'),
-                'ratings': model2.data,
-            }))
-            .then(data =>{
-                setSurveyDone(true)
-                console.log(data)
-
-            })
-         
-        }
-        onValueChanged={surveyValueChanged}
-    /> } 
+         {!surveyDone &&   
+        <Survey.Survey model = {model2}/> } 
 
         {/* Display recommendation page if the surveydone state is set to true*/}
         {surveyDone &&
