@@ -10,6 +10,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
     "bootstrap-slider": "^11.0.2",
     "jquery-bar-rating": "^1.2.2",
     "list-react-files": "^0.2.0",

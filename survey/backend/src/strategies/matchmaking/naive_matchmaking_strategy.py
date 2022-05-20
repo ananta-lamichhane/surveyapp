@@ -12,7 +12,9 @@ class Strategy(MatchmakingBase):
     @dataset_path.setter
     def dataset_path(self, path):
         self.__dataset_path = path
+        self.__current_responses
     
+    ## get_offline_user_id() <- change it to..
     def perform_matchmaking(self):
         ## matchmaking logic here
         ## match with the random user in the db

@@ -47,6 +47,8 @@ def handle_questionnaire():
         post_json_data = json.loads(request.get_json()) ## questionnaire_response
         tok = (post_json_data)['token']
         ratings = post_json_data['ratings']
+
+        print(f"ratings from frontend : {ratings}")
         
         ## call helper function to save the rating provided by the frontend to the db
         save_ratings(tok, ratings)
@@ -129,9 +131,27 @@ def send_survey_details(participant_token):
     rel_questionnaire = db.session.query(Questionnaire).filter_by(token=participant_token).first()
     num_items = rel_questionnaire.num_questions
     survey_name = db.session.query(Survey).filter_by(id=rel_questionnaire.survey_id).first().name
+    participant_id = db.session.query(Survey_Participant).filter_by(token=participant_token).first().id
+    curr_ratings = None
+    prev_session_items = None
+    try:
+        curr_ratings =json.loads(db.session.query(Response).filter_by(participant_id=participant_id).first().ratings)
+        print(f"already rated items:{type(curr_ratings)}")
+        print(f"already rated items:{(curr_ratings)}")
+    except AttributeError as e:
+        print("no item rated yet")
+
+    if curr_ratings:
+        prev_session_items = [{
+            'current_ratings': curr_ratings,
+            'next_item': create_item_descritptions(i) 
+            }for i in curr_ratings.keys()]
+    
     payload_to_send = {
         'survey_name': survey_name,
-        'num_items': num_items
+        'num_items': num_items,
+        'ratings': (curr_ratings),
+        'previous_session_items': prev_session_items
     }
     return (payload_to_send)
 
@@ -145,6 +165,9 @@ def send_next_item_and_current_ratings(participant_token):
     ## find out all current ratings given by the same user
     all_curr_ratings = db.session.query(Response).filter_by(participant_id = rel_participant.id).first().ratings
 
+    if all_curr_ratings:
+        for k in json.loads(all_curr_ratings):
+            print(f'already rated\nitem:{k}')
 
      ## traverse the db to related strategy using the token number
     rel_ques = db.session.query(Questionnaire).filter_by(token=participant_token).first()
@@ -178,6 +201,9 @@ def send_next_item_and_current_ratings(participant_token):
 
 
 
+
+
+
 """
     summary: check if the item was already rated by the user
             if so update the appropriate Response object
@@ -188,12 +214,15 @@ def send_next_item_and_current_ratings(participant_token):
         ratings: rating data present as a JSON with format {itemid:rating}
 """
 def save_ratings(particiapant_token, ratings):
-    print(f'save ratings:\n current = {ratings}')
+    print(f'save ratings:\n current = {ratings.keys()}')
+    
+
     partcipant = db.session.query(Survey_Participant).filter_by(token=particiapant_token).first()
         ## find if a response associated to the user and item exists yet
         ## response should be unique to the participant ID / Token
     resp = db.session.query(Response).filter_by(participant_id = partcipant.id).first()
 
+    
     ## if no response related to the user and item yet create one and save in the db
     if not resp:
         response = Response(ratings=json.dumps(ratings), participant_id=partcipant.id)
@@ -215,8 +244,8 @@ def save_ratings(particiapant_token, ratings):
             print(f"Error: {e}")
        # print(f"itemid = {itemid}\nrating: {rating}")
     #print(f"itmeid = part_id: {}\nitemid: {itemid}\nrating:{rating}")
-    all_curr_ratings= db.session.query(Response).filter_by(participant_id=partcipant.id).all()
-    for r in all_curr_ratings:
+    curr_ratings= db.session.query(Response).filter_by(participant_id=partcipant.id).all()
+    for r in curr_ratings:
         print(str(r))
 ## src.strategies.matchmaking
 

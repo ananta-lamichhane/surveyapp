@@ -10,6 +10,8 @@ class Strategy(BaseStrategy):
     def __init__(self, dataset_path):
         self.__dataset_path= dataset_path
             
+       # self.__50_most_pop_movies = dict()
+            
     @property
     def dataset_path(self):
         return self.__database_path
@@ -40,19 +42,15 @@ class Strategy(BaseStrategy):
 
         # in user-item matrix, most frequent in the movieId column are
         ## rated by the most number of users
-        most_popular_movies = dataset['movieId'].value_counts().index.tolist()[:50]
+        most_popular_movies = dataset.loc[:,'movieId'].value_counts().index.tolist()[:10]
         
+        # 
+       # most_popular_movies_minus_already_rated = most_popular_movies.filter(already_rated_items0)
+
+        #next_itme = random.choice(most_popular_movies_minus_already_rated)
+
         next_item = random.choice(most_popular_movies)
-        ## the randomly chosen
-        if not already_rated_items:
-            return most_popular_movies[0]
-        else:
-            num_already_rated_items = len(already_rated_items)
-            while True:
-                if next_item not in  already_rated_items:
-                    return next_item
-                else:
-                    next_item = random.choice(most_popular_movies)
+        return next_item
     
 
 

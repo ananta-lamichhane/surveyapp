@@ -52,7 +52,7 @@ var createRatingsWidget = (wigetName) =>{
                 dontknow.id = "dontknow"
                 dontknow.name = "dontknow_radio"
                 dontknow.className = "form-check-input"
-                dontknow.value = "0"
+                dontknow.value = "-1"
             
 
                 var dontknowlabel = document.createElement("label")

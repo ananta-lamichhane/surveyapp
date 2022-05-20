@@ -106,7 +106,7 @@ var templateJSON = {
                     {
                         "type": "text",
                         "name": "surveyNumQuestions",
-                        "title": "Number of items to be presented",
+                        "title": "Number of questions (items) in the survey quesionnaire.",
                         "isRequired": true,
                     }
 
@@ -169,7 +169,19 @@ var templateJSON = {
 
     var CreateNewSurveyModel = new Survey.Model(templateJSON)
 
-
+  
+    CreateNewSurveyModel.onValidateQuestion.add(function(survey, options){
+        //the question to select recommendation list
+        if(options.name === "onlineEvalReclists") {
+        
+        // allow at max 2 values to be selected
+        // error displays only after submission and not inline
+        if(options.value && options.value.length > 2) {
+            //Set the error
+            options.error = "Please select maximum two values"; 
+        }
+        }
+    });
 
     return (
         <div>

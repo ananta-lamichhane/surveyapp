@@ -92,7 +92,7 @@ const RecomSurvey =  () => {
                 <div class="overflow-auto carousel-caption d-none d-md-block card">
                     <h6>Director: ${rawData[i].items[j].description.director}</h5>
                     <h6>Actors: ${rawData[i].items[j].description.actors}</h5>
-                    <p> ${rawData[i].items[j].description.plot}</p>
+                  
                 </div>
                 </div>
             `
@@ -115,7 +115,7 @@ const RecomSurvey =  () => {
                 <div class="overflow-auto carousel-caption d-none d-md-block card">
                     <h6>Director: ${rawData[i].items[j].description.director}</h5>
                     <h6>Actors: ${rawData[i].items[j].description.actors}</h5>
-                    <p> ${rawData[i].items[j].description.plot}</p>
+                   
                 </div>
             
                 </div>
@@ -128,8 +128,7 @@ const RecomSurvey =  () => {
     }
 
     function createRecomElements(rawData){
-        console.log("rawData is")
-        console.log(rawData)
+
         // first create a container for all the pages
         // if each reclist needs a page of its own we'll need multiple pages
         setOfflineUserId(rawData[0]['offline_user_id'])
@@ -166,6 +165,10 @@ const RecomSurvey =  () => {
                                 `
                                 <h5>Recommendation List 1 </h5>
                                 <div id="gallery" class="carousel slide" data-interval="false">
+                                    <a class="carousel-control-prev" href="#gallery" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>    
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
                                             <div class="row">
@@ -180,12 +183,6 @@ const RecomSurvey =  () => {
                                             </div>
                                         </div>
                                     </div>
-
-                                    <a class="carousel-control-prev" href="#gallery" role="button" data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-
                                     <a class="carousel-control-next" href="#gallery" role="button" data-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                         <span class="sr-only">Next</span>
@@ -233,41 +230,41 @@ const RecomSurvey =  () => {
                             {
                                 "type": "rating",
                                 "name": "satisfaction",
-                                "title": "Question about diversity?",
+                                "title": "Which recommendation list would better help you find movies to watch?",
                                 "isRequired": true,
-                                "mininumRateDescription": "Lowest",
-                                "maximumRateDescription": "Highest"
+                                "mininumRateDescription": "List 1",
+                                "maximumRateDescription": "List 2"
                             }, {
                                 "type": "rating",
-                                "name": "novelty",
+                                "name": "diversity",
                      
-                                "title": "Question about novelty?",
-                                "mininumRateDescription": "Lowest",
-                                "maximumRateDescription": "Highest"
+                                "title": "Which list has a more varied selection of movies?",
+                                "mininumRateDescription": "List 1",
+                                "maximumRateDescription": "List 2"
                             },
                             {
-                                "type": "rating",
+                                "type": "rating", // can also be used for novelty as in ekstrand
                                 "name": "serendipity",
                      
-                                "title": "Question about serendipity?",
-                                "mininumRateDescription": "Lowest",
-                                "maximumRateDescription": "Highest"
+                                "title": "Which list has more pleasantly surprising movies?",
+                                "mininumRateDescription": "List 1",
+                                "maximumRateDescription": "List 2"
                             },
                             {
                                 "type": "rating",
-                                "name": "utility",
+                                "name": "acuuracy",
                      
-                                "title": "Question about utility?",
-                                "mininumRateDescription": "Lowest",
-                                "maximumRateDescription": "Highest"
+                                "title": "Which list has more movies that you find appealing?",
+                                "mininumRateDescription": "List 1",
+                                "maximumRateDescription": "List 2"
                             },
                             {
                                 "type": "rating",
-                                "name": "unexpectedness",
+                                "name": "understandsMe",
                      
-                                "title": "Question about unexpectedness?",
-                                "mininumRateDescription": "Lowest",
-                                "maximumRateDescription": "Highest"
+                                "title": "Which list beter understands your taste in movies?",
+                                "mininumRateDescription": "List 1",
+                                "maximumRateDescription": "List 2"
                             }
                         ]
                     }
@@ -276,78 +273,7 @@ const RecomSurvey =  () => {
             }
 
             recomSurvey.pages.push(recomPage)
-            // for each reclist that is sent (mostly two)
-            // iterate in reverese order so we can add each list to the begining of array
-           /* for( var i=rawData.length-1; i>=0 ; i--){
-                console.log("filename = "+ rawData[i].reclist_filename)
-                setReclsitFilenames(reclistFilenames => [rawData[i].reclist_filename,...reclistFilenames ])
-            // create a template html with images and movie title in a div to overcome
-            // surveyjs challenges
-            //<button class="scroll_right_button" id="scroll_right_btn_${i+1}" onclick="document.getElementById('question_${i+1}').scrollLeft+=window.innerWidth">Scroll Right</button>
 
-            var template = `
-            <div class="reclist_with_title">
-            <h3>Recommendation List ${i+1}</h3>
-            <div class=poster_container>
-            `
-
-            // loop through all the movies ad create hmtl div with relevant infos
-            for( var j=0; j< rawData[i].items.length; j++){
-                
-
-                    var myHtml = `
-                    <div class="img_and_card" id="img_and_card">
-                    
-                        <div class="image_and_text" id="image_and_text">
-                            <img  src="${rawData[i].items[j].description.poster}" alt="poster">
-                            <h5>${rawData[i].items[j].description.title}</h5>
-                                
-                        </div>
-                        <div class="card card-body" style="width:18rem">
-                            <h5>Director: ${rawData[i].items[j].description.director}</h5>
-                            <h5>Actors: ${rawData[i].items[j].description.actors} </h5>
-                            <h5>Genres: ${rawData[i].items[j].description.genre} </h5>
-                            <p>${rawData[i].items[j].description.plot} </p>
-                       
-                        </div>
-                    </div>
-                    `
-                    template = template + myHtml
-                }
-                template = template + '</div> </div>'
-               // console.log(template)
-                var reclist_a_posters = {
-                    "type": "panel",
-                    "name": "images_and_desc_panel",
-                    "elements":[
-                        {
-                        "id": `reclist${i}`,
-                        "type" : "html",
-                        "name": `images${i}`,
-                        "html": template
-                        }
-                    ]
-                }
-
-                // add newly created reclist div to the first of the list
-                recomPage.elements.unshift(reclist_a_posters)
-            }
-            var instruction = {
-                "type": "panel",
-                "name": "instruction_to_rate",
-                "elements":[
-                    {
-                    "type" : "html",
-                    "name": `images${i}`,
-                    "html": `<h4>Please answer the questions after observing the rcommendation lists below. Click on the images to display more information about the movie</h4>`
-                    }
-                ]
-            }
-
-            recomPage.elements.unshift(instruction)
-
-            // then add this page to the whole survey (mostly relevant if multiple pages)
-           // recomSurvey.pages.push(recomPage)*/
     return recomSurvey
     }
 
@@ -362,6 +288,7 @@ const RecomSurvey =  () => {
 
         
   })
+
 
   // surveyjs creates dynamic random ids for the questions, need to make them static
   // e.g. to apply css and onclick events (click to expand, scroll right, etc. see html objects above)

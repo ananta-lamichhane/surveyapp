@@ -122,3 +122,5 @@ def save_recom_ratings(token, offline_user_id, reclist_file_paths, ratings):
         db.session.rollback()
         print(f'ERROR:\nfilename:recommendation.py\nfunction:save_recom_ratings\nerror:{e}')
         return -1
+
+        

@@ -11,7 +11,7 @@ import csv
 
 ##iniitialize omdb api
 ## TODO: move sensitive information (api key) to a separate file
-omdb_client = omdb.OMDBClient(apikey="afb2e202") # 85798af afb2e202 aa5a8680
+omdb_client = omdb.OMDBClient(apikey="aa5a8680") # 85798af afb2e202 aa5a8680
 
 
 

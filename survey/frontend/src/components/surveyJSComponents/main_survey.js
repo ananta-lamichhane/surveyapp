@@ -8,6 +8,7 @@ import PostData from '../../utils/postdata'
 import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
+const axios = require('axios').default
 //import RecommendationPageModel from './recommendation_survey.js.js'
 
 //choose from the built in themes of the surveyjs library
@@ -23,6 +24,10 @@ Survey
     THE SURVEY PAGE FOR RATING INDIVIDUAL MOVIES
 
 */
+
+
+
+
 createRatingsWidget()
 //TODO fetch it from the backend (admin dashboard)
 var qnr=1
@@ -42,23 +47,70 @@ const MainSurvey =  () =>
         ]
     }
 
+    //stores the parameters after ? in URL, in our case, the token
     const [searchParams] = useSearchParams()
+    
+    // notifies if the survey (rating items) is done, goes to recommendations then
     const [surveyDone, setSurveyDone] = useState(false) //sets a bool value if the first survey, i.e. questionnaire is done, helps to determine when to show the rcommendations.
-    const [allData, setAllData] = useState(welcomePage)
+    
+    //initial data to kick of the survey see welcomePage
+    const [welcomePageData, setWelcomePageData] = useState(welcomePage)
+    //no. of items to be shown to the participant, sent by the backend upon GET
     const [numItems, setNumItems] = useState()
+    //name of the survey, sent by the backend upon GET
     const [surveyName, setSurveyName] = useState("")
-    const [visitedPages, setVisitedPages] = useState([])
+    //previous session ratings TODO: see if still necessary
+    const [prevRatings, setPrevRatings] = useState()
+    //notifies when fetching is done from the backend, only render after that
+    const [fetchFinished, setFetchFinished] = useState(false)
+    //all data needed to render item of previous session, in format of next item
+    const [prevSession, setPrevSession] = useState([{}])
+    
+    
+    //send get request to the questionnaire route of the backend
+    /*
+    Expect data in this format
+    {
+        survey_name: "abcd",
+        num_items: 10,
+        previous_session_items:{
+            prev_ratings:{1:1.5, 244:2.0,..},
+            next_item: {item_id:4489, description: ..
+            }
+        }
+    }
+    see send_survey_details() in questionnaire route
+    */
+    const getDataFromBackend = async () =>{
+        const backendData = await axios.get(process.env.REACT_APP_API_URL + '/questionnaire?token='+searchParams.get('token'))
+       console.log(backendData.data)
+        setSurveyName(backendData.data.survey_name)
+        setNumItems(backendData.data.num_items)
+        setPrevRatings(backendData.data.ratings)
+        setPrevSession(backendData.data.previous_session_items)
+        setFetchFinished(true)
+    }
+
+    
 
      useEffect(() => {
-        fetch(process.env.REACT_APP_API_URL +'/questionnaire?token='+ searchParams.get('token'))
-        .then(response =>response.json()).then(data =>{
-            setNumItems(data.num_items)
-         //   setSurveyName(data.survey_name)
-            
-        })
-    }, [])
+    //first fetch all the data necessary
+     var response = getDataFromBackend()
+     
 
-    var model2 = new Survey.Model(allData)
+    },[])
+    
+            
+    //crate a new SurveyJS survey model with initial data from welcome page
+    var model2 = new Survey.Model(welcomePageData)
+
+    //if there's previously rated items, populate them nex to the items
+    if(prevRatings){
+        model2.data = prevRatings
+    }
+
+ 
+
 
 
     model2.showQuestionNumbers = "true"
@@ -80,24 +132,37 @@ const MainSurvey =  () =>
           
     })
 
-    // use this function to load initial values into the survey
 
-
-    //supply initial values to the survey should be done before first render
-
-
-    /* While the survey is rendering for the first time, create template pages
-        Where the only information is Item <i> out of <totalitems>.
-    */
+    // first render of the survey
     model2.onAfterRenderSurvey.add(function(option){
 
         for(var i=0; i<numItems; i++){
             //add total number of 'empty' pages 
-            console.log("adding "+numItems+" pages")
             model2.addPage(CreateTemplatePage(i+1,numItems))
             model2.pageNextText = "Start"
         }
+        console.log(prevSession)
+        if(prevSession){
+            if (prevSession.length>numItems){
+                model2.doComplete()
+            }
+            // if there was previous session, add all the elements to the survey
+            console.log(prevSession)
+            for(var i=0; i<prevSession.length; i++){
+                var page = model2.getPage(i+1)
+                page.addPanel(CreateNewPanel(prevSession[i]))
+            }
+
+            // set current page to the second last page
+            model2.currentPageNo = prevSession.length
+            // run nextPage to trigger the onCurrentPageChanging (see below)
+            // going directly to length+1 does not fetch next item and page is empty
+            model2.nextPage()
+        }
+
+      
     })
+
 
 
     
@@ -105,13 +170,14 @@ const MainSurvey =  () =>
     
     //keep track of visited page numbers so that data is not fetched twice
     var visited = []
-    model2.onCurrentPageChanging.add(function(survey,options){
 
+    model2.onCurrentPageChanging.add(function(sender,options){
+
+        // do not fetch on pressing previous
         if (options.isNextPage){
-           // setVisitedPages([...visitedPages, (model2.currentPageNo +1)])
+    
             model2.pageNextText = "Next"
-            
-            console.log(visitedPages)
+        
             
             var val = model2.data
             // currData includes the item ids and ratings for all items rated until now
@@ -119,32 +185,21 @@ const MainSurvey =  () =>
                 'token': searchParams.get('token'),
                 'ratings': val,
             }
-
-            if(model2.currentPageNo+1 < max_items !==1){
-                console.log(process.env)
-                
-               // setVisitedPages(visitedPages =>[...visitedPages, model2.currentPageNo+1])
-                //TODO: only fire the post request if the page has not been visited previously
-                console.log('visited pages')
-                console.log(visited)
-                
+            var prevSessionLength = prevSession?prevSession.length:0
+            console.log("current page" + model2.currentPageNo)
+            console.log("alredy filled in "+ prevSessionLength)
+            if(model2.currentPageNo+1 < max_items !==1 && model2.currentPageNo+1 > prevSessionLength){
+              
                 if(visited.includes(model2.currentPageNo)){
-                    console.log("item already rated")
-                    var allqs = model2.currentPage.questions
-                    allqs.forEach(e =>{
-                        e.readOnly = true
-                    })
+                    
+                
                 }else{
                     var allqs = model2.currentPage.questions
-                    allqs.forEach(e =>{
-                        console.log(e)
-                        e.readOnly = true
-                        console.log(e.readOnly)
-                    })
+                    
                     console.log("current page number" + (model2.currentPageNo+1))
                     PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
                     .then(data =>{
-                        model2.activePage.addPanel(CreateNewPanel(data,2,10))
+                        model2.activePage.addPanel(CreateNewPanel(data))
                         model2.activePage.addNewQuestion('customrating', )
                         //model2.addPage(CreateNewQuestion(data, (model2.currentPageNo+1), max_items))
                         console.log("------------")
@@ -156,6 +211,7 @@ const MainSurvey =  () =>
                     });
                     
                 }
+                // add current page to visited pages before going to next one
                 visited.push(model2.currentPageNo)
                 
 
@@ -172,23 +228,9 @@ const MainSurvey =  () =>
             }
         };
 
-    /*
-        Example of prepopulated data (if we need to reload the data from backend 
-        after a survey was broken off prematurely)
-    model2.data = {
-        'movie: 1': 2.5,
-        'movie: 2': 3.5,
-        'movie: 3': 1.0,
-        'movie: 4': 5
-    }
-    */
-
-
-
-
- 
-
-    return <div className='mainSurvey'>
+     if(fetchFinished){
+        return(
+      <div className='mainSurvey'>
         {/* Load the survey only when the survey details have finised fetching
         ie. numItems is populated */}
         
@@ -196,10 +238,16 @@ const MainSurvey =  () =>
         <Survey.Survey
         model = {model2}
         onComplete = {
-           res=>{
-            // set survey to done so that the recommendation page can be shown
-            setSurveyDone(true)
-            }   
+            PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify({
+                'token': searchParams.get('token'),
+                'ratings': model2.data,
+            }))
+            .then(data =>{
+                setSurveyDone(true)
+                console.log(data)
+
+            })
+         
         }
         onValueChanged={surveyValueChanged}
     /> } 
@@ -212,7 +260,14 @@ const MainSurvey =  () =>
         }
     
     
-     </div>
+     </div>)
+     }else{
+         return(<div>
+             <h5>Hello Loading</h5>
+         </div>)
+             
+         
+     }
 
 }
 

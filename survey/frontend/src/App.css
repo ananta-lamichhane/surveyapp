@@ -1,3 +1,7 @@
+.App{
+  margin-bottom: 50px;
+}
+
 .sv_header__text{
   text-align: center;
 }
@@ -66,18 +70,123 @@ code {
     font-size: large;
   }
 
+  
+  .row{
+    display:flex;
+    flex-direction: column;
+    height: 1500px;
+  }
 
+  .carousel-control-prev{
+    rotate: 90deg;
+    top: -95%;
+    left: 40%;
+    overflow: hidden;
+  }
+
+
+  .carousel-control-next{
+    rotate: 90deg;
+    top: 98%;
+    right: 50%;
+    width:15%;
+    overflow: hidden;
+  }
+
+  .img-fluid{
+    max-width: 200px;
+    max-height: 250px;
+  }
+
+  .card{
+    max-width: 200px;
+  }
+  
+  
+  .carousel-control-next-icon, .carousel-control-prev-icon{
+    border: 10px black;
+  
+  }
+  
+  .carousel-control-next-icon:hover{
+    
+    transform: scale(3.0)
+  }
+  .carousel-control-prev:hover{
+    transform: scale(3.0)
+  }
+  .carousel-control-next-icon:hover{
+    transform: scale(3.0)
+  }
+  .carousel-control-prev:hover{
+    transform: scale(3.0)
+  }
+
+
+
+
+
+}
+
+/*change row orientation on smaller screen sizes
+.row{
+  display:flex;
+  flex-direction: column;
+  height: 1500px;
+}
+
+.carousel-control-prev{
+  rotate: 90deg;
+  top: -95%;
+  left: 40%;
+  overflow: hidden !important;
+}
+
+
+.carousel-control-next{
+  rotate: 90deg;
+  top: 98%;
+  right: 50%;
+  width:15%;
+  overflow: hidden !important;
 }
 
 .img-fluid{
+  max-width: 200px;
+  max-height: 250px;
+}
+.card{
+  max-width: 200px;
+}
 
-  -webkit-transition: slide 1.5s backwards;
-  -moz-transition: slide 1.5s backwards;
-  -ms-transition: slide 1.5s backwards;
-  -o-transition: slide 1.5s backwards;
-  transition: slide 1.5s backwards;
+
+.carousel-control-next-icon, .carousel-control-prev-icon{
+  border: 10px black;
 
 }
+
+.carousel-control-next-icon:hover{
+  
+  transform: scale(3.0)
+}
+.carousel-control-prev:hover{
+  transform: scale(3.0)
+}
+.carousel-control-next-icon:hover{
+  transform: scale(3.0)
+}
+.carousel-control-prev:hover{
+  transform: scale(3.0)
+}
+
+
+*/
+
+/*The instructions, purpose and contact info on welcome page*/
+.instructions{
+  text-align: left;
+}
+
 
 .carousel-control-prev, .carousel-control-next{
   width: 5%;
@@ -119,9 +228,11 @@ code {
   opacity: 0%;
 }
 
+/*
 .sv_qstn {
   text-align: center;
 }
+*/
 
 
 
@@ -130,9 +241,9 @@ code {
 /*limit the width so that the content is not too much stretched
   in ultrawide monitors
 */
-@media screen and (min-width: 1500px) {
-  .sv_main{
-    max-width: 70%;
+@media screen and (min-width: 1920px) {
+  .App{
+    max-width: 1920px;
   }
 
 
@@ -198,10 +309,6 @@ code {
   width: 240px;
   
 }
-
-
-
-
 
 
 

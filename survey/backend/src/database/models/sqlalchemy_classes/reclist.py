@@ -4,7 +4,6 @@ class RecommendationList_Model(db.Model):
     __tablename__= 'reclist'
     id = db.Column(db.Integer(), primary_key=True)
     dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
-    algorithm_id = db.Column(db.Integer(), db.ForeignKey('algorithm.id'))
     offline_user_id = db.Column(db.Integer())
     recommendation_list = db.Column(db.String(1024))
 
@@ -13,6 +12,5 @@ class RecommendationList_Model(db.Model):
             'id':self.id,
             'dataset_id': self.dataset_id,
             'recommendation_list': self.recommendation_list,
-            'algorithm_id': self.algorithm_id,
             'offline_user_id': self.offline_user_id
         })
