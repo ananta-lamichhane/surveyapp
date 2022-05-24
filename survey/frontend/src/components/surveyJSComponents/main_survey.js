@@ -253,7 +253,7 @@ const MainSurvey =  () =>
      </div>)
      }else{
          return(<div>
-             <h5>Hello Loading</h5>
+             <h5>Loading</h5>
          </div>)
              
          
