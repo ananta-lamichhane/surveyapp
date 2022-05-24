@@ -22,20 +22,26 @@ The src folder contains all source code for the API built up using Flask in pyth
 ### Installation
 This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary:
 #### 1. Clone the repository.
-git clone https://github.com/ananta-lamichhane/surveyapp.git
+`git clone https://github.com/ananta-lamichhane/surveyapp.git`
 #### 2. Install backend 
 1. Change to the survey directory of the cloned repo.
-2. Create a python virtual environment python3 -m venv venv
-3. Activate the virtual environment source venv/bin/activate
-4. Install the requirements from requirements.txt file. pip install -r backend/src/requirements.txt
-5. Serve the application with gunicorn on port 5000. gunicorn --bind 0.0.0.0:5000 backend.src.app:app
-  To run the server in background, use --daemon argument at the end of command in 5.
+2. Create a python virtual environment
+`python3 -m venv venv`
+4. Activate the virtual environment 
+`source venv/bin/activate`
+6. Install the requirements from requirements.txt file. 
+`pip install -r backend/src/requirements.txt`
+8. Serve the application with gunicorn on port 5000. 
+`gunicorn --bind 0.0.0.0:5000 backend.src.app:app`
+  To run the server in background, use `--daemon` argument at the end of command in 5.
   
 #### 3. Install frontend
 1. Make sure NodeJS is installed. Use official documentation.
 2. Change directory to survey/frontend.
-3. Install necessary modules. npm install
-4. Start the node server on port 3000.
+3. Install necessary modules. 
+`npm install`
+5. Start the node server on (defualt) port 3000.
+`npm start`
 
 #### 4. Prepare the data
 Certain directories and file name conventions must be followed so that the relevant data (datasets, recommendation lists, matchmaking and next-item selection) can be properly configured.
