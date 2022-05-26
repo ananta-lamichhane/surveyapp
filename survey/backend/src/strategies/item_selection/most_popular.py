@@ -25,7 +25,7 @@ class Strategy(BaseStrategy):
         
         ##convert the ratings that came as string to dict
         current_ratings_dict = ast.literal_eval(current_ratings)
-        already_rated_items = None
+        already_rated_items = []
 
         ## for first item, the dict does not contain anything
         if current_ratings_dict:
@@ -50,6 +50,9 @@ class Strategy(BaseStrategy):
         #next_itme = random.choice(most_popular_movies_minus_already_rated)
 
         next_item = random.choice(most_popular_movies)
+
+        while next_item in already_rated_items:
+            next_item = random.choice(most_popular_movies)
         return next_item
     
 
