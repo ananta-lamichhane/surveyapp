@@ -52,7 +52,7 @@ Certain directories and file name conventions must be followed so that the relev
 1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 
-#### 5. Get evaluation results
+#### 6. Get evaluation results
 The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
 ## Customization
 You can implement your own matchmaking logic and next-item selection logic. The abstract classes in backend/src/strategies need to be implemented.
