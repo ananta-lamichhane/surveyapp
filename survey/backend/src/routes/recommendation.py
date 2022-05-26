@@ -1,10 +1,14 @@
 from flask import Blueprint, request, jsonify
 import json
 import os
+import csv
 from flask_cors import cross_origin
 import pandas as pd
+from sklearn.metrics import consensus_score
 from sqlalchemy import exc
 import importlib
+
+from backend.src.database.models.sqlalchemy_classes.response import Response
 
 
 from ..database.models.sqlalchemy_classes.participant import Survey_Participant
@@ -15,15 +19,9 @@ from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.dataset import Dataset
 from ..utils.utils import create_item_descritptions
-from ..database.models.abstract_classes.machmaking import NaiveMatchmaking
-from ..strategies.matchmaking.naive_matchmaking_strategy import Strategy
 
 ## createa a blueprint for this route to be easily added to root later.
 recommendation_bp = Blueprint('recommendation', __name__)
-
-
-
-
 
 @recommendation_bp.route('/recommendation', methods = ['POST', 'GET'])
 @cross_origin(supports_credentials=True)
@@ -77,6 +75,7 @@ def handle_recommendations():
             return {'Success': 'Ratings saved successfully'}
         else:
             return {'Error:': 'Ratings could not be saved. Check save save_recom_ratings function in /recommendation route.'}
+       
     else:
         return {'Error':'Request could not be handled by both GET and POST in /recommendation route.'}
 
@@ -92,19 +91,28 @@ def send_recommendations(token, offline_user_id, reclist_files):
     rel_questionnaire = db.session.query(Questionnaire).filter_by(token=token).first()
     rel_survey = db.session.query(Survey).filter_by(id = rel_questionnaire.survey_id).first()
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
-
-    payload = []
+    rel_partcipant_id = db.session.query(Survey_Participant).filter_by(token=token).first().id
+    rel_responses = db.session.query(Reclist_Response).filter_by(participant_id=rel_partcipant_id).first()
+    print(f'offline user id = {offline_user_id}')
+    payload = {
+    }
+    if rel_responses:
+        print(str(rel_responses))
+        payload['saved_session'] = str(rel_responses.ratings)
+    else:
+        payload['saved_session'] = {}
+    payload['offline_user_id']= offline_user_id
+    reclists = []
     for filename in reclist_files:
         df_filepath =os.path.abspath(f'backend/data/recommendation_lists/{filename}.csv')
         df = pd.read_csv(df_filepath,dtype='str')
         #df = pd.read_csv(f'../data/recommendation_lists/{filename}.csv')
         reclist_of_offline_userid  = df.loc[df['userId'] == str(offline_user_id+1)].iloc[:,1:].values.flatten().tolist()
-        payload.append({
+        reclists.append({
                         'reclist_filename':filename,
-                        'offline_user_id': offline_user_id,
                         'items': [create_item_descritptions(item) for item in reclist_of_offline_userid]
         })
-    
+    payload['reclists'] = reclists
     return json.dumps(payload)
 
 
@@ -113,14 +121,37 @@ def save_recom_ratings(token, offline_user_id, reclist_file_paths, ratings):
     rel_survey = db.session.query(Survey).filter_by(id = rel_questionnaire.survey_id).first()
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
     rel_survey_participant = db.session.query(Survey_Participant).filter_by(token=token).first().id
+    rel_response = db.session.query(Reclist_Response).filter_by(participant_id=rel_survey_participant).first()
     response = Reclist_Response(participant_id=rel_survey_participant, reclist_filenames=reclist_file_paths, offline_user_id=offline_user_id, ratings=ratings)
-    try:
-        db.session.add(response)
-        db.session.commit()
-        return 0
-    except exc.SQLAlchemyError as e:
-        db.session.rollback()
-        print(f'ERROR:\nfilename:recommendation.py\nfunction:save_recom_ratings\nerror:{e}')
-        return -1
+    if rel_response:
+        print("response already there. not doing anything")
+    else:
+        try:
+            db.session.add(response)
+            db.session.commit()
+            save_response_to_file(token)
+            return 0
+        except exc.SQLAlchemyError as e:
+            db.session.rollback()
+            print(f'ERROR:\nfilename:recommendation.py\nfunction:save_recom_ratings\nerror:{e}')
+            return -1
 
-        
+def save_response_to_file(token):
+    rel_questionnaire = db.session.query(Questionnaire).filter_by(token=token).first()
+    rel_survey = db.session.query(Survey).filter_by(id = rel_questionnaire.survey_id).first()
+    rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
+    rel_survey_participant = db.session.query(Survey_Participant).filter_by(token=token).first().id
+    rel_reclist_response = db.session.query(Reclist_Response).filter_by(participant_id=rel_survey_participant).first()
+    rel_items_response = db.session.query(Response).filter_by(participant_id=rel_survey_participant).first()
+
+
+    survey_filepath = os.path.abspath(f'backend/data/results/online_eval/{rel_survey.name}.csv')
+    with open(survey_filepath, 'a', newline='') as f:
+        writer = csv.writer(f)
+
+        if os.stat(survey_filepath).st_size == 0:
+            print('File is empty')
+            header = ['token','item_ratings','reclist_reponses']
+            writer.writerow(header)
+        data = [token,json.loads(rel_items_response.ratings),json.loads(rel_reclist_response.ratings)]
+        writer.writerow(data)

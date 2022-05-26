@@ -32,8 +32,6 @@ def create_app():
     from .database.models.sqlalchemy_classes.reclist_questionnaire import Reclist_Questionnaire
     from .database.models.sqlalchemy_classes.reclist_question import Reclist_Question
     from .database.models.sqlalchemy_classes.reclist_response import Reclist_Response
-    from .database.models.abstract_classes.strategy import BaseStrategy, NaiveStrategy
-    from .database.models.abstract_classes.machmaking import MatchmakingBase, NaiveMatchmaking
     from .database.models.sqlalchemy_classes.response import Response
     #from .database.models.sqlalchemy_classes.algorithm import Algorithm
     

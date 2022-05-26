@@ -17,7 +17,6 @@ from ..utils.utils import create_item_descritptions, generate_random_reclists,li
 
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
-from ..database.models.abstract_classes.strategy import BaseStrategy, NaiveStrategy, SohphisticatedStrategy
 from ..database.models.sqlalchemy_classes.dataset import Dataset
 from ..database.models.sqlalchemy_classes.participant import Survey_Participant
 from ..database.models.sqlalchemy_classes.response import Response

@@ -11,11 +11,10 @@ from flask_cors import cross_origin
 from ..database.models.sqlalchemy_classes.survey import Survey
 from ..database.models.sqlalchemy_classes.questionnaire import Questionnaire
 from ..database.models.sqlalchemy_classes.dataset import Dataset
-from ..database.models.abstract_classes.strategy import NaiveStrategy
 from ..database.models.sqlalchemy_classes.participant import Survey_Participant
 from ..database.models.sqlalchemy_classes.response import Response
 from ..utils.utils import create_item_descritptions
-from .. import test_import
+
 
 from ..strategies.matchmaking.naive_matchmaking_strategy import Strategy
 ## createa a blueprint for this route to be easily added to root later.
@@ -48,7 +47,7 @@ def handle_questionnaire():
         tok = (post_json_data)['token']
         ratings = post_json_data['ratings']
 
-        print(f"ratings from frontend : {ratings}")
+        #print(f"ratings from frontend : {ratings}")
         
         ## call helper function to save the rating provided by the frontend to the db
         save_ratings(tok, ratings)
@@ -77,7 +76,7 @@ def handle_questionnaire():
                 }
             }
         '''
-        print(next_item_and_ratings)
+        #print(next_item_and_ratings)
 
         ## return the item description to the frontend
         return next_item_and_ratings
@@ -136,8 +135,8 @@ def send_survey_details(participant_token):
     prev_session_items = None
     try:
         curr_ratings =json.loads(db.session.query(Response).filter_by(participant_id=participant_id).first().ratings)
-        print(f"already rated items:{type(curr_ratings)}")
-        print(f"already rated items:{(curr_ratings)}")
+        #print(f"already rated items:{type(curr_ratings)}")
+        #print(f"already rated items:{(curr_ratings)}")
     except AttributeError as e:
         print("no item rated yet")
 
@@ -165,16 +164,13 @@ def send_next_item_and_current_ratings(participant_token):
     ## find out all current ratings given by the same user
     all_curr_ratings = db.session.query(Response).filter_by(participant_id = rel_participant.id).first().ratings
 
-    if all_curr_ratings:
-        for k in json.loads(all_curr_ratings):
-            print(f'already rated\nitem:{k}')
 
-     ## traverse the db to related strategy using the token number
+    ## traverse the db to related strategy using the token number
     rel_ques = db.session.query(Questionnaire).filter_by(token=participant_token).first()
     rel_survey = db.session.query(Survey).filter_by(id=rel_ques.survey_id).first()
     rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
     rel_strategy_name = rel_survey.item_selection_strategy
-    print(f"strategy name = {rel_strategy_name}")
+    #print(f"strategy name = {rel_strategy_name}")
 
 
 
