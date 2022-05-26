@@ -7,7 +7,7 @@
 ## Getting Started
 
 ### Prerequisites
-A windows / linux system with Python 3.10 and pip for the backend and Node Package Manager (npm) and NodeJS must be installed for the frontend.
+A windows system with Python 3.10 and pip for the backend and Node Package Manager (npm) and NodeJS must be installed for the frontend. The code was tested with a Ubuntu 20.04 server with Python 3.10 installed.
 
 ## Directory structure
 The project is divided into two independent parts. The frontend directory consists of all files and data pertaining to the web application components while the backend directory contains all data (datasets, recommendation lists, evaluation results and artefacts.) and API functionality.
@@ -52,6 +52,8 @@ Certain directories and file name conventions must be followed so that the relev
 1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 
+#### 5. Get evaluation results
+The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
 ## Customization
 You can implement your own matchmaking logic and next-item selection logic. The abstract classes in backend/src/strategies need to be implemented.
 Name each instantiated class "Strategy" and keep save each instance on a different file. The file names are display on the survey creation dashboard to denote
