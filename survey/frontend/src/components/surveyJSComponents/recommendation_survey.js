@@ -108,7 +108,7 @@ const RecomSurvey =  () => {
         </div>):(
 
             <div className='loadingDivContainer'>
-            <Survey.Survey model={createLoadingPage()}/>
+            <Survey.Survey model={createLoadingPage("Fetching your recommendations")}/>
             </div>)
         
         

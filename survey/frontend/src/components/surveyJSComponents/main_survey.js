@@ -8,7 +8,9 @@ import PostData from '../../utils/postdata'
 import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
+import createLoadingPage from './loadingPage'
 const axios = require('axios').default
+
 //import RecommendationPageModel from './recommendation_survey.js.js'
 
 //choose from the built in themes of the surveyjs library
@@ -62,8 +64,9 @@ const MainSurvey =  () =>
     //notifies when fetching is done from the backend, only render after that
     const [fetchFinished, setFetchFinished] = useState(false)
     //all data needed to render item of previous session, in format of next item
-    const [prevSession, setPrevSession] = useState([{}])
-    
+    const [prevSession, setPrevSession] = useState()
+    //keep track of visited page numbers so that data is not fetched twice
+    var visited = []
     
     //send get request to the questionnaire route of the backend
     /*
@@ -107,8 +110,205 @@ const MainSurvey =  () =>
         model2.data = prevRatings
     }
 
- 
+    
 
+
+    // first render of the survey
+    console.log("137")
+   //model2.onAfterRenderSurvey.add(function(option){
+    if(fetchFinished && !surveyDone){
+        console.log("adding pages")
+        for(var i=0; i<numItems; i++){
+            //add total number of 'empty' pages 
+            model2.addPage(CreateTemplatePage(i+1,numItems))
+           
+            model2.pageNextText = "Next"
+        }
+
+        console.log(prevSession)
+      
+        if(prevSession){
+            console.log("there is prevsession")
+           
+
+
+            //if all items were already filled in complete this survey without
+            //go directly to recommendation survey
+            if (prevSession.length>=numItems){
+                alert("You've already finished rating items, you'll be redirected to the recommendations.")
+                model2.doComplete()
+                setSurveyDone(true)
+            }
+            // if there was previous session, add all the elements to the survey
+            visited.push(0)
+            for(var i=0; i<prevSession.length; i++){
+                visited.push(i+1)
+                var page = model2.getPage(i+1)
+                // create a panel with item description, poster and ratins.
+                page.addPanel(CreateNewPanel(prevSession[i]))
+                //since itemid is question name too we'll need to keep track of it
+                var itemId = (prevSession[i].next_item.item_id)
+                //find the rating question on the page
+                var q = page.getQuestionByName(itemId)
+                // remove the question with ratings so as not to let user rate twice
+                page.removeQuestion(q)
+                console.log(model2.data)
+                
+
+                // create a new html with info about the already rated item
+                var newQ = new Survey.Question()
+                console.log(prevSession[i].current_ratings[''+itemId])
+                newQ.fromJSON(  {
+                    "type": "html",
+                    "name": ` 
+                    
+                    ${(model2.data)[itemId] === "-1"?"You skipped this item by clicking 'don't know'": "You rated this item "+(model2.data)[itemId]} }
+                    `,
+                    "html":""
+                   
+                })
+                // find the panel which contained the ratings previously (only one on the page)
+                var panel = page.getPanels()[0]
+                
+            // add the info that the user already rated the item to where the rating was before.
+              panel.addQuestion(newQ, -1)
+            }
+
+            // set current page to the second last page
+            model2.currentPageNo = prevSession.length
+            // run nextPage to trigger the onCurrentPageChanging (see below)
+            // going directly to length+1 does not fetch next item and page is empty
+            console.log("go to next page")
+            var r = model2.nextPage()
+            console.log(r)
+            var val = model2.data
+            var payload = {
+                'token': searchParams.get('token'),
+                'ratings': val,
+            }
+             PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
+            .then(data =>{
+                model2.activePage.addPanel(CreateNewPanel(data))
+                model2.activePage.addNewQuestion('customrating', )
+        
+                console.log("------------")
+                console.log(data)
+
+
+                console.log("------------")
+
+            }); 
+
+        }
+
+    }
+    //})
+
+
+// braveheart: 2, silene of the lambs: 3, shawshank: 1, starwars: -1
+
+    model2.onCurrentPageChanging.add(function(sender,options){
+        console.log("page changing")
+        console.log(model2.currentPageNo)
+        console.log(visited)
+        if (options.isPrevPage && model2.currentPageNo!==1){
+            
+            console.log(model2.currentPageNo)
+            var page = options.newCurrentPage
+           
+            var q = page.questions.at(-1)
+            console.log(q.value)
+           // console.log(itemId)
+            console.log(q)
+            if(q.value){
+            // remove the question with ratings so as not to let user rate twice
+            page.removeQuestion(q)
+            
+
+            // create a new html with info about the already rated item
+            var newQ = new Survey.Question()
+            newQ.fromJSON(  {
+                "type": "html",
+                "name": ` 
+                ${q.value==="-1"?"You skipped this item by clicking 'don't know'":"You rated this item "+q.value} }
+                `,
+                "html":""
+               
+            })
+            // find the panel which contained the ratings previously (only one on the page)
+            var panel = page.getPanels()[0]
+            if(panel){
+                panel.addQuestion(newQ, -1)
+            }
+            
+        // add the info that the user already rated the item to where the rating was before.
+         
+        }
+
+        }
+
+        // do not fetch on pressing previous
+        if (options.isNextPage){
+            console.log("next page")
+    
+            model2.pageNextText = "Next"
+        
+            
+            var val = model2.data
+            console.log("data = ")
+            console.log(val)
+            // currData includes the item ids and ratings for all items rated until now
+            var payload = {
+                'token': searchParams.get('token'),
+                'ratings': val,
+            }
+            var prevSessionLength = prevSession?prevSession.length:0
+
+            //if(model2.currentPageNo < numItems && model2.currentPageNo+1 > prevSessionLength){
+              
+                if(!visited.includes(model2.currentPageNo)){
+                    
+                    PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
+                    .then(data =>{
+                        model2.activePage.addPanel(CreateNewPanel(data))
+                        model2.activePage.addNewQuestion('customrating', )
+                
+                        console.log("------------")
+                        console.log(data)
+
+
+                        console.log("------------")
+    
+                    });
+                    
+                }
+                // add current page to visited pages before going to next one
+                visited.push(model2.currentPageNo)
+                
+
+            //}
+            
+
+        }
+    
+    })
+
+    model2.onComplete.add(function(sender,option){
+        PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify({
+            'token': searchParams.get('token'),
+            'ratings': model2.data,
+        }))
+        .then(data =>{
+            console.log("setting survey done")
+            setSurveyDone(true)
+            console.log(data)
+
+        })
+        
+    })
+
+
+    
 
 
     model2.showQuestionNumbers = "true"
@@ -131,107 +331,6 @@ const MainSurvey =  () =>
     })
 
 
-    // first render of the survey
-    model2.onAfterRenderSurvey.add(function(option){
-
-        for(var i=0; i<numItems; i++){
-            //add total number of 'empty' pages 
-            model2.addPage(CreateTemplatePage(i+1,numItems))
-            model2.pageNextText = "Start"
-        }
-      
-        if(prevSession){
-
-
-            //if all items were already filled in complete this survey without
-            //go directly to recommendation survey
-            if (prevSession.length>=numItems){
-                alert("You've already finished rating items, you'll be redirected to the recommendations.")
-                model2.doComplete()
-            }
-            // if there was previous session, add all the elements to the survey
-            for(var i=0; i<prevSession.length; i++){
-                var page = model2.getPage(i+1)
-                page.addPanel(CreateNewPanel(prevSession[i]))
-            }
-
-            // set current page to the second last page
-            model2.currentPageNo = prevSession.length
-            // run nextPage to trigger the onCurrentPageChanging (see below)
-            // going directly to length+1 does not fetch next item and page is empty
-            model2.nextPage()
-        }
-
-      
-    })
-
-
-
-    
-    //every time when next is clicked fetches next item and adds it to the end of the list
-    
-    //keep track of visited page numbers so that data is not fetched twice
-    var visited = []
-
-    model2.onCurrentPageChanging.add(function(sender,options){
-
-        // do not fetch on pressing previous
-        if (options.isNextPage){
-    
-            model2.pageNextText = "Next"
-        
-            
-            var val = model2.data
-            // currData includes the item ids and ratings for all items rated until now
-            var payload = {
-                'token': searchParams.get('token'),
-                'ratings': val,
-            }
-            var prevSessionLength = prevSession?prevSession.length:0
-
-            if(model2.currentPageNo+1 < numItems !==1 && model2.currentPageNo+1 > prevSessionLength){
-              
-                if(!visited.includes(model2.currentPageNo)){
-                    
-                    PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
-                    .then(data =>{
-                        model2.activePage.addPanel(CreateNewPanel(data))
-                        model2.activePage.addNewQuestion('customrating', )
-                
-                        console.log("------------")
-                        console.log(data)
-
-
-                        console.log("------------")
-    
-                    });
-                    
-                }
-                // add current page to visited pages before going to next one
-                visited.push(model2.currentPageNo)
-                
-
-            }
-            
-
-        }
-    
-    })
-
-    model2.onComplete.add(function(sender,option){
-        PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify({
-            'token': searchParams.get('token'),
-            'ratings': model2.data,
-        }))
-        .then(data =>{
-            console.log("setting survey done")
-            setSurveyDone(true)
-            console.log(data)
-
-        })
-        
-    })
-
 
      if(fetchFinished ){
         return(
@@ -252,9 +351,11 @@ const MainSurvey =  () =>
     
      </div>)
      }else{
-         return(<div>
-             <h5>Loading</h5>
-         </div>)
+         return((
+
+            <div className='loadingDivContainer'>
+            <Survey.Survey model={createLoadingPage("Fetching items.")}/>
+            </div>))
              
          
      }

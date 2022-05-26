@@ -100,7 +100,7 @@ function CreateNewPanel(rawData){
 
                     "type": "panel",
                     "innerIndent": 1,
-                    "name": rawData.next_item.item_id,
+                    "name": "panel",
                 // "state": "expanded",
                    
                     "elements": [
@@ -128,14 +128,6 @@ function CreateNewPanel(rawData){
                             "isRequired": true,
                             "value":"rating"
                            
-                        },
-                        {
-                            "type": "text",
-                            "visibleIf":"{rating} <-10",
-                            "name": "rating", //+ rawData.next_item.item_id,
-                            "placeHolder": rawData.next_item.item_id,
-                            "isRequired": true,
-                            
                         }
                     ]
                 }

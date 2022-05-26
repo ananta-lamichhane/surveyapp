@@ -8,7 +8,7 @@ with text in form of a HTML component which instructs the participant to wait fo
 recommendations
 */
 
-function createLoadingPage(){
+function createLoadingPage(message){
     const loadingModelJSON = {
         "title": "Recommender Systems Survey",
         "name": "recSysSurvey",
@@ -23,7 +23,7 @@ function createLoadingPage(){
                         "html": 
                         `
                         <div class='loadingDiv'>
-                            <h3>Please wait. Your recommendations are being loaded.</h3>
+                            <h3>Please wait. ${message}.</h3>
                             <div class="d-flex justify-content-center">
                                 <div class="spinner-border" role="status">
                                     <span class="visually-hidden">Loading...</span>

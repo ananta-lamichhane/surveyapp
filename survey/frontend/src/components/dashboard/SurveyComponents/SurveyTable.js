@@ -101,8 +101,12 @@ function Row(props) {
               {row.tokens.map((token) => (
                 <ListItem key={token}>
                 <ListItemText
-                  primary={token}
-                 
+                  primary={
+                  <div className='tokenAndLink'>
+                    <p>{`token: ${token}`}</p>
+                    <p> Participation Link: </p>
+                    <a href={`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}>{`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}</a>
+                    </div>}
                 />
                 </ListItem>
             ))}
