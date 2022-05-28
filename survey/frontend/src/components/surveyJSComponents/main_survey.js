@@ -111,10 +111,6 @@ const MainSurvey =  () =>
     }
 
     
-
-
-    // first render of the survey
-    console.log("137")
    //model2.onAfterRenderSurvey.add(function(option){
     if(fetchFinished && !surveyDone){
         console.log("adding pages")
@@ -128,10 +124,6 @@ const MainSurvey =  () =>
         console.log(prevSession)
       
         if(prevSession){
-            console.log("there is prevsession")
-           
-
-
             //if all items were already filled in complete this survey without
             //go directly to recommendation survey
             if (prevSession.length>=numItems){
@@ -152,7 +144,7 @@ const MainSurvey =  () =>
                 var q = page.getQuestionByName(itemId)
                 // remove the question with ratings so as not to let user rate twice
                 page.removeQuestion(q)
-                console.log(model2.data)
+         
                 
 
                 // create a new html with info about the already rated item
@@ -160,12 +152,10 @@ const MainSurvey =  () =>
                 console.log(prevSession[i].current_ratings[''+itemId])
                 newQ.fromJSON(  {
                     "type": "html",
-                    "name": ` 
-                    
-                    ${(model2.data)[itemId] === "-1"?"You skipped this item by clicking 'don't know'": "You rated this item "+(model2.data)[itemId]} }
+                    "title": ` 
+                    ${(model2.data)[itemId] === "-1"?"You skipped this item by clicking 'don't know'": "You rated this item "+(model2.data)[itemId] }
                     `,
-                    "html":""
-                   
+                    "html":"<p>Testtesttesttest</p>"
                 })
                 // find the panel which contained the ratings previously (only one on the page)
                 var panel = page.getPanels()[0]
@@ -180,7 +170,6 @@ const MainSurvey =  () =>
             // going directly to length+1 does not fetch next item and page is empty
             console.log("go to next page")
             var r = model2.nextPage()
-            console.log(r)
             var val = model2.data
             var payload = {
                 'token': searchParams.get('token'),
@@ -205,21 +194,19 @@ const MainSurvey =  () =>
     //})
 
 
-// braveheart: 2, silene of the lambs: 3, shawshank: 1, starwars: -1
 
     model2.onCurrentPageChanging.add(function(sender,options){
-        console.log("page changing")
-        console.log(model2.currentPageNo)
-        console.log(visited)
+
+        //triggered when previous is pressed.
+        // do not do anything if it's the welcome page.
         if (options.isPrevPage && model2.currentPageNo!==1){
             
-            console.log(model2.currentPageNo)
+            //newCurrentPage is the one which comes up AFTER pressing previous
             var page = options.newCurrentPage
            
             var q = page.questions.at(-1)
-            console.log(q.value)
-           // console.log(itemId)
-            console.log(q)
+
+            //if the question is {itemId:rating}, the value should exist
             if(q.value){
             // remove the question with ratings so as not to let user rate twice
             page.removeQuestion(q)
@@ -331,7 +318,7 @@ const MainSurvey =  () =>
     })
 
 
-
+        //wait until post request has finished fetching data
      if(fetchFinished ){
         return(
       <div className='mainSurvey'>
@@ -351,6 +338,7 @@ const MainSurvey =  () =>
     
      </div>)
      }else{
+         //if the fetching has not finished yet show the loading page
          return((
 
             <div className='loadingDivContainer'>
