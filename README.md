@@ -7,7 +7,7 @@
 ## Getting Started
 
 ### Prerequisites
-A windows / linux system with Python 3.10 and pip for the backend and Node Package Manager (npm) and NodeJS must be installed for the frontend.
+A windows system with Python 3.10 and pip for the backend and Node Package Manager (npm) and NodeJS must be installed for the frontend. The code was tested with a Ubuntu 20.04 server with Python 3.10 installed.
 
 ## Directory structure
 The project is divided into two independent parts. The frontend directory consists of all files and data pertaining to the web application components while the backend directory contains all data (datasets, recommendation lists, evaluation results and artefacts.) and API functionality.
@@ -17,7 +17,10 @@ The data directory contains the datasets, recommendation lists for online evalua
 
 
 ### src
-The src folder contains all source code for the API built up using Flask in python. The src directory contains 
+The src folder contains all source code for the API built up using Flask in python.
+
+### Frontend
+The frontend directory resembles a directory structure created automatically by create-react-app. All react components related to the survey frontend are located in the src/components directory.
 
 ### Installation
 This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary:
@@ -45,23 +48,20 @@ This project uses react JS for frontend ans Python Flask as backend / API. To cu
 
 #### 4. Prepare the data
 Certain directories and file name conventions must be followed so that the relevant data (datasets, recommendation lists, matchmaking and next-item selection) can be properly configured.
-1. To add a new database for a survey, create a new directory inside data/datasets with the relevant name of the directory (the directory name will be visible when using the dashboard to create and manage surveys) and place the ratings.csv user-item matrix file into the directory.
+1. To add a new dataset for a survey, create a new directory inside data/datasets with the relevant name of the directory (the directory name will be visible when using the dashboard to create and manage surveys) and place the ratings.csv user-item matrix file into the directory.
 2. To add a new recommendation list for online evaluation, put the relevant recommendation list file in the recommendation_lists directory. The name of the file identifies the recommendation lists file (<filename>.csv) while creating and managing the survey.
 
-#### 5. Add nex item selection and matchmaking strategies
+#### 5. Add next item selection and matchmaking strategies
 1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 
+#### 6. Get evaluation results
+The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
 ## Customization
 You can implement your own matchmaking logic and next-item selection logic. The abstract classes in backend/src/strategies need to be implemented.
 Name each instantiated class "Strategy" and keep save each instance on a different file. The file names are display on the survey creation dashboard to denote
 the corresponding strategies.
 
 ## Deployment
-1. Clone the repository
-2. Change directory to survey directory
-3. To deploy the Flask API server:
-4. To deploy the frontend react web application
-5. Make the API available to the internet as e.g. api.mydomain.com. 
-6. Make the frontend available as e.g. survey.mydomain.com. Change the REACT_APP_API_URL environment variable in survey/frontend/.env to the API URI.
-
+Deployment for a productive environment can be done by building an app bundle using NPM for the frontend. Backend can be deployed as is using gunicorn or similar WSGI web servers. Reverse proxy such as Nginx can be using to host both frontend and backend on a server and route traffic based on the URL endpoints.
+<More to come>
