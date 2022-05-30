@@ -9,16 +9,16 @@
 ### Prerequisites
 A computer with linux or windows with Python 3.10 and pip for the backend and Node Package Manager (npm) and NodeJS must be installed for the frontend. The code was tested with a Ubuntu 20.04 server with Python 3.10 installed.
 Check if the necessary requirments are installed as follows.
-1. Checking python, NodeJS and pip version
+#### Checking python, NodeJS and pip version
 Open a bash terminal (linux) or command prompt / powershell terminal (windows) and type the following commands to show the current versions of the installed applications. If not installed, the commands won't produce any output.
-Python: python --version
-Pip: pip --version
-NodeJS: node --version
+- Python: python --version
+- Pip: pip --version
+- NodeJS: node --version
 
 If not already installed, follow the official documentations to get and install.
-Python: https://wiki.python.org/moin/BeginnersGuide
-Pip: https://packaging.python.org/en/latest/tutorials/installing-packages/#ensure-you-can-run-pip-from-the-command-line
-NodeJS: https://nodejs.org/en/download/
+- Python: https://wiki.python.org/moin/BeginnersGuide
+- Pip: https://packaging.python.org/en/latest/tutorials/installing-packages/#ensure-you-can-run-pip-from-the-command-line
+- NodeJS: https://nodejs.org/en/download/
 
 
 
