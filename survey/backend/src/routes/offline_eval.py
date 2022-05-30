@@ -17,6 +17,8 @@ from ..app import db
 import surprise
 from surprise import SVD, SVDpp, NMF, SlopeOne, KNNBaseline, KNNBasic, KNNWithMeans, KNNWithZScore, CoClustering, BaselineOnly, NormalPredictor
 import os
+import pandas as pd
+import numpy as np
 
 
 ## createa a blueprint for this route to be easily added to root later.
@@ -56,9 +58,11 @@ def handle_offline_eval():
         eval_dataset = data_from_frontend['offlineEvalDataset']
         reclist_length = int(data_from_frontend['reclistLength'])
 
+    
 
         for algo in algos_for_reclist:
-            create_and_save_algorith(algo, "placeholder")
+            create_recommendation_lists(eval_dataset, algorithm_name=algo, reclist_length=10)
+        #    create_and_save_algorith(algo, "placeholder")
            # algo_id = db.session.query(Algorithm).filter_by(name=algo).first().id
            # create_recommendation_lists(eval_dataset, algo_id,reclist_length)
 
@@ -116,8 +120,8 @@ def create_and_save_algorith(name, offline_evaluation_name):
 
 
 
-
-def create_recommendation_lists(dataset, algorithm_id,reclist_length=10):
+'''
+def create_recommendation_lists(dataset, algorithm_name,reclist_length=10):
     
     ##look for the databset with the given name in db, names are unique so only one result
     dataset = db.session.query(Dataset).filter_by(name=dataset).first()
@@ -125,7 +129,7 @@ def create_recommendation_lists(dataset, algorithm_id,reclist_length=10):
     
     
     ## create a string of structure algorithm() to make compatible with surprise implementation
-    algo_name = (db.session.query(Algorithm).filter_by(id=algorithm_id).first()).name
+    algo_name = algorithm_name
     fn = f"{algo_name}()"
 
     ## evaluaate the fn string as a function 
@@ -133,12 +137,23 @@ def create_recommendation_lists(dataset, algorithm_id,reclist_length=10):
 
     ## extract ds file path from db entry
     dataset_path = dataset.file_path
-    dataset_df = dataset.load_dataset()
-    users = dataset_df['userId'].unique()
-    items = dataset_df['movieId'].unique()
+    #dataset_df = dataset.load_dataset()
+    dataset_df = None
+    try:
+        dataset = pd.read_csv(filepath_or_buffer= dataset_path, sep=';', dtype='str', encoding="ISO-8859-1")
+        dataset_df= dataset
+    except FileNotFoundError as e:
+            print("ERROR:\nDataset:file not found")
+            return e
+    print(f"dataset = {dataset_df.head(5)}")
+    users = dataset_df['User-ID'].unique()
+    #users = dataset_df['userId'].unique()
+    items = dataset_df['ISBN'].unique()
+    #items = dataset_df['movieId'].unique()
 
     ## prepare for training and predicting using surprise library functions
-    reader = surprise.Reader(line_format='user item rating timestamp', sep=',',skip_lines=1)
+    #reader = surprise.Reader(line_format='user item rating timestamp', sep=',',skip_lines=1)
+    reader = surprise.Reader(line_format='user item rating', sep=';',skip_lines=1)
 
     data = surprise.Dataset.load_from_file(dataset_path, reader)
 
@@ -159,14 +174,93 @@ def create_recommendation_lists(dataset, algorithm_id,reclist_length=10):
         # print(u_recs)
             u_recs.sort(key = lambda x:x.est, reverse=True)
             preds.append({'userId': u, 'reclist':[u.iid for u in u_recs[0:reclist_length-1]]})
-            reclist = RecommendationList_Model(dataset_id=dataset.id, algorithm_id=algorithm_id, offline_user_id=u, recommendation_list = json.dumps([u.iid for u in u_recs[0:reclist_length-1]])  )
+            #reclist = RecommendationList_Model(dataset_id=dataset.id, algorithm, offline_user_id=u, recommendation_list = json.dumps([u.iid for u in u_recs[0:reclist_length-1]])  )
             try:
                 csv_write.writerow([u] + (preds))
-                db.session.add(reclist)
-                db.session.commit()
+                #db.session.add(reclist)
+                #db.session.commit()
             except exc.SQLAlchemyError as e:
                 print(e)
-                db.session.rollback()
+                #db.session.rollback()
+        
+    all_reclists = db.session.query(RecommendationList_Model).all()
+    for r in all_reclists:
+        print(str(r))
+    
+    ## sort the predictions based on the estimated ratings in descending order in place
+
+    
+'''
+def create_recommendation_lists(dataset, algorithm_name,reclist_length=10):
+    
+    ##look for the databset with the given name in db, names are unique so only one result
+    dataset = db.session.query(Dataset).filter_by(name=dataset).first()
+
+    
+    
+    ## create a string of structure algorithm() to make compatible with surprise implementation
+    algo_name = algorithm_name
+    fn = f"{algo_name}()"
+
+    ## evaluaate the fn string as a function 
+    algo = eval(fn)
+
+    ## extract ds file path from db entry
+    dataset_path = dataset.file_path
+    #dataset_df = dataset.load_dataset()
+    dataset_df = None
+    try:
+        dataset = pd.read_csv(filepath_or_buffer= dataset_path, sep=';', dtype='str', encoding="ISO-8859-1")
+        dataset_df= dataset
+    except FileNotFoundError as e:
+            print("ERROR:\nDataset:file not found")
+            return e
+    print(f"dataset = {dataset_df.head(5)}")
+    users = dataset_df['User-ID'].unique()
+    #users = dataset_df['userId'].unique()
+    items = dataset_df['ISBN'].unique()
+    #items = dataset_df['movieId'].unique()
+
+
+    ## prepare for training and predicting using surprise library functions
+    #reader = surprise.Reader(line_format='user item rating timestamp', sep=',',skip_lines=1)
+    #reader = surprise.Reader(line_format='user item rating', sep=';',skip_lines=1)
+
+    #data = surprise.Dataset.load_from_file(dataset_path, reader)
+
+    ## use full dataset as trainset
+    #trainset = data.build_full_trainset()
+    #algo.fit(trainset)
+    
+    ## container for best predicted item ids
+    
+    with open('./testcsv.csv', 'w', newline="") as f:
+        csv_write = csv.writer(f)
+        header = ['userId'] + [f'item_{i}' for i in range(1,11)]
+        csv_write.writerow(header)
+        for u in users:
+            preds = []
+            print(f"User {u}")
+            
+            u_recs = []
+            u_recs = np.random.choice(items, 50).tolist()
+            
+            print(u_recs[0:5])
+            #for i in items:
+                #pred = algo.predict(str(u), str(i), r_ui=4, verbose=False)
+                #u_recs.append(pred)
+        # print(u_recs)
+            
+            #u_recs.sort(key = lambda x:x.est, reverse=True)
+            recs = ({'userId': u, 'reclist':u_recs[0:reclist_length]})
+            #reclist = RecommendationList_Model(dataset_id=dataset.id, algorithm, offline_user_id=u, recommendation_list = json.dumps([u.iid for u in u_recs[0:reclist_length-1]])  )
+            try:
+                csv_write.writerow([u] + u_recs[0:reclist_length])
+                #db.session.add(reclist)
+                #db.session.commit()
+            except exc.SQLAlchemyError as e:
+                print(e)
+                #db.session.rollback()
         
     all_reclists = db.session.query(RecommendationList_Model).all()
     for r in all_reclists:

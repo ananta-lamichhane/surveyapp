@@ -29,6 +29,7 @@ def handle_recommendations():
 
     if request.method == "GET":
         token = request.args.get("token")
+        
         ## recommendation get is called when a particiapnt has finished answering the survey questions 
         ## i.e. item ratings and now its turn to show him/her the recommendations
         ## an answer to the get request should be all of the recommendation lists to be shown
@@ -43,7 +44,6 @@ def handle_recommendations():
         rel_reclist_files = json.loads(rel_survey.reclist_filenames)
           ## new item selection strategies are stored in the src/matchmaking folder
         ## each file has a different name but contains a class called Strategy in it
-
         ## load the related strategy file (module) from the directory
         loaded_module = importlib.import_module(f'.{rel_matchmaking_strategy}', 'backend.src.strategies.matchmaking')
         #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')

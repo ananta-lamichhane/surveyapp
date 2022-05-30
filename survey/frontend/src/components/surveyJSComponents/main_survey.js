@@ -5,7 +5,7 @@ import * as Survey from 'survey-react'
 import createRatingsWidget from '../customWidgets/ratingWidget'
 import WelcomePage from '../surveyJSTemplateJSONS/welcome_page'
 import PostData from '../../utils/postdata'
-import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
+import {CreateNewQuestion, CreateNewPanelBX, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
 import createLoadingPage from './loadingPage'
@@ -137,7 +137,7 @@ const MainSurvey =  () =>
                 visited.push(i+1)
                 var page = model2.getPage(i+1)
                 // create a panel with item description, poster and ratins.
-                page.addPanel(CreateNewPanel(prevSession[i]))
+                page.addPanel(CreateNewPanelBX(prevSession[i]))
                 //since itemid is question name too we'll need to keep track of it
                 var itemId = (prevSession[i].next_item.item_id)
                 //find the rating question on the page
@@ -177,7 +177,7 @@ const MainSurvey =  () =>
             }
              PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
             .then(data =>{
-                model2.activePage.addPanel(CreateNewPanel(data))
+                model2.activePage.addPanel(CreateNewPanelBX(data))
                 model2.activePage.addNewQuestion('customrating', )
         
                 console.log("------------")
@@ -257,7 +257,7 @@ const MainSurvey =  () =>
                     
                     PostData(process.env.REACT_APP_API_URL+'/questionnaire', JSON.stringify(payload))
                     .then(data =>{
-                        model2.activePage.addPanel(CreateNewPanel(data))
+                        model2.activePage.addPanel(CreateNewPanelBX(data))
                         model2.activePage.addNewQuestion('customrating', )
                 
                         console.log("------------")

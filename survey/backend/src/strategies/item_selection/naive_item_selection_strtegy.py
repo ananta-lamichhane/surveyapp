@@ -27,7 +27,7 @@ class Strategy(BaseStrategy):
         print(f"get_next_item: current rated items {last_item}")
         dataset = ""
         try:
-            dataset = pd.read_csv(filepath_or_buffer= self.__dataset_path, sep=',', dtype='str')
+            dataset = pd.read_csv(filepath_or_buffer= self.__dataset_path, sep=';', dtype='str')
           
         except FileNotFoundError as e:
             print("ERROR:\nnaive_item_selection:file not found")
@@ -35,7 +35,9 @@ class Strategy(BaseStrategy):
 
         ## select a random item
         item = dataset.sample(axis="rows")
-        all_unique_itemIds = (dataset['movieId'].unique().tolist())[0:50]
+        all_unique_itemIds = (dataset['ISBN'].unique().tolist())[0:50]
+        #all_unique_itemIds = (dataset['movieId'].unique().tolist())[0:50]
+        print(f"all unique itemids : {all_unique_itemIds}")
 
         next_item = random.choice(all_unique_itemIds)
 

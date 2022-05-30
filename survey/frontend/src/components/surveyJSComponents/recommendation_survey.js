@@ -39,7 +39,8 @@ const RecomSurvey =  () => {
        }
        setOfflineUserId(backendData.data.offline_user_id)
       
-       setRecomLists(createRecomElements(backendData.data.reclists))
+       //setRecomLists(createRecomElements(backendData.data.reclists))
+       setRecomLists(createRecomElementsBX(backendData.data.reclists))
     }
     useEffect(() => {
         var response = getDataFromBackend()
@@ -174,6 +175,8 @@ function createImageDivsStringPassive(rawData, reclistIndex){
 
 function createRecomElements(rawData){
 
+    console.log("rawdata recom")
+    console.log(rawData)
     // first create a container for all the pages
     // if each reclist needs a page of its own we'll need multiple pages
     //setOfflineUserId(rawData.offline_user_id)
@@ -344,3 +347,208 @@ export default RecomSurvey
 // start and next thing
 // movie rating based on description
 // distance between the UI elements
+
+
+
+
+
+function createRecomElementsBX(rawData){
+
+    console.log("rawdata recom")
+    console.log(rawData)
+    // first create a container for all the pages
+    // if each reclist needs a page of its own we'll need multiple pages
+    //setOfflineUserId(rawData.offline_user_id)
+    
+    var recomSurvey = {
+        "title": "Recommender Systems Survey",
+        "name": "recSysSurvey",
+        "pages": []
+    }
+
+    // recomPage represents a single page of the reclist survey
+    // it can either contain single reclist and questionnaire related to the questionnaire
+    // or all reclists at once and questionnaire at last, the former is implemented here
+      var  recomPage = {
+          // (subjective rating questions about the reclist (s))
+            "name": "pageSome",
+            "elements":[
+                {
+                    "type": "panel",
+                    "name": "questionsPanel",
+                    "elements":[
+                        {
+                            "type": "html",
+                            "name": "posterCarousel",
+                            "title":"Recommendation List 1",
+                            "html": `<h5>Please first observe the following recommendation lists
+                                    then answer the questions. Click on the buttons to scroll left/right.</h5>`
+                        },
+                        {
+                            "type": "html",
+                            "name": "posterCarousel",
+                            "title":"Recommendation List 1",
+                            "html": 
+                            `
+                            <h5>Recommendation List 1 </h5>
+                            <div id="gallery" class="carousel slide" data-interval="false">
+                                <a class="carousel-control-prev" href="#gallery" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>    
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row">
+                                            
+                                            ${createImageDivsStringActiveBX(rawData,0)}
+                                        </div>
+                                    </div>
+
+                                    <div class="carousel-item">
+                                        <div class="row">
+                                        ${createImageDivsStringPassiveBX(rawData,0)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <a class="carousel-control-next" href="#gallery" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+
+                            `
+                        },
+                        {
+                            "type": "html",
+                            "name": "posterCarousel",
+                            "title":"Recommendation List 1",
+                            "html": 
+                            `
+                            <h5>Recommendation List 2 </h5>
+                            <div id="gallery2" class="carousel slide" data-interval="false">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row">
+                                            
+                                            ${createImageDivsStringActiveBX(rawData,1)}
+                                        </div>
+                                    </div>
+
+                                    <div class="carousel-item">
+                                        <div class="row">
+                                        ${createImageDivsStringPassiveBX(rawData,1)}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a class="carousel-control-prev" href="#gallery2" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+
+                                <a class="carousel-control-next" href="#gallery2" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+
+                            `
+                        },
+                        {
+                            "type": "rating",
+                            "name": "satisfaction",
+                            "title": "Which recommendation list would better help you find books to read?",
+                            "isRequired": true,
+                            "mininumRateDescription": "List 1",
+                            "maximumRateDescription": "List 2"
+                        }, {
+                            "type": "rating",
+                            "name": "diversity",
+                 
+                            "title": "Which list has a more varied selection of books?",
+                            "mininumRateDescription": "List 1",
+                            "maximumRateDescription": "List 2"
+                        },
+                        {
+                            "type": "rating", // can also be used for novelty as in ekstrand
+                            "name": "serendipity",
+                 
+                            "title": "Which list has more pleasantly surprising books?",
+                            "mininumRateDescription": "List 1",
+                            "maximumRateDescription": "List 2"
+                        },
+                        {
+                            "type": "rating",
+                            "name": "acuuracy",
+                 
+                            "title": "Which list has more books that you find appealing?",
+                            "mininumRateDescription": "List 1",
+                            "maximumRateDescription": "List 2"
+                        },
+                        {
+                            "type": "rating",
+                            "name": "understandsMe",
+                 
+                            "title": "Which list beter understands your taste in books?",
+                            "mininumRateDescription": "List 1",
+                            "maximumRateDescription": "List 2"
+                        }
+                    ]
+                }
+               
+            ]
+        }
+
+        recomSurvey.pages.push(recomPage)
+
+return recomSurvey
+}
+
+function createImageDivsStringActiveBX(rawData, reclistIndex){
+    var i = reclistIndex
+    var res = ""
+
+    for( var j=0; j< Math.floor(rawData[i].items.length/2); j++){
+        var divString = `
+        <div class="col">
+            <p id="movieTitleReclist" class="movieTitleReclist"><strong>${rawData[i].items[j].description.title}</strong> </p>
+            <img class="img-fluid" src="${rawData[i].items[j].description.image_link}"  alt="Image 1"/>
+            <div class="overflow-auto carousel-caption d-none d-md-block card">
+                <6>Year: ${rawData[i].items[j].description.year}
+                <h6>Author: ${rawData[i].items[j].description.author}</h5>
+                <h6>Publisher: ${rawData[i].items[j].description.publisher}</h5>
+              
+            </div>
+            </div>
+        `
+
+        res = res + divString
+    }
+   
+    return res
+}
+
+function createImageDivsStringPassiveBX(rawData, reclistIndex){
+    var i = reclistIndex
+    var res = ""
+
+    for( var j=Math.ceil(rawData[i].items.length/2); j< rawData[i].items.length; j++){
+        var divString = `
+        <div class="col">
+            <p id="movieTitleReclist" class = "movieTitleReclist"><strong>${rawData[i].items[j].description.title}</strong> </p>
+            <img class="img-fluid" src="${rawData[i].items[j].description.image_link}"  alt="Image 1"/>
+            <div class="overflow-auto carousel-caption d-none d-md-block card">
+            <6>Year: ${rawData[i].items[j].description.year}
+            <h6>Author: ${rawData[i].items[j].description.author}</h5>
+            <h6>Publisher: ${rawData[i].items[j].description.publisher}</h5>
+          
+            </div>
+        
+            </div>
+        `
+
+        res = res + divString
+    }
+
+    return res
+}

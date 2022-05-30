@@ -24,7 +24,7 @@ def create_app():
    ## import all models before initializing the database
     from .database.models.sqlalchemy_classes.survey import Survey
     from .database.models.sqlalchemy_classes.dataset import Dataset
-    from .database.models.sqlalchemy_classes.offline_eval import Offline_eval
+    #from .database.models.sqlalchemy_classes.offline_eval import Offline_eval
     from .database.models.sqlalchemy_classes.participant import Survey_Participant
     from .database.models.sqlalchemy_classes.question import Question
     from .database.models.sqlalchemy_classes.questionnaire import Questionnaire

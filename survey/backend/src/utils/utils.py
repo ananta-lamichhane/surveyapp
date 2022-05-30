@@ -32,15 +32,15 @@ def generate_random_tokens(token_len):
         res = res + random.choice(all_chars)
     return res
 
-def create_item_descritptions(item_id):
+""" def create_item_descritptions(item_id):
     
-    """ Provide description (id, description) for survey questionnaire items
+     Provide description (id, description) for survey questionnaire items
         Change this function to suit your to create item descriptions
         frontend should be adapted to cater to the changes made here
 
     Args:
         item_id ([int]): ids of the items (from dataset)
-    """
+    
     try:
         movies_file_abspath = os.path.abspath("backend/data/datasets/movielens_small/movies.csv")
         #movies_file_abspath = os.path.abspath('../data/datasets/movielens_small/movies.csv')
@@ -81,7 +81,7 @@ def create_item_descritptions(item_id):
         return description
     except FileNotFoundError as e:
         return f'ERROR: module: utils.create_item_descriptions, error:{e}'
-
+ """
 
 def list_subdirectoreis(dir_path):
     directories = []
@@ -117,3 +117,68 @@ def generate_random_reclists(dataset_file_path, save_file_path, reclist_length):
             res = [u] + (random.choices(all_items, k=reclist_length))
             write.writerow(res)
             #print(res)
+
+
+
+
+
+def create_item_descritptions(item_id):
+    
+    """ Provide description (id, description) for survey questionnaire items
+        Change this function to suit your to create item descriptions
+        frontend should be adapted to cater to the changes made here
+
+    Args:
+        item_id ([int]): ids of the items (from dataset)
+    """
+    try:
+        books_file_abspath = os.path.abspath("backend/data/datasets/bookcrossing/books.csv")
+        #movies_file_abspath = os.path.abspath('../data/datasets/movielens_small/movies.csv')
+        books_df = pd.read_csv(books_file_abspath, dtype='str', sep=";", encoding="ISO-8859-1")
+        #print(item_labels_df)
+        print("ISBN "+ item_id)
+  
+        book = books_df.loc[books_df['ISBN'] == str(item_id)]
+       # print(f"BOOK = {book}")
+        url = None
+        try:
+            url = book[ "Image-URL-L"].values[-1]
+            title = book['Book-Title'].values[0]
+            author= book['Book-Author'].values[0]
+            publisher = book['Publisher'].values[0]
+            year =  book["Year-Of-Publication"].values[0]
+     
+        except IndexError as e:
+            url = "http://placehold.jp/300x500.png"
+            title = "Could not be found"
+            author = "Unknown"
+            publisher = "Unknown"
+            year = "n.a."
+            print("no image")
+        print(f"data type of book title {url}")
+        
+       
+
+
+        ## send request to to the omdb api for detailled information for the given imdb id
+        
+        description = {
+            'item_id': item_id,
+            'description':{
+                'isbn': item_id,
+                'title': title,
+                'author': author,
+                'publisher':publisher,
+                'year':year,
+                'image_link':url
+            }
+
+
+        }
+
+
+        #  print(res)
+        print(description)
+        return description
+    except FileNotFoundError as e:
+        return f'ERROR: module: utils.create_item_descriptions, error:{e}'

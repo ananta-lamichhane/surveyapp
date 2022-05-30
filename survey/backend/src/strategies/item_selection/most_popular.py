@@ -34,7 +34,7 @@ class Strategy(BaseStrategy):
         
         dataset = None
         try:
-            dataset = pd.read_csv(filepath_or_buffer= self.__dataset_path, sep=',', dtype='str')
+            dataset = pd.read_csv(filepath_or_buffer= self.__dataset_path, sep=';', dtype='str', encoding="ISO-8859-1")
           
         except FileNotFoundError as e:
             print("ERROR:\nnaive_item_selection:file not found")
@@ -42,8 +42,8 @@ class Strategy(BaseStrategy):
 
         # in user-item matrix, most frequent in the movieId column are
         ## rated by the most number of users
-        most_popular_movies = dataset.loc[:,'movieId'].value_counts().index.tolist()[:10]
-        
+        most_popular_movies = dataset.loc[:,'ISBN'].value_counts().index.tolist()[:10]
+        print(f"all unique itemids : {most_popular_movies}")
         # 
        # most_popular_movies_minus_already_rated = most_popular_movies.filter(already_rated_items0)
 

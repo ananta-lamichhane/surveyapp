@@ -142,4 +142,57 @@ function CreateNewPanel(rawData){
 
 
 
-export {CreateNewQuestion, CreateTemplatePage, CreateNewPanel}
+function CreateNewPanelBX(rawData){
+    var book_info = "<div class='description_text'><h2>"+ rawData.next_item.description.title+"</h2>"+
+    "<h4>Year: " + rawData.next_item.description.year +
+    "<h4>Author: " + rawData.next_item.description.author + "</h3>" +
+    "<h4>Publisher: " + rawData.next_item.description.publisher + "</h3>" +"</div>"
+
+
+        var newPanel = {
+
+                    "type": "panel",
+                    "innerIndent": 1,
+                    "name": "panel",
+                // "state": "expanded",
+                   
+                    "elements": [
+                        // poster of the given movie
+
+                        {
+                            "type": "image",
+                            "name": "banner",
+                            "imageLink": rawData.next_item.description.image_link,
+                         //   "imageWidth": "300px",
+                          //  "imageHeight": "400px",
+                        },
+
+                        // description of the given movie
+                        {
+                            "type": "html",
+                            "name": "info",
+                            "html": book_info
+                        },
+                        {
+                            "type": "customrating",
+                           // "visibleIf":"{rating} empty",
+                            "name": rawData.next_item.item_id,
+                            "title": "Please rate the given book on a scale of 5",
+                            "isRequired": true,
+                            "value":"rating"
+                           
+                        }
+                    ]
+                }
+                // custom ratings widget
+        
+    //console.log("newpage")
+   // console.log(newPage)
+    var panel = new Survey.PanelModel('newpanel')
+    panel.fromJSON(newPanel)
+    return panel
+}
+
+
+
+export {CreateNewQuestion, CreateNewPanelBX, CreateTemplatePage, CreateNewPanel}
