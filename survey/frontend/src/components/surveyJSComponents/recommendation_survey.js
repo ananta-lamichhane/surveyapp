@@ -27,6 +27,7 @@ const RecomSurvey =  () => {
     const [reclistFilenames, setReclsitFilenames] = useState([])
     const [offlineUserId, setOfflineUserId] = useState()
     const [savedSession, setSavedSession] = useState()
+    const [fetchingDone, setFetchingDone] = useState(false)
     const getDataFromBackend = async () =>{
         const backendData = await axios.get(process.env.REACT_APP_API_URL+'/recommendation?token='+ searchParams.get('token'))
        console.log((backendData.data.saved_session))
@@ -41,6 +42,7 @@ const RecomSurvey =  () => {
       
        //setRecomLists(createRecomElements(backendData.data.reclists))
        setRecomLists(createRecomElementsBX(backendData.data.reclists))
+       setFetchingDone(true)
     }
     useEffect(() => {
         var response = getDataFromBackend()
@@ -82,7 +84,7 @@ const RecomSurvey =  () => {
 
 
 
-      return recomLists? (<div className='mainSurvey'>
+      return (recomLists && fetchingDone)? (<div className='mainSurvey'>
         <div>
             <Survey.Survey model={recommendationSurveyModel} 
             onComplete = {

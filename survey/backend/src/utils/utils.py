@@ -1,4 +1,4 @@
-from itsdangerous import exc
+from itsdangerous import exc, json
 from markupsafe import re
 import pandas as pd
 import omdb
@@ -6,6 +6,8 @@ import os
 import string
 import random
 import csv
+from urllib.request import urlopen
+
 
 
 
@@ -137,24 +139,56 @@ def create_item_descritptions(item_id):
         books_df = pd.read_csv(books_file_abspath, dtype='str', sep=";", encoding="ISO-8859-1")
         #print(item_labels_df)
         print("ISBN "+ item_id)
-  
+
+        google_api_link =  "https://www.googleapis.com/books/v1/volumes?q=isbn:" + item_id
+        response = urlopen(google_api_link)
+        
+        
+        
         book = books_df.loc[books_df['ISBN'] == str(item_id)]
-       # print(f"BOOK = {book}")
-        url = None
+        print(f"BOOK = {book}")
+        url = "http://placehold.jp/100x200.png"
+        author= "Unknown"
+        publisher = "Unknown"
+        title = "Unknown"
+        year = "Unknown"
+        
         try:
-            url = book[ "Image-URL-L"].values[-1]
-            title = book['Book-Title'].values[0]
-            author= book['Book-Author'].values[0]
-            publisher = book['Publisher'].values[0]
-            year =  book["Year-Of-Publication"].values[0]
+            book_data = json.load(response)["items"][0]
+            volume_info = book_data["volumeInfo"]
+            all_links = volume_info['imageLinks']
+            url = all_links['thumbnail']
+            title = volume_info['title']
+            author = volume_info['authors'][0]
+            year = volume_info["publishedDate"]
+            publisher = volume_info["publisher"]
+        except KeyError as e:
+            print(f"Error: {e}")
+            #url = "http://placehold.jp/300x500.png"
+        #title = volume_info['title']
+        #author = volume_info['authors'][0]
+        #year = volume_info["publishedDate"]
+        #publisher = volume_info["publisher"]
+
+        #try:
+        #    url = book[ "Image-URL-L"].values[-1]
+        #    title = book['Book-Title'].values[0]
+        #    author= book['Book-Author'].values[0]
+        #    publisher = book['Publisher'].values[0]
+        #    year =  book["Year-Of-Publication"].values[0]
+            #url = book[ "Image-URL-L"].values[-1]
+            #title = book['Book-Title'].values[0]
+            #author= book['Book-Author'].values[0]
+            #publisher = book['Publisher'].values[0]
+            #year =  book["Year-Of-Publication"].values[0]
      
-        except IndexError as e:
-            url = "http://placehold.jp/300x500.png"
-            title = "Could not be found"
-            author = "Unknown"
-            publisher = "Unknown"
-            year = "n.a."
-            print("no image")
+        #except IndexError as e:
+        #    url = "http://placehold.jp/100x200.png"
+        #    title = "Could not be found"
+        #    author = "Unknown"
+        #    publisher = "Unknown"
+        #    year = "n.a."
+        #    print("no image")
         print(f"data type of book title {url}")
         
        
