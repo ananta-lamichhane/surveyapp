@@ -11,9 +11,9 @@ A computer with linux or windows with Python 3.10 and pip for the backend and No
 Check if the necessary requirments are installed as follows.
 #### Checking python, NodeJS and pip version
 Open a bash terminal (linux) or command prompt / powershell terminal (windows) and type the following commands to show the current versions of the installed applications. If not installed, the commands won't produce any output.
-- Python: python --version
-- Pip: pip --version
-- NodeJS: node --version
+- Python: `python --version`
+- Pip: `pip --version`
+- NodeJS: `node --version`
 
 If not already installed, follow the official documentations to get and install.
 - Python: https://wiki.python.org/moin/BeginnersGuide
@@ -29,35 +29,46 @@ The project is divided into two independent parts. The frontend directory consis
 The data directory contains the datasets, recommendation lists for online evaluations and the results generated from the online and offline evaluation in datasets, recommendation_lists and results directories respectively.
 
 
-### src
+#### src
 The src folder contains all source code for the API built up using Flask in python.
 
 ### Frontend
 The frontend directory resembles a directory structure created automatically by create-react-app. All react components related to the survey frontend are located in the src/components directory.
 
 ### Installation
-This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary:
+This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary. Note that the instructions are based on the default working directory being ./surveyapp/survey.
 #### 1. Clone the repository.
 `git clone https://github.com/ananta-lamichhane/surveyapp.git`
 #### 2. Install backend 
-1. Change to the survey directory of the cloned repo.
-2. Create a python virtual environment
+1. Change to the default working directory of the cloned repo.\
+`cd surveyapp/survey`
+2. Create a python virtual environment\
 `python3 -m venv venv`
-4. Activate the virtual environment 
+3. Activate the virtual environment \
 `source venv/bin/activate`
-6. Install the requirements from requirements.txt file. 
+4. Install the requirements from requirements.txt file.\
 `pip install -r backend/src/requirements.txt`
-8. Serve the application with gunicorn on port 5000. 
+5. Serve the application on port 5000.
+- On Linux using [gunicorn](https://gunicorn.org/#docs).\
 `gunicorn --bind 0.0.0.0:5000 backend.src.app:app`
+- On windows using [waitress](https://docs.pylonsproject.org/projects/waitress/en/latest/runner.html).\
+ `waitress-serve --port=5000 backend.src.app:app` \
+NOTE: Do not use `flask run` because it doesn't recognize the app in the subdirectory and messes up the directory struture in the application.
+6. Running server in the background.\
+  The server will stop if you close the terminal / cmd session.
+  If you're using ssh, the server ends when you close the ssh session.\n
   To run the server in background, use `--daemon` argument at the end of command in 5.
   
 #### 3. Install frontend
-1. Make sure NodeJS is installed. Use official documentation.
-2. Change directory to survey/frontend.
-3. Install necessary modules. 
+1. Make sure NodeJS is installed. Use official documentation (see prerequisites).
+2. Change directory to <deafault working directory>/frontend.
+3. Install necessary modules.\ 
 `npm install`
-5. Start the node server on (defualt) port 3000.
+4. Start the node server on (defualt) port 3000.\
 `npm start`
+5. Running in background.\
+Similar to running the API server, you'll find closing the bash / command prompt terminal will kill the application too. However,
+node does not natively support running the application in background. You can use tools like [pm2](https://www.npmjs.com/package/pm2) to run the application in backend. Use [this medium article]([https://www.npmjs.com/package/pm2](https://medium.com/idomongodb/how-to-npm-run-start-at-the-background-%EF%B8%8F-64ddda7c1f1) for an overview on using pm2.
 
 #### 4. Prepare the data
 Certain directories and file name conventions must be followed so that the relevant data (datasets, recommendation lists, matchmaking and next-item selection) can be properly configured.
