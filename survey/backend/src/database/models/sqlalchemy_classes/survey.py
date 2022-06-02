@@ -11,6 +11,7 @@ class Survey(db.Model):
     item_selection_strategy = db.Column(db.String(128))
     tokens = db.Column(db.String(4096))
     reclist_filenames = db.Column(db.String(1028))
+    active_status = db.Column(db.String(32)) ## ["created", "started", "finished"]
 
     dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
 
@@ -25,5 +26,6 @@ class Survey(db.Model):
             'dataset_id': self.dataset_id,
             'matchmaking_strategy': self.matchmaking_strategy,
             'item_selection_strategy': self.item_selection_strategy,
-            'reclist_filenames': self.reclist_filenames
+            'reclist_filenames': self.reclist_filenames,
+            'active_status':self.active_status
         })
