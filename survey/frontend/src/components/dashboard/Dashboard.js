@@ -138,7 +138,7 @@ function DashboardContent(props) {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        {<Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -155,7 +155,7 @@ function DashboardContent(props) {
           <List component="nav">
             {<MainListItems clicked={getClickedDrawerElem}/>}
           </List>
-        </Drawer>
+        </Drawer>}
         {activeDrawerElem === "" && <SurveyPage data={backendData}/>}
         {activeDrawerElem === "Surveys" &&<SurveyPage data= {backendData} />}
         {activeDrawerElem === "Datasets" && <DatasetsPage data= {backendData} />}
