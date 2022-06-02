@@ -4,7 +4,7 @@ class Survey(db.Model):
     __tablename__ = 'survey'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(256), unique=True)
-    num_items = db.Column(db.Integer())
+    num_questions = db.Column(db.Integer())
     num_tokens = db.Column(db.Integer())
     description = db.Column(db.String(1024))
     matchmaking_strategy = db.Column(db.String(128))
@@ -19,7 +19,7 @@ class Survey(db.Model):
         return json.dumps({
             'id': self.id,
             'name': self.name,
-            'num_items': self.num_items,
+            'num_questions': self.num_questions,
             'num_tokens': self.num_tokens,
             'description': self.description,
             'tokens': self.tokens,
