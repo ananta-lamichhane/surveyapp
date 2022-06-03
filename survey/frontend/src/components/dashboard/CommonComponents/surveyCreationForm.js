@@ -15,7 +15,7 @@ const [backendData, setBackendData] = useState()
 useEffect(() => {
     fetch(process.env.REACT_APP_API_URL+'/survey')
     .then(response =>response.json()).then(data =>{
-        console.log(JSON.parse(data.datasets[0]).id)
+        console.log(data)
         setBackendData(data)
     })
 }, [])
@@ -108,7 +108,16 @@ var templateJSON = {
                         "name": "surveyNumQuestions",
                         "title": "Number of questions (items) in the survey quesionnaire.",
                         "isRequired": true,
-                    }
+                    },
+                    {
+                        "type": "dropdown",
+                        "name": "surveyMailingList",
+                        "title": "Choose mailing list to invite participants. Note: Emails will be sent only after you start the survey.",
+                        "isRequired": true,
+                        "colCount": 0,
+                        "hasNone": false,
+                        "choices": backendData?(backendData.mailing_lists).map(e => (e)):[]
+                    },
 
 
 
