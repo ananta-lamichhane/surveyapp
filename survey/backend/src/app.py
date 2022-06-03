@@ -1,9 +1,9 @@
-
 from flask import Flask, jsonify, request
 import json
 from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
+from flask_mail import Mail
 
 #from survey.backend.src.database.models.survey import Survey
 #from .utils.utils import generate_random_tokens
@@ -12,14 +12,17 @@ from .flask_configs import Flask_Configs
 
 
 db = SQLAlchemy()
+mail = Mail()
 def create_app():
 
     app= Flask(__name__)
 
+    
+
     ### Load app configurations from another file
 
     app.config.from_object(Flask_Configs)
-    #app.config['SQLALCHEMY_DATABASE_URI']= "sqlite:///"+"../data/test.db"
+    mail.init_app(app)
 
    ## import all models before initializing the database
     from .database.models.sqlalchemy_classes.survey import Survey

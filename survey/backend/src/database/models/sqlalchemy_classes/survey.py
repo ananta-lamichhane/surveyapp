@@ -12,7 +12,7 @@ class Survey(db.Model):
     tokens = db.Column(db.String(4096))
     reclist_filenames = db.Column(db.String(1028))
     active_status = db.Column(db.String(32)) ## ["created", "started", "finished"]
-
+    mailing_list = db.Column(db.String(256)) ## name of the mailing list. path apart from name is fixed.
     dataset_id = db.Column(db.Integer(), db.ForeignKey('dataset.id'))
 
     def __str__(self):
@@ -27,5 +27,6 @@ class Survey(db.Model):
             'matchmaking_strategy': self.matchmaking_strategy,
             'item_selection_strategy': self.item_selection_strategy,
             'reclist_filenames': self.reclist_filenames,
-            'active_status':self.active_status
+            'active_status':self.active_status,
+            'mailing_list': self.mailing_list
         })
