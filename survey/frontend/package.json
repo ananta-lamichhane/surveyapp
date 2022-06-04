@@ -1,5 +1,5 @@
 {
-  "homepage": "https://ananta-lamichhane.github.io/surveyapp-builds",
+  "homepage": "https://ananta-lamichhane.github.io/",
   "name": "survey",
   "version": "0.1.0",
   "private": true,
@@ -12,8 +12,10 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
     "bootstrap-slider": "^11.0.2",
+    "jest": "^28.1.0",
     "jquery-bar-rating": "^1.2.2",
     "list-react-files": "^0.2.0",
+    "node-fetch": "^3.2.5",
     "nouislider": "^15.5.1",
     "ra-data-json-server": "^4.0.0",
     "react": "^17.0.2",
@@ -32,7 +34,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
