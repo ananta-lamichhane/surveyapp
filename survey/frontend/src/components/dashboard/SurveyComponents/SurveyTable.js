@@ -105,14 +105,14 @@ function Row(props) {
               <h6>Participants:</h6>
             
               <List dense={true}>
-              {row.tokens.map((token) => (
+              {row.tokens?.map((token) => (
                 <ListItem key={token}>
                 <ListItemText
                   primary={
                   <div className='tokenAndLink'>
                     <p>{`token: ${token}`}</p>
                     <p> Participation Link: </p>
-                    <a href={`${process.env.REACT_APP_API_URL}/survey?token=${token}`}>{`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}</a>
+                    <a href={`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}>{`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}</a>
                     </div>}
                 />
                 </ListItem>
