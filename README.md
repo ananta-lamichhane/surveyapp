@@ -35,11 +35,11 @@ The src folder contains all source code for the API built up using Flask in pyth
 ### Frontend
 The frontend directory resembles a directory structure created automatically by create-react-app. All react components related to the survey frontend are located in the src/components directory.
 
-### Installation
+## Installation
 This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary. Note that the instructions are based on the default working directory being ./surveyapp/survey.
-#### 1. Clone the repository.
+### 1. Clone the repository.
 `git clone https://github.com/ananta-lamichhane/surveyapp.git`
-#### 2. Install backend 
+### 2. Install backend 
 1. Change to the default working directory of the cloned repo.\
 `cd surveyapp/survey`
 2. Create a python virtual environment\
@@ -59,27 +59,26 @@ NOTE: Do not use `flask run` because it doesn't recognize the app in the subdire
   If you're using ssh, the server ends when you close the ssh session.\n
   To run the server in background, use `--daemon` argument at the end of command in 5.
   
-#### 3. Install frontend
+### 3. Install frontend
 1. Make sure NodeJS is installed. Use official documentation (see prerequisites).
-2. Change directory to <deafault working directory>/frontend.
-3. Install necessary modules.\ 
+2 Install necessary modules.\ 
 `npm install`
-4. Start the node server on (defualt) port 3000.\
-`npm start`
-5. Running in background.\
+3. Start the node server on (defualt) port 3000.\
+`npm start --prefix frontend` 
+4. Running in background.\
 Similar to running the API server, you'll find closing the bash / command prompt terminal will kill the application too. However,
 node does not natively support running the application in background. You can use tools like [pm2](https://www.npmjs.com/package/pm2) to run the application in backend. Use [this medium article]([https://www.npmjs.com/package/pm2](https://medium.com/idomongodb/how-to-npm-run-start-at-the-background-%EF%B8%8F-64ddda7c1f1) for an overview on using pm2.
 
-#### 4. Prepare the data
+### 4. Prepare the data
 Certain directories and file name conventions must be followed so that the relevant data (datasets, recommendation lists, matchmaking and next-item selection) can be properly configured.
 1. To add a new dataset for a survey, create a new directory inside data/datasets with the relevant name of the directory (the directory name will be visible when using the dashboard to create and manage surveys) and place the ratings.csv user-item matrix file into the directory.
 2. To add a new recommendation list for online evaluation, put the relevant recommendation list file in the recommendation_lists directory. The name of the file identifies the recommendation lists file (<filename>.csv) while creating and managing the survey.
 
-#### 5. Add next item selection and matchmaking strategies
+### 5. Add next item selection and matchmaking strategies
 1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 
-#### 6. Get evaluation results
+### 6. Get evaluation results
 The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
 ## Customization
 You can implement your own matchmaking logic and next-item selection logic. The abstract classes in backend/src/strategies need to be implemented.
