@@ -326,12 +326,19 @@ const MainSurvey =  () =>
         ie. numItems is populated */}
         
          {!surveyDone &&   
-        <Survey.Survey model = {model2}/> } 
+        <Survey.Survey model = {model2}/> }
+        <div className='footer'>
+            <h6>&#169; 	Ananta Lamichhane, Technische Universität Berlin</h6>
+        </div>
+        
 
         {/* Display recommendation page if the surveydone state is set to true*/}
         {surveyDone &&
         <div>
             {<RecomSurvey />}
+            <div className='footer'>
+            <h6>&#169; 	Ananta Lamichhane, Technische Universität Berlin</h6>
+        </div>
         </div>
         }
     
