@@ -3,7 +3,7 @@ import json
 from flask_cors import cross_origin
 
 
-from .helper_functions import collect_frontend_dashboard_data, create_item_descritptions, create_new_dataset, create_new_survey, start_stop_survey, send_email_to_user
+from .helper_functions import collect_frontend_dashboard_data, create_new_dataset, create_new_survey, start_stop_survey, send_email_to_user
 
 
 

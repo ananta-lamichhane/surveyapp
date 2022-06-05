@@ -327,7 +327,6 @@ code {
 
 @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
-
 /* Ratings widget */
 .rate {
     display: inline-block;
@@ -366,6 +365,8 @@ label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on
 input:checked + label:hover, input:checked ~ label:hover, /* highlight current and previous stars */
 input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
 label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  } 
+
+
 
 .footer{
   position: fixed;

@@ -13,7 +13,7 @@ from ...database.models.sqlalchemy_classes.questionnaire import Questionnaire
 from ...database.models.sqlalchemy_classes.dataset import Dataset
 from ...database.models.sqlalchemy_classes.participant import Survey_Participant
 from ...database.models.sqlalchemy_classes.response import Response
-from ...utils.utils import create_item_descritptions
+from ...utils.create_item_descriptions import create_item_descriptions
 from .helper_functions import save_ratings, send_next_item_and_current_ratings, send_survey_details
 
 from ...strategies.matchmaking.naive_matchmaking_strategy import Strategy

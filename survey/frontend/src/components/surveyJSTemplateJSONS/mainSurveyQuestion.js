@@ -41,7 +41,10 @@ var MainSurveyQuestion = (imageURL, itemDescription,itemId) =>{
                 "name": "info",
                 "html": itemDescription
             },
-            /*{
+
+            //widget to input ratings from the user. You can change the type of the widget
+            // use examples below to try out other alternatives.
+            {
                 "type": "customrating",
                // "visibleIf":"{rating} empty",
                 "name": itemId,
@@ -49,14 +52,7 @@ var MainSurveyQuestion = (imageURL, itemDescription,itemId) =>{
                 "isRequired": true,
                 "value":"rating"
                
-            }*/
-            {
-                "type": "bootstrapslider",
-                "name": "bootstrapslider-widget",
-                "step": 0.5,
-                "rangeMin": 0.5,
-                "rangeMax": 10
-              }
+            }
 
         ]
     }

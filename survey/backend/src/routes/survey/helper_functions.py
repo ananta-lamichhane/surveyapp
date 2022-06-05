@@ -8,7 +8,8 @@ from sqlalchemy import exc
 
 
 from ...app import db, mail
-from ...utils.utils import generate_random_tokens, list_directory_files, list_subdirectoreis, create_item_descritptions
+from ...utils.utils import generate_random_tokens, list_directory_files, list_subdirectoreis
+from ...utils.create_item_descriptions import create_item_descriptions
 from ...database.models.sqlalchemy_classes.dataset import Dataset
 from ...database.models.sqlalchemy_classes.question import Question
 from ...database.models.sqlalchemy_classes.questionnaire import Questionnaire

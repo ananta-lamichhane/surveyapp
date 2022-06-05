@@ -24,24 +24,42 @@
 API_URL="http://localhost:5000"
 SURVEY_URL="http://localhost:3000/survey"
 
+## copy files from examples to appropriate places
+echo "------------------------------------------------------------"
+echo "1. Copying files from examples to appropriated directories"
+cp -r $PWD/backend/examples/datasets $PWD/backend/data
+cp -r $PWD/backend/examples/recommendation_lists $PWD/backend/data
+cp -r $PWD/backend/examples/mailing_lists $PWD/backend/data
 
+echo "------------------------------------------------------------"
+echo "Finished copying files"
+echo "------------------------------------------------------------"
 
-echo "Running backend on port 5000."
-echo "Checking requirements"
 
 echo "creating venv"
+
 python3 -m venv venv
 
-echo "activating venv"
+echo "------------------------------------------------------------"
+echo "Created venv"
+echo "------------------------------------------------------------"
 
+echo "activating venv"
 path=$PWD
 subpath="/venv/bin/activate"
 new_path="$path$subpath" #/home/ubuntu/data
 source $new_path
+echo "------------------------------------------------------------"
+echo "activated venv"
 
+echo "------------------------------------------------------------"
 echo "install requirements"
 pip install -r $PWD/backend/src/requirements.txt
+echo "------------------------------------------------------------"
+echo "Finished installing requirements"
 
+echo "------------------------------------------------------------"
+echo "Running backend on port 5000."
 gunicorn --bind 0.0.0.0:5000 backend.src.app:app --daemon
 sleep 5
 echo "checking if the server is up"
@@ -54,20 +72,32 @@ else
     echo "API Server is online."
 
     cd frontend
+    echo "------------------------------------------------------------"
+    echo "installing npm modules."
     npm install
+    echo "------------------------------------------------------------"
+    echo "Done installing npm modules."
+    echo "------------------------------------------------------------"
+    echo "Starging web application on port 3000"
     npm start&
+    echo "------------------------------------------------------------"
+    echo "Stared web app"
+    echo "------------------------------------------------------------"
+    echo "Waiting for web app to initialize"
     sleep 5
-
+    echo "------------------------------------------------------------"
     echo "checking if the server is up"
     HTTP_CODE=$(curl --write-out "%{http_code}\n" "$SURVEY_URL" --output output.txt --silent)
     if [$"HTTP_CODE" -ne 200]
     then
     echo "Survey server is not online. Please check"
     else
-    echo "Survey server is on."
+    echo "------------------------------------------------------------"
+    echo "Survey server is on press any key to exit."
     cd ..
+    read -n 1 -s -r -p "Press any key to continue"
+
     fi
 
 fi
-
 

@@ -2,7 +2,7 @@ import json
 import importlib
 from sqlalchemy import exc
 
-from ...utils.utils import create_item_descritptions
+from ...utils.create_item_descriptions import create_item_descriptions
 from ...app import db
 from ...database.models.sqlalchemy_classes.dataset import Dataset
 from ...database.models.sqlalchemy_classes.survey import Survey
@@ -61,7 +61,7 @@ def send_survey_details(participant_token):
     if curr_ratings:
         prev_session_items = [{
             'current_ratings': curr_ratings,
-            'next_item': create_item_descritptions(i) 
+            'next_item': create_item_descriptions(i) 
             }for i in curr_ratings.keys()]
     
     payload_to_send = {
@@ -107,7 +107,7 @@ def send_next_item_and_current_ratings(participant_token):
     strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
     if strategy_class_instance:
     ## if the question number shows it's first question asked
-        next_item = create_item_descritptions(strategy_class_instance.get_next_item(all_curr_ratings))
+        next_item = create_item_descriptions(strategy_class_instance.get_next_item(all_curr_ratings))
         payload ={"current_ratings": json.loads(all_curr_ratings), "next_item": next_item}
         return payload
     

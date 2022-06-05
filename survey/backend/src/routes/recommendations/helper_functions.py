@@ -5,7 +5,7 @@ from sqlalchemy import exc
 import csv
 
 
-from ...utils.utils import create_item_descritptions
+from ...utils.create_item_descriptions import create_item_descriptions
 from ...app import db
 from ...database.models.sqlalchemy_classes.dataset import Dataset
 from ...database.models.sqlalchemy_classes.participant import Survey_Participant
@@ -46,7 +46,7 @@ def send_recommendations(token, offline_user_id, reclist_files):
         reclist_of_offline_userid  = df.loc[df['userId'] == str(offline_user_id+1)].iloc[:,1:].values.flatten().tolist()
         reclists.append({
                         'reclist_filename':filename,
-                        'items': [create_item_descritptions(item) for item in reclist_of_offline_userid]
+                        'items': [create_item_descriptions(item) for item in reclist_of_offline_userid]
         })
     payload['reclists'] = reclists
     return json.dumps(payload)
