@@ -5,10 +5,12 @@ import * as Survey from 'survey-react'
 import createRatingsWidget from '../customWidgets/ratingWidget'
 import WelcomePage from '../surveyJSTemplateJSONS/welcome_page'
 import PostData from '../../utils/postdata'
-import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
+import {CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
 import createLoadingPage from './loadingPage'
+import * as widgets from 'surveyjs-widgets';
+
 const axios = require('axios').default
 
 //import RecommendationPageModel from './recommendation_survey.js.js'
@@ -32,7 +34,10 @@ Survey
 // call the create rating function to crate the custom widget
 createRatingsWidget()
 
-
+widgets.jquerybarrating(Survey);
+widgets.nouislider(Survey)
+widgets.emotionsratings(Survey)
+widgets.bootstrapslider(Survey)
 const MainSurvey =  () => 
 
 {
@@ -259,12 +264,6 @@ const MainSurvey =  () =>
                     .then(data =>{
                         model2.activePage.addPanel(CreateNewPanel(data))
                         model2.activePage.addNewQuestion('customrating', )
-                
-                        console.log("------------")
-                        console.log(data)
-
-
-                        console.log("------------")
     
                     });
                     
