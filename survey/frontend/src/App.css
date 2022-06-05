@@ -367,3 +367,9 @@ input:checked + label:hover, input:checked ~ label:hover, /* highlight current a
 input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
 label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  } 
 
+.footer{
+  position: fixed;
+  text-align: center;
+  bottom: 0%;
+  width: 100%;
+}
