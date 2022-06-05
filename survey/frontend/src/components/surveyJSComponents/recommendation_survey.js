@@ -9,6 +9,7 @@ import PostData from '../../utils/postdata'
 import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import createLoadingPage from './loadingPage'
+import recommendationQuestions from '../surveyJSTemplateJSONS/recommendationSurveyQuestions'
 const axios = require('axios').default
 
 
@@ -272,46 +273,7 @@ function createRecomElements(rawData){
 
                             `
                         },
-                        {
-                            "type": "rating",
-                            "name": "satisfaction",
-                            "title": "Which recommendation list would better help you find movies to watch?",
-                            "isRequired": true,
-                            "mininumRateDescription": "List 1",
-                            "maximumRateDescription": "List 2"
-                        }, {
-                            "type": "rating",
-                            "name": "diversity",
-                 
-                            "title": "Which list has a more varied selection of movies?",
-                            "mininumRateDescription": "List 1",
-                            "maximumRateDescription": "List 2"
-                        },
-                        {
-                            "type": "rating", // can also be used for novelty as in ekstrand
-                            "name": "serendipity",
-                 
-                            "title": "Which list has more pleasantly surprising movies?",
-                            "mininumRateDescription": "List 1",
-                            "maximumRateDescription": "List 2"
-                        },
-                        {
-                            "type": "rating",
-                            "name": "acuuracy",
-                 
-                            "title": "Which list has more movies that you find appealing?",
-                            "mininumRateDescription": "List 1",
-                            "maximumRateDescription": "List 2"
-                        },
-                        {
-                            "type": "rating",
-                            "name": "understandsMe",
-                 
-                            "title": "Which list beter understands your taste in movies?",
-                            "mininumRateDescription": "List 1",
-                            "maximumRateDescription": "List 2"
-                        }
-                    ]
+                    ].concat(recommendationQuestions())
                 }
                
             ]
