@@ -37,9 +37,28 @@ The frontend directory resembles a directory structure created automatically by 
 
 ## Installation
 This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary. Note that the instructions are based on the default working directory being ./surveyapp/survey.
-### 1. Clone the repository.
+### Installation via script
+The accompanying script in survey directory automates the process and automatically takes the following actions.
+1. Copies over the necessary files from backend/examples directory to appropriate places in backend/data.
+2. Creates and activates a python virtual environment.
+3. Installs necessary python moduls from backend/src/requirements.txt
+4. Runs the flask API server in background on port 5000.
+5. Checks if the API server is on and stops if the server is not on.
+6. Install necessary node modules in frontend/node_modules automatically. The modules are specified by frontend/package.json
+7. Runs the web app on port 3000.
+8. Waits for the web-app to initialize, checks if it's running and exits on pressing any button.
+
+Make sure the script is executible before running.\
+`chmod +x run_and_test.sh`
+Run the script using:\
+`source run_and_test.sh`
+
+TIP: You can fill in the backend/examples directory with the actual files you want to add and run the script to automatically deploy your custom survey.
+
+### Detailed installation instructions
+#### 1. Clone the repository.
 `git clone https://github.com/ananta-lamichhane/surveyapp.git`
-### 2. Install backend 
+#### 2. Install backend 
 1. Change to the default working directory of the cloned repo.\
 `cd surveyapp/survey`
 2. Create a python virtual environment\
@@ -59,7 +78,7 @@ NOTE: Do not use `flask run` because it doesn't recognize the app in the subdire
   If you're using ssh, the server ends when you close the ssh session.\n
   To run the server in background, use `--daemon` argument at the end of command in 5.
   
-### 3. Install frontend
+#### 3. Install frontend
 1. Make sure NodeJS is installed. Use official documentation (see prerequisites).
 2 Install necessary modules.\ 
 `npm install`
@@ -69,22 +88,36 @@ NOTE: Do not use `flask run` because it doesn't recognize the app in the subdire
 Similar to running the API server, you'll find closing the bash / command prompt terminal will kill the application too. However,
 node does not natively support running the application in background. You can use tools like [pm2](https://www.npmjs.com/package/pm2) to run the application in backend. Use [this medium article]([https://www.npmjs.com/package/pm2](https://medium.com/idomongodb/how-to-npm-run-start-at-the-background-%EF%B8%8F-64ddda7c1f1) for an overview on using pm2.
 
-### 4. Prepare the data
+#### 4. Prepare the data
 Certain directories and file name conventions must be followed so that the relevant data (datasets, recommendation lists, matchmaking and next-item selection) can be properly configured.
 1. To add a new dataset for a survey, create a new directory inside data/datasets with the relevant name of the directory (the directory name will be visible when using the dashboard to create and manage surveys) and place the ratings.csv user-item matrix file into the directory.
 2. To add a new recommendation list for online evaluation, put the relevant recommendation list file in the recommendation_lists directory. The name of the file identifies the recommendation lists file (<filename>.csv) while creating and managing the survey.
 
-### 5. Add next item selection and matchmaking strategies
+#### 5. Add next item selection and matchmaking strategies
 1. To use custom next-item selection strategy, implement the abstract class called BaseStrategy in file item_selection_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 2. To use custom matchmaking strategy, implement the abstract class called MatchmakingBase in file matchmaking_strategy_base.py. The implemented class must be named "Strategy". The file must be placed in the backend/src/strategies/item_selection directory. The name of the file is used to identify the strategy in survey creation and management.
 
-### 6. Get evaluation results
+#### 6. Get evaluation results
 The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
+ 
+ 
 ## Customization
-You can implement your own matchmaking logic and next-item selection logic. The abstract classes in backend/src/strategies need to be implemented.
-Name each instantiated class "Strategy" and keep save each instance on a different file. The file names are display on the survey creation dashboard to denote
-the corresponding strategies.
-
+### Adding your own next question selection strategy.
+Say you want to have your own logic in place where you select the next item to be rated by the participant based on current ratings and some other criteria (e.g. same genre movies, one of the most popular movies, same director, etc.)\
+ This can be achieved by implementing the abstract class Strategy in src/strategies/item_selection/abstract_class/item_selection_base.py
+ Make sure the implemented class is named Strategy and is placed inside the src/strategies/item_selection directory.\
+ When implemented correctly, the new strategy returns the next item that should be displayed to the participant based on your desired logic.
+ 
+### Adding your own matchmaking strategy.
+ After a participant has rated all the items (questions), you now want to find out which user in the dataset (offline user) is most similar to the given online user. This can be chosed using various algorithms and strategies. By instantiating the abstract class MatchmakingBase in src/strategies/matchmaking/abstract_class/matchmaking_strategy_base.py
+ 
+### Changing the survey questionnaire.
+ You can change the questions displayed to a participant by editing the JSON templates that are placed in frontend/src/components/surveyJSTemplateJSONS.
+ This allows the survey creator to change what questions they want to ask, what kind of input they want (slider, input box, stars, emojis, etc.), the range of the input and what they're called.
+ 
+### Changing item descriptions.
+ This repo uses MovieLens dataset as default and uses the attributes of a movie to create a description so that a participant can have more information about the displayed item. The function create_item_descriptions() in backend/src/utils/create_item_descriptions.py can be edited to fit your dataset. This should be paired with corresponding changes on the frontend. Especially while creating item description in CreateNewPanel() of frontend/utils/create_new_question.js and in the helper functions in frontend/src/components/surveyJSComponents/recommendation_survey.js
+ 
 ## Deployment
 Deployment for a productive environment can be done by building an app bundle using NPM for the frontend. Backend can be deployed as is using gunicorn or similar WSGI web servers. Reverse proxy such as Nginx can be using to host both frontend and backend on a server and route traffic based on the URL endpoints.
 <More to come>
