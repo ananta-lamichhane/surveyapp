@@ -149,9 +149,9 @@ def save_ratings(particiapant_token, ratings):
     ## if the response object already exists, update the rating value only
     else:
         try:
-            print("don't edit")
-            curr_ratings = json.loads(resp.ratings)
-            resp.ratings = json.dumps(curr_ratings | ratings)
+            print("replace old ratings with new ones")
+            #curr_ratings = json.loads(resp.ratings)
+            resp.ratings = json.dumps(ratings)
             db.session.commit()
         except exc.SQLAlchemyError as e:
             db.session.rollback()
