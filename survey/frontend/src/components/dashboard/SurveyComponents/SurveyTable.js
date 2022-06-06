@@ -87,7 +87,7 @@ function Row(props) {
             <StartStopButton active_status={row.active_status} surveyId={row.id} />
           }
         </TableCell>
-        <TableCell align="right">{row.num_participants}</TableCell>
+        <TableCell align="right">{row.tokens?row.tokens.length:"start first"}</TableCell>
         <TableCell align="right">{row.num_questions}</TableCell>
       </TableRow>
       <TableRow>
@@ -99,7 +99,7 @@ function Row(props) {
               </Typography>
               <h6>Survey ID: {row.id}</h6>
               <h6>Status: {row.active_status}</h6>
-              <h6>Number of participants: {row.num_participants}</h6>
+              <h6>Number of participants: {row.tokens?.length}</h6>
               <h6>Number of questions in a questionnaire: {row.num_questions}</h6>
               <h6>Dataset ID: {row.dataset_id}</h6>
               <h6>Participants:</h6>
