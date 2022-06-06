@@ -42,8 +42,10 @@ def list_directory_files(dir_path):
     files = []
     for file in os.listdir(dir_path):
         f=os.path.join(dir_path, file)
+        filenames = file.split('.')
         if os.path.isfile(f) and file != '__init__.py':
-            files.append(file.split('.')[0])
+            if filenames[0] != "":
+                files.append(file.split('.')[0])
     return files
 
 
