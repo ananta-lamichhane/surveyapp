@@ -99,12 +99,6 @@ var templateJSON = {
                     },
                     {
                         "type": "text",
-                        "name": "surveyNumParticipants",
-                        "title": "Number of participants",
-                        "isRequired": true,
-                    },
-                    {
-                        "type": "text",
                         "name": "surveyNumQuestions",
                         "title": "Number of questions (items) in the survey quesionnaire.",
                         "isRequired": true,
