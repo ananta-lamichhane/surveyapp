@@ -206,6 +206,7 @@ active_status = "created"):
 def start_stop_survey(survey_id, action):
     survey = db.session.query(Survey).filter_by(id=survey_id).first()
     survey_state = None
+    survey_num_participants = 0
     mailing_list_filepath = f'backend/data/mailing_lists/{survey.mailing_list}.csv'
     if(action == "start"):
         print("starting")
@@ -221,7 +222,7 @@ def start_stop_survey(survey_id, action):
         ## filter out all emails that are not in correct format, i.e. abc@def.ghi
         all_emails = list(filter(lambda e: ('@' in e and '.' in e), all_emails))
         tokens = [generate_random_tokens(16) for n in range(0,len(all_emails))]
-        
+        survey_num_participants = len(all_emails)
         for t in tokens:
             ques1 = Questionnaire(survey_id=survey.id, token=t, num_questions=survey.num_questions)
             try:
@@ -253,10 +254,6 @@ def start_stop_survey(survey_id, action):
             print(f"seding email to {e}.")
             ##send_email_to_user(e, mail, tok)
         print(all_emails)
-
-
-                
-
         survey_state = "started"
     elif(action == "finish"):
         survey_state = "finished"
@@ -266,6 +263,7 @@ def start_stop_survey(survey_id, action):
         api_logger.error(f"State Error. Could not change the state of the survey to {action}.")
       
     try:
+        survey.num_participants = survey_num_participants
         survey.active_status = survey_state
         db.session.commit()
     except:
