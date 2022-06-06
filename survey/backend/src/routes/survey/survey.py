@@ -61,7 +61,6 @@ def handle_survey():
         survey_name = data_from_frontend['surveyName']
         survey_description = data_from_frontend['surveyDescription']
         dataset = data_from_frontend['surveyDataset']
-        num_participants = int(data_from_frontend['surveyNumParticipants'])
         num_questions = int(data_from_frontend['surveyNumQuestions'])
         item_selection_strategy = data_from_frontend['surveyItemSelectionStrategy']
         reclists_for_eval = data_from_frontend['onlineEvalReclists']
@@ -73,7 +72,7 @@ def handle_survey():
         survey_name, 
         survey_description, 
         dataset,
-        num_participants, 
+        0, 
         num_questions, 
         item_selection_strategy, 
         matchmaking_strategy,
