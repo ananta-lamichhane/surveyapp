@@ -96,7 +96,7 @@ def send_next_item_and_current_ratings(participant_token):
     ## each file has a different name but contains a class called Strategy in it
 
     ## load the related strategy file (module) from the directory
-    loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.item_selection')
+    loaded_module = importlib.import_module(f'.{rel_strategy_name}', 'backend.src.strategies.next_question_selection')
     #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
     
     

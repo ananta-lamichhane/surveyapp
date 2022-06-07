@@ -14,7 +14,7 @@ class Flask_Configs(object):
     MAIL_USE_SSL = True
     MAIL_USE_TLS = False
     MAIL_USERNAME='bloomsnruins@gmail.com'
-    MAIL_PASSWORD= ""
+    MAIL_PASSWORD= "dphckhbqghjnimuf"
 
 
     

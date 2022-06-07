@@ -90,7 +90,7 @@ def collect_frontend_dashboard_data():
     #all_matchmaking_strategies = list_directory_files('strategies/matchmaking')
     #all_item_selection_strategies = list_directory_files('strategies/item_selection')
     all_matchmaking_strategies = list_directory_files('backend/src/strategies/matchmaking')
-    all_item_selection_strategies = list_directory_files('backend/src/strategies/item_selection')
+    all_item_selection_strategies = list_directory_files('backend/src/strategies/next_question_selection')
     for s in all_matchmaking_strategies:
         all_data['strategies']['matchmaking'].append(s)
     for s in all_item_selection_strategies:
@@ -151,15 +151,15 @@ to the questionnaire and participant objects.
         })
 '''
 def create_new_survey(name, 
-description,
-dataset_name, 
-num_participants, 
-num_questions, 
-item_selection_strategy, 
-matchmaking_strategy,
-mailing_list,
-reclists_for_online_eval,
-active_status = "created"):
+                    description,
+                    dataset_name, 
+                    num_participants, 
+                    num_questions, 
+                    item_selection_strategy, 
+                    matchmaking_strategy,
+                    mailing_list,
+                    reclists_for_online_eval,
+                    active_status = "created"):
  
 
     ## find out the related dataset
@@ -252,7 +252,7 @@ def start_stop_survey(survey_id, action):
         print(f"sending emails to all tokens")
         for e, tok in zip(all_emails, tokens):
             print(f"seding email to {e}.")
-            ##send_email_to_user(e, mail, tok)
+            send_email_to_user(e, mail, tok)
         print(all_emails)
         survey_state = "started"
     elif(action == "finish"):
@@ -276,15 +276,16 @@ def start_stop_survey(survey_id, action):
 def send_email_to_user(email, mail_client, token):
         #ile = f'backend/data/mailing_lists/{mailing_list_filename}.csv'
         url = f'http://localhost:3000/survey?token={token}'
-        msg = Message("Invitation to take part in the survey Recommended Systems Test.",
-                            sender="therh1992@gmail.com", recipients=[email])
+        msg = Message("Invitation to take part the Recommender System Survey.",
+                        sender="therh1992@gmail.com", recipients=[email])
         print(url)
-        msg.body = 'Please use the following url to connect: ' + url
-        msg.html = f'<b>Hello</b>, Please follow this <a href="{url}">invitation link</a>, to participate in the survey.' 
+        msg.body = 'Please follow the following the following link: ' + url
+        msg.html = f'<b>Hello</b>, <p>Please follow this <a href="{url}">invitation link</a>, to participate in the survey.</p>' 
         try:
             mail_client.send(msg)
-            api_logger.log(f"Successfully sent email to {e}")
+            api_logger.info(f"Successfully sent email to {email}")
+          
         except SMTPException as e:
-            api_logger.log(f"Could not send email to {email}\nTry manually using this URL: {url}")
+            api_logger.error(f"Could not send email to {email}\nTry manually using this URL: {url}")
 
            
