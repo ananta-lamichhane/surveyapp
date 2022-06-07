@@ -75,7 +75,7 @@ var templateJSON = {
                     {
                         "type": "dropdown",
                         "name": "surveyItemSelectionStrategy",
-                        "title": "Item selection strategy",
+                        "title": "Next question selection strategy",
                         "isRequired": true,
                         "colCount": 0,
                         "hasNone": false,
