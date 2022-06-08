@@ -14,11 +14,15 @@ Open a bash terminal (linux) or command prompt / powershell terminal (windows) a
 - Python: `python --version`
 - Pip: `pip --version`
 - NodeJS: `node --version`
+- Python venv: `python3 -m venv -h`
 
 If not already installed, follow the official documentations to get and install.
 - Python: https://wiki.python.org/moin/BeginnersGuide
 - Pip: https://packaging.python.org/en/latest/tutorials/installing-packages/#ensure-you-can-run-pip-from-the-command-line
 - NodeJS: https://nodejs.org/en/download/
+- Python venv: `apt -y install python3-venv`
+
+Note: Some python packages like surprise produce an error while installing. For this, you may need to install some additional packages like build esssential and pyhton3.x-dev. A discussion on stackoverflow is found [here](https://stackoverflow.com/questions/26053982/setup-script-exited-with-error-command-x86-64-linux-gnu-gcc-failed-with-exit)
 
 
 
