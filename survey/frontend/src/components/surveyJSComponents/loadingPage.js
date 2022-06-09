@@ -63,7 +63,13 @@ function CreateLoadingPage({message, timeout}){
     //disable the button
     loadingSurveyModel.showNavigationButtons = false
     return(
-        <Survey.Survey model={loadingSurveyModel}/>
+        <div className='mainSurvey'>
+             <Survey.Survey model={loadingSurveyModel}/>
+        <div className='footer'>
+            <h6>&#169; 	Ananta Lamichhane, Technische Universität Berlin</h6>
+        </div>
+        </div>
+       
     )
     
 }

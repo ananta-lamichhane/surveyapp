@@ -124,5 +124,11 @@ function DashboardContent(props) {
 }
 
 export default function Dashboard() {
-  return <DashboardContent />;
+  return(<div>
+  <DashboardContent /> 
+  <div className='footer'>
+            <h6>&#169; 	Ananta Lamichhane, Technische Universität Berlin</h6>
+        </div> 
+  </div>)
+  ;
 }

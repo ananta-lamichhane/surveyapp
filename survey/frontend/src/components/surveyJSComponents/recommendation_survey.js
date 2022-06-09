@@ -109,7 +109,7 @@ const RecomSurvey =  () => {
         </div>):(
 
             <div className='loadingDivContainer'>
-            <CreateLoadingPage message={"Please stand by."} timeout={20000}/>
+            <CreateLoadingPage message={"Your recommendations are being loaded."} timeout={20000}/>
             
             </div>)
         
