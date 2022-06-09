@@ -21,7 +21,7 @@ class MatchmakingBase(metaclass = ABCMeta):
 
 
     @abstractmethod
-    def perform_matchmaking(self, dataset_path):
+    def perform_matchmaking(self, dataset_path, current_ratings):
         pass
 
 
