@@ -22,7 +22,7 @@ If not already installed, follow the official documentations to get and install.
 - NodeJS: https://nodejs.org/en/download/
 - Python venv: `apt -y install python3-venv`
 
-Note: Some python packages like surprise produce an error while installing. For this, you may need to install some additional packages like build esssential and pyhton3.x-dev. A discussion on stackoverflow is found [here](https://stackoverflow.com/questions/26053982/setup-script-exited-with-error-command-x86-64-linux-gnu-gcc-failed-with-exit)
+Note: Some python packages like surprise produce an error while installing. For this, you may need to install some additional packages like build esssential and pyhton3.x-dev. A discussion on stackoverflow is found [here](https://stackoverflow.com/questions/26053982/setup-script-exited-with-error-command-x86-64-linux-gnu-gcc-failed-with-exit). Especially the aforementioned two packages are crucial.
 
 
 
