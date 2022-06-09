@@ -71,7 +71,7 @@ export default function SurveyTable({data}) {
 // create a row which collapses out to display extra information
 function Row(props) {
   const { row } = props;
-  console.log(JSON.parse(row.tokens).length)
+
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -108,7 +108,7 @@ function Row(props) {
               <h6>Survey ID: {row.id}</h6>
               <h6>Dataset ID: {row.dataset_id}</h6>
               <h6>Status: {row.active_status}</h6>
-              <h6>Number of participants: {JSON.parse(row.tokens).length}</h6>
+              <h6>Number of participants: {JSON.parse(row.tokens)?.length}</h6>
               <h6>Number of questions in a questionnaire: {row.num_questions}</h6>
               <h6>Next question selection strateg: {row.item_selection_strategy}</h6>
               <h6>Matchmaking strateg: {row.matchmaking_strategy}</h6>
