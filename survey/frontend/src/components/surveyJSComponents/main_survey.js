@@ -10,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
 import createLoadingPage from './loadingPage'
 import * as widgets from 'surveyjs-widgets';
+import CreateLoadingPage from './loadingPage'
 
 const axios = require('axios').default
 
@@ -348,7 +349,7 @@ const MainSurvey =  () =>
          return((
 
             <div className='loadingDivContainer'>
-            <Survey.Survey model={createLoadingPage("Fetching items.")}/>
+            <CreateLoadingPage message= {"Fetching movies to rate."} timeout={10000}/>
             </div>))
              
          

@@ -8,7 +8,7 @@ import WelcomePage from '../surveyJSTemplateJSONS/welcome_page'
 import PostData from '../../utils/postdata'
 import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
-import createLoadingPage from './loadingPage'
+import CreateLoadingPage from './loadingPage'
 import recommendationQuestions from '../surveyJSTemplateJSONS/recommendationSurveyQuestions'
 const axios = require('axios').default
 
@@ -109,7 +109,8 @@ const RecomSurvey =  () => {
         </div>):(
 
             <div className='loadingDivContainer'>
-            <Survey.Survey model={createLoadingPage("Fetching your recommendations")}/>
+            <CreateLoadingPage message={"Please stand by."} timeout={10000}/>
+            
             </div>)
         
         
