@@ -7,6 +7,8 @@ import importlib
 from ...app import db
 from ...database.models.sqlalchemy_classes.questionnaire import Questionnaire
 from ...database.models.sqlalchemy_classes.survey import Survey
+from ...database.models.sqlalchemy_classes.participant import Survey_Participant
+from ...database.models.sqlalchemy_classes.response import Response
 from ...database.models.sqlalchemy_classes.dataset import Dataset
 from .helper_functions import send_recommendations, save_recom_ratings
 ## createa a blueprint for this route to be easily added to root later.
@@ -30,6 +32,8 @@ def handle_recommendations():
         rel_dataset = db.session.query(Dataset).filter_by(id=rel_survey.dataset_id).first()
         rel_matchmaking_strategy = rel_survey.matchmaking_strategy
         rel_reclist_files = json.loads(rel_survey.reclist_filenames)
+        rel_particiapant = db.session.query(Survey_Participant).filter_by(token=token).first()
+        current_ratings = db.session.query(Response).filter_by(participant_id=rel_particiapant.id).first().ratings
           ## new item selection strategies are stored in the src/matchmaking folder
         ## each file has a different name but contains a class called Strategy in it
 
@@ -38,11 +42,11 @@ def handle_recommendations():
         #loaded_module = importlib.import_module(f'.{rel_strategy_name}', '..strategies.item_selection')
         ## load the Strategy class from the loaded module
         strategy_class_obj = getattr(loaded_module, 'Strategy')
-
+        print(f"recomendations, current ratings = {current_ratings}")
         ## instantiate the loaded class with the dataset path in question
         strategy_class_instance = strategy_class_obj(rel_dataset.file_path)
         if strategy_class_instance:
-            matched_offline_user_id = strategy_class_instance.perform_matchmaking()
+            matched_offline_user_id = strategy_class_instance.perform_matchmaking(current_ratings)
             return send_recommendations(token, matched_offline_user_id, rel_reclist_files)
 
         return {'Error': 'Please check function send_recommendation of /recommendation route.'}
