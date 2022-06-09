@@ -65,3 +65,5 @@ def generate_random_reclists(dataset_file_path, save_file_path, reclist_length):
             res = [u] + (random.choices(all_items, k=reclist_length))
             write.writerow(res)
             #print(res)
+
+

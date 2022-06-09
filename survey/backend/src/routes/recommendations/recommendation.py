@@ -9,6 +9,7 @@ from ...database.models.sqlalchemy_classes.questionnaire import Questionnaire
 from ...database.models.sqlalchemy_classes.survey import Survey
 from ...database.models.sqlalchemy_classes.dataset import Dataset
 from .helper_functions import send_recommendations, save_recom_ratings
+from ...utils.utils import transform_jester_matrix
 ## createa a blueprint for this route to be easily added to root later.
 recommendation_bp = Blueprint('recommendation', __name__)
 
@@ -24,6 +25,7 @@ def handle_recommendations():
         ## before sending the recommendatios, matchmaking is to be done using the data gathered from the participant
         
         ## find related dataset based on the token
+        transform_jester_matrix()
      
         rel_questionnaire = db.session.query(Questionnaire).filter_by(token=token).first()
         rel_survey = db.session.query(Survey).filter_by(id=rel_questionnaire.survey_id).first()
