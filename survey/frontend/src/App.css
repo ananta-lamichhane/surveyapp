@@ -369,8 +369,12 @@ label:hover ~ input:checked ~ label /* highlight previous selected stars */ { co
 
 
 .footer{
-  position: fixed;
+  position: absolute;
   text-align: center;
-  bottom: 0%;
   width: 100%;
+}
+
+
+.mainSurvey{
+  bottom: 100px;
 }
