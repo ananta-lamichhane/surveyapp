@@ -113,7 +113,7 @@ function Row(props) {
               <h6>Number of participants: {JSON.parse(row.tokens)?.length}</h6>
               <h6>Number of questions in a questionnaire: {row.num_questions}</h6>
               <h6>Next question selection strategy: {row.item_selection_strategy}</h6>
-              <h6>Matchmaking strateg: {row.matchmaking_strategy}</h6>
+              <h6>Matchmaking strategy: {row.matchmaking_strategy}</h6>
               <h6>Mailing List: {row.mailing_list}</h6>
               <Accordion>
                   <AccordionSummary
