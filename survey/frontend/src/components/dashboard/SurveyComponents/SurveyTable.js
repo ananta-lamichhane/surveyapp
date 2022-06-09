@@ -11,8 +11,14 @@ import { IconButton, Box, Typography, Collapse, Button, responsiveFontSizes } fr
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ListItem, ListItemText, List } from '@mui/material';
-
+import * as Survey from 'survey-react'
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { makeStyles } from '@mui/material';
 const axios = require('axios').default
+
 
 function createData(id, name, active_status, dataset, mailing_list, num_questions, tokens) {
   return { id, name, active_status, dataset, mailing_list, num_questions, tokens };
@@ -25,19 +31,20 @@ export default function SurveyTable({data}) {
  if(data){
     for(var s of data.surveys){
     var survey = JSON.parse(s)
-    console.log(survey)
+//    console.log(survey)
 
     //convert the tokens list string representation to proper JS string so that
     // it can be parsed correctly
     var tokens = '' + survey.tokens
     var tok2 = JSON.parse(tokens)
-    rows.push(createData(survey.id, survey.name, survey.active_status, survey.dataset_id, survey.mailing_list, survey.num_questions, tok2))
+    console.log(survey)
+    rows.push(survey)
   }
 }
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="collapsible table">
+      <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
             <TableCell />
@@ -64,7 +71,7 @@ export default function SurveyTable({data}) {
 // create a row which collapses out to display extra information
 function Row(props) {
   const { row } = props;
-  console.log(props)
+  console.log(JSON.parse(row.tokens).length)
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -88,37 +95,48 @@ function Row(props) {
             <StartStopButton active_status={row.active_status} surveyId={row.id} mailing_list={row.mailing_list} />
           }
         </TableCell>
-        <TableCell align="right">{row.tokens?row.tokens.length:"start first"}</TableCell>
+        <TableCell align="right">{JSON.parse(row.tokens)?JSON.parse(row.tokens).length:"start first"}</TableCell>
         <TableCell align="right">{row.num_questions}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Details
+              <Typography variant="h4" gutterBottom component="div">
+                Survey Details
               </Typography>
               <h6>Survey ID: {row.id}</h6>
-              <h6>Status: {row.active_status}</h6>
-              <h6>Number of participants: {row.tokens?.length}</h6>
-              <h6>Number of questions in a questionnaire: {row.tokens?.length}</h6>
               <h6>Dataset ID: {row.dataset_id}</h6>
-              <h6>Participants:</h6>
-            
-              <List dense={true}>
-              {row.tokens?.map((token) => (
-                <ListItem key={token}>
-                <ListItemText
-                  primary={
-                  <div className='tokenAndLink'>
-                    <p>{`token: ${token}`}</p>
-                    <p> Participation Link: </p>
-                    <a href={`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}>{`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}</a>
-                    </div>}
-                />
-                </ListItem>
-            ))}
-            </List>
+              <h6>Status: {row.active_status}</h6>
+              <h6>Number of participants: {JSON.parse(row.tokens).length}</h6>
+              <h6>Number of questions in a questionnaire: {row.num_questions}</h6>
+              <h6>Next question selection strateg: {row.item_selection_strategy}</h6>
+              <h6>Matchmaking strateg: {row.matchmaking_strategy}</h6>
+              <h6>Mailing List: {row.mailing_list}</h6>
+              <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header">
+                  <Typography>Show particiapants</Typography>
+                  </AccordionSummary>
+                <AccordionDetails>
+                  <List dense={true}>
+                    {JSON.parse(row.tokens)?.map((token) => (
+                    <ListItem key={token}>
+                      <ListItemText
+                        primary={
+                          <div className='tokenAndLink'>
+                            <p>{`token: ${token}`}</p>
+                            <p> Participation Link: </p>
+                            <a href={`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}>{`${process.env.REACT_APP_SURVEY_URL}/survey?token=${token}`}</a>
+                          </div>}
+                          />
+                    </ListItem>
+                  ))}
+                </List>
+                </AccordionDetails>
+              </Accordion>
             </Box>
           </Collapse>
         </TableCell>
@@ -128,14 +146,14 @@ function Row(props) {
 }
 
 function StartStopButton(props){
-  console.log(props)
+  //console.log(props)
   function handleButtonOnClick(currentState){
-    console.log("handling click")
+    //console.log("handling click")
     console.log(currentState)
     if(currentState === "started"){
-      console.log("handling process started")
+     // console.log("handling process started")
       axios.get(`${process.env.REACT_APP_API_URL}/survey?surveyId=${props.surveyId}&action=finish`).then(response =>{
-        console.log(response)
+       // console.log(response)
         if(response.status === 200){
           window.location.reload(false)
         }else{
@@ -149,7 +167,7 @@ function StartStopButton(props){
       console.log("handling process started")
       alert(`Starting survey will send an Email to all the participants specified in ${props.mailing_list}`)
       axios.get(`${process.env.REACT_APP_API_URL}/survey?surveyId=${props.surveyId}&action=start`).then(response =>{
-        console.log(response)
+        //console.log(response)
         if(response.status === 200){
           window.location.reload(false)
         }else{
