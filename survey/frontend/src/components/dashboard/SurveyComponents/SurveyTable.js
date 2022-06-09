@@ -105,7 +105,9 @@ function Row(props) {
               <Typography variant="h4" gutterBottom component="div">
                 Survey Details
               </Typography>
+              <h6>Name: {row.name}</h6>
               <h6>Survey ID: {row.id}</h6>
+              <h6>Description: {row.description}</h6>
               <h6>Dataset ID: {row.dataset_id}</h6>
               <h6>Status: {row.active_status}</h6>
               <h6>Number of participants: {JSON.parse(row.tokens)?.length}</h6>
