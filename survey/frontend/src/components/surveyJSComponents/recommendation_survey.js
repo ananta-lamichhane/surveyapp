@@ -82,7 +82,7 @@ const RecomSurvey =  () => {
 
 
 
-      return recomLists? (<div className='mainSurvey'>
+      return recomLists? (<div className='recomSurvey'>
         <div>
             <Survey.Survey model={recommendationSurveyModel} 
             onComplete = {
