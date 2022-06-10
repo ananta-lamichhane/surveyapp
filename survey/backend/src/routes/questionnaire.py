@@ -223,7 +223,7 @@ def save_ratings(particiapant_token, ratings):
     if not resp:
         response = Response(ratings=json.dumps(ratings), participant_id=partcipant.id)
         try:
-            db.session.add(response)
+            db.session.add((response))
             db.session.commit()
         except exc.SQLAlchemyError as e:
             db.session.rollback()
@@ -232,8 +232,7 @@ def save_ratings(particiapant_token, ratings):
     else:
         try:
             print("don't edit")
-            curr_ratings = json.loads(resp.ratings)
-            resp.ratings = json.dumps(curr_ratings | ratings)
+            resp.ratings = ratings
             db.session.commit()
         except exc.SQLAlchemyError as e:
             db.session.rollback()
