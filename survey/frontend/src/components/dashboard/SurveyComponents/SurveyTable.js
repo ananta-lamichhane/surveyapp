@@ -6,23 +6,39 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useState, useEffect } from 'react';
 import { IconButton, Box, Typography, Collapse, Button, responsiveFontSizes } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ListItem, ListItemText, List } from '@mui/material';
-import * as Survey from 'survey-react'
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { makeStyles } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 const axios = require('axios').default
 
 
 function createData(id, name, active_status, dataset, mailing_list, num_questions, tokens) {
   return { id, name, active_status, dataset, mailing_list, num_questions, tokens };
 }
+
+
+
+const mdTheme = createTheme(
+  {
+    palette:{
+      mode: "dark",
+  },
+    typography: {
+      "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,
+      "fontSize": 25,
+      "fontWeightLight": 300,
+      "fontWeightRegular": 400,
+      "fontWeightMedium": 500
+     }
+  }
+);
 
 export default function SurveyTable({data}) {
   var rows = []
@@ -42,7 +58,9 @@ export default function SurveyTable({data}) {
   }
 }
 
+
   return (
+    <ThemeProvider theme={mdTheme}>
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
@@ -63,6 +81,7 @@ export default function SurveyTable({data}) {
         </TableBody>
       </Table>
     </TableContainer>
+  </ThemeProvider>
   );
 }
 
@@ -75,7 +94,7 @@ function Row(props) {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <React.Fragment>
+    <ThemeProvider theme={mdTheme}>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
         <TableCell>
           <IconButton
@@ -105,16 +124,16 @@ function Row(props) {
               <Typography variant="h4" gutterBottom component="div">
                 Survey Details
               </Typography>
-              <h6>Name: {row.name}</h6>
-              <h6>Survey ID: {row.id}</h6>
-              <h6>Description: {row.description}</h6>
-              <h6>Dataset ID: {row.dataset_id}</h6>
-              <h6>Status: {row.active_status}</h6>
-              <h6>Number of participants: {JSON.parse(row.tokens)?.length}</h6>
-              <h6>Number of questions in a questionnaire: {row.num_questions}</h6>
-              <h6>Next question selection strategy: {row.item_selection_strategy}</h6>
-              <h6>Matchmaking strategy: {row.matchmaking_strategy}</h6>
-              <h6>Mailing List: {row.mailing_list}</h6>
+              <h4>Name: {row.name}</h4>
+              <h4>Survey ID: {row.id}</h4>
+              <h4>Description: {row.description}</h4>
+              <h4>Dataset ID: {row.dataset_id}</h4>
+              <h4>Status: {row.active_status}</h4>
+              <h4>Number of participants: {JSON.parse(row.tokens)?.length}</h4>
+              <h4>Number of questions in a questionnaire: {row.num_questions}</h4>
+              <h4>Next question selection strategy: {row.item_selection_strategy}</h4>
+              <h4>Matchmaking strategy: {row.matchmaking_strategy}</h4>
+              <h4>Mailing List: {row.mailing_list}</h4>
               <Accordion>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -143,7 +162,7 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-    </React.Fragment>
+    </ThemeProvider>
   );
 }
 
