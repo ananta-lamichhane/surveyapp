@@ -5,26 +5,13 @@ import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { MainListItems } from './CommonComponents/createLeftNavPanel';
 import { SurveyPage } from './SurveyComponents/SurveyPage';
-import { OfflineEvalPage } from './OfflineEvalComponents/OfflineEvalPage';
-import { DatasetsPage } from './DatasetsComponents/DatasetsPage';
-import { Survey } from 'survey-react';
 import { useState, useEffect } from 'react';
 
-const drawerWidth = 240;
+import LoginPrompt from './loginModal';
+
+const drawerWidth = 500;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -70,7 +57,20 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const mdTheme = createTheme();
+const mdTheme = createTheme(
+  {
+    palette:{
+      mode: "dark",
+  },
+    typography: {
+      "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,
+      "fontSize": 25,
+      "fontWeightLight": 300,
+      "fontWeightRegular": 400,
+      "fontWeightMedium": 500
+     }
+  }
+);
 
 function DashboardContent(props) {
   const [open, setOpen] = React.useState(true);
@@ -101,17 +101,20 @@ function DashboardContent(props) {
   }
 
   return (
-
+    
      <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar postion="static">
         <Toolbar >
+        
           <Typography align='center' variant = "h4" className="toolbarClass">
             Surveys
+            
           </Typography>
         </Toolbar>
         </AppBar>
+        
 
         {<SurveyPage data={backendData}/>}
         {/*activeDrawerElem === "Surveys" &&<SurveyPage data= {backendData} />}
@@ -124,11 +127,35 @@ function DashboardContent(props) {
 }
 
 export default function Dashboard() {
-  return(<div>
-  <DashboardContent /> 
-  <div className='footer'>
-            <h6>&#169; 	Ananta Lamichhane, Technische Universität Berlin</h6>
-        </div> 
-  </div>)
-  ;
+  const [isLoggedIn, setLoggedIn] = React.useState(false)
+
+  //need this to change state
+  useEffect(() => {
+    console.log("ok")
+  }, [isLoggedIn]);
+
+  // checked if login is ok
+  function checkLogin(){
+    setLoggedIn(true)
+ 
+  }
+
+  if(isLoggedIn){
+
+          return(<div>
+            <DashboardContent /> 
+            <div className='footer'>
+                      <h6>&#169; 	Ananta Lamichhane, Technische Universität Berlin</h6>
+                  </div> 
+            </div>
+          )
+  }else{
+    return(
+      <div>
+        <LoginPrompt checkLogin={checkLogin} pwd={process.env.REACT_APP_DASHBOARD_PW}/>
+      </div>
+    )
+
+  }
+
 }
