@@ -4,8 +4,6 @@ import {MainSurvey} from './components/surveyJSComponents/main_survey';
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import Dashboard from './components/dashboard/Dashboard'
 import { SurveyCreationForm } from './components/dashboard/CommonComponents/surveyCreationForm';
-import { OfflineEvalCreationForm } from './components/dashboard/OfflineEvalComponents/offlineEvalCreationForm';
-import { DatasetCreationForm } from './components/dashboard/DatasetsComponents/datasetCreationForm';
 
 const dashboard = Dashboard
 
@@ -31,14 +29,6 @@ function App() {
       <Route path = "/create/survey" element={
       <div>
         <SurveyCreationForm />
-      </div>} />
-      <Route path = "/create/offline_eval" element={
-      <div>
-        <OfflineEvalCreationForm />
-      </div>} />
-      <Route path = "/create/dataset" element={
-      <div>
-        <DatasetCreationForm />
       </div>} />
 
 
