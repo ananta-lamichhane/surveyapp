@@ -1,15 +1,31 @@
 
 
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {ChevronLeftIcon, NotificationsIcon, MenuIcon,Toolbar, Box, Badge, List, Divider, Button, IconButton, Typography, Paper, Grid, Link, Container } from '@mui/material';
 
 
 import SurveyTable from './SurveyTable';
 
+const mdTheme = createTheme(
+    {
+      palette:{
+        mode: "dark",
+    },
+      typography: {
+        "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,
+        "fontSize": 25,
+        "fontWeightLight": 300,
+        "fontWeightRegular": 400,
+        "fontWeightMedium": 500
+       }
+    }
+  );
+
 export const SurveyPage = ({data}) => {
     console.log(data)
     return(
+        <ThemeProvider theme={mdTheme}>
         <Box
         component="main"
         sx={{
@@ -51,5 +67,8 @@ export const SurveyPage = ({data}) => {
             </Grid>
 
         </Container>
-        </Box>)
+        </Box>
+        </ThemeProvider>
+        )
+
 }
