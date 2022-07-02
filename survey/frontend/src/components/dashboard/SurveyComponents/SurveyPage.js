@@ -39,7 +39,7 @@ export const SurveyPage = ({data}) => {
         }}
         >
         <Toolbar />
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
 
                         
         <Grid item xs={12} md={4} lg={3}>

@@ -8,6 +8,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { SurveyPage } from './SurveyComponents/SurveyPage';
 import { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
 
 import LoginPrompt from './loginModal';
 
@@ -128,6 +129,8 @@ function DashboardContent(props) {
 
 export default function Dashboard() {
   const [isLoggedIn, setLoggedIn] = React.useState(false)
+  const [loginCookie, setLoginCookie] = useCookies(false)
+  
 
   //need this to change state
   useEffect(() => {
@@ -137,10 +140,11 @@ export default function Dashboard() {
   // checked if login is ok
   function checkLogin(){
     setLoggedIn(true)
+    setLoginCookie('loggedIn', true, {path:'/'})
  
   }
 
-  if(isLoggedIn){
+  if(loginCookie.loggedIn){
 
           return(<div>
             <DashboardContent /> 
