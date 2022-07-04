@@ -61,7 +61,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme(
   {
     palette:{
-      mode: "dark",
+      mode: "light",
   },
     typography: {
       "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,

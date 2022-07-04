@@ -7,8 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-
-
+import { useCookies } from 'react-cookie';
 
 
 
@@ -33,12 +32,14 @@ export default function LoginPrompt(props) {
   const [open, setOpen] = React.useState(true);
   const [password, setPassword] = React.useState("")
   const textInput = React.useRef(null)
+  const [loginCookie, setLoginCookie] = useCookies(false)
 
-  
+
   const handleClose = () => {
     console.log("props pwd "+ props.pwd)
-    if(password === props.pwd){
+    if(password === props.pwd || loginCookie.loggedIn){
         props.checkLogin(true)
+        setLoginCookie('loggedIn', true, {path:'/'})
         setOpen(false);
     }else{
         if(password !== ""){

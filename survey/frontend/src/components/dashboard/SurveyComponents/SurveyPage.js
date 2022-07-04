@@ -10,7 +10,7 @@ import SurveyTable from './SurveyTable';
 const mdTheme = createTheme(
     {
       palette:{
-        mode: "dark",
+        mode: "light",
     },
       typography: {
         "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,

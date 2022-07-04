@@ -28,7 +28,7 @@ function createData(id, name, active_status, dataset, mailing_list, num_question
 const mdTheme = createTheme(
   {
     palette:{
-      mode: "dark",
+      mode: "light",
   },
     typography: {
       "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,
