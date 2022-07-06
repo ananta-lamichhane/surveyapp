@@ -125,3 +125,15 @@ Say you want to have your own logic in place where you select the next item to b
 ## Deployment
 Deployment for a productive environment can be done by building an app bundle using NPM for the frontend. Backend can be deployed as is using gunicorn or similar WSGI web servers. Reverse proxy such as Nginx can be using to host both frontend and backend on a server and route traffic based on the URL endpoints.
 <More to come>
+
+## Troubleshooting
+### Killing and restarting
+Since the applications run on the background in shell, it may be difficult to close these, free up the ports they're occupying (ports 3000 and 5000) and restart them. \\
+To restart the API, do the following: \\
+1. On shell terminal, type the command `sudo netstat -nltp`.\\
+You'll get a list of processes with their IDs, names and ports they're occupying.\\
+2. Next, find out the process IDs with process name python port 5000 and type `sudo kill -9 <processID>` to kill the API process.
+3. Follow install instruction above to start the API again.
+
+To restart the web application follow the same steps above but with process name "node" and port 3000.
+
