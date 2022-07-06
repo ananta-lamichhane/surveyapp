@@ -15,7 +15,7 @@ const mdTheme = createTheme(
 
     {
         palette:{
-            mode: "dark",
+            mode: "light",
         },
       typography: {
         "fontFamily": `"Roboto", "Helvetica", "Arial", sans-serif`,
@@ -32,14 +32,14 @@ export default function LoginPrompt(props) {
   const [open, setOpen] = React.useState(true);
   const [password, setPassword] = React.useState("")
   const textInput = React.useRef(null)
-  const [loginCookie, setLoginCookie] = useCookies(false)
+
 
 
   const handleClose = () => {
     console.log("props pwd "+ props.pwd)
     if(password === props.pwd || loginCookie.loggedIn){
         props.checkLogin(true)
-        setLoginCookie('loggedIn', true, {path:'/'})
+       
         setOpen(false);
     }else{
         if(password !== ""){
