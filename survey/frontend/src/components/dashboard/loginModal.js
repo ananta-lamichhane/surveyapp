@@ -32,6 +32,7 @@ export default function LoginPrompt(props) {
   const [open, setOpen] = React.useState(true);
   const [password, setPassword] = React.useState("")
   const textInput = React.useRef(null)
+  const [loginCookie, setLoginCookie] = useCookies(false)
 
 
 
