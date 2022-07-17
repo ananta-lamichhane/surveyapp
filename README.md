@@ -5,9 +5,11 @@
 ## Introduction
 <details>
   <summary>This is a customizable web-based online evaluation platform for recommender systems researchers. Expand to learn more.</summary>
+  
 With the massive amount of information available on the web, recommender systems play a central role in assisting users find the right information, be it a movie to watch, an article to read or an item to buy. Due to the role they play in modern web, recommender systems have been active field of research since the nineties, mostly focused on finding ways to improve recommendations. Recommender systems have been evaluated on their effectiveness on the basis of accuracy metrics in a majority of the research works. Accuracy metrics measure the performance of a recommender system using a data set and approaches like test-train-split or cross validation. While this type of evaluation, called offline evaluation boasts several advantages, e.g, ease of use, low cost, less time to set up, it leaves users' subjective preferences out of the equation. Focusing on accuracy metrics and offline evaluations only has been criticized as being inaccurate, inadequate, and sometimes misleading. To get users and user-centric metrics such as serendipity, diversity, satisfaction, etc. back into the evaluation, online evaluation has been considered as a superior method of evaluation. An online evaluation helps get active user feedback about the recommender systems, thus helping evaluation of a recommender system in real world scenario. A combination of both evaluation methodologies, i.e, a hybrid evaluations would enable reaping benefits of both, but due to the online evaluations being expensive and time consuming and require technical skills which not all researchers may possess, online evaluations have a low representation in recommender systems research. Hybrid evaluations are even scarce.\\
 This paper introduces a web based platform to make it easier for researchers to conduct online evaluations. Accompanied by an API which is dataset and data type agnostic and a flexible, customizable web interface for managing and conducting online evaluations (surveys), we aim to solve the aforementioned drawbacks of online evaluations. Additionally, by providing interfaces to implement a matchmaking scheme which matches survey participants (online users) and users from a preexisting dataset (offline user), we intend to make it easier to integrate the rich historical dataset data with the user-centric metrics and direct user feedback via online evaluation. We provide an interface for researchers to implement strategy for selecting items to be shown to the participants to build up their ratings profile for matchmaking.
 The platform, tested in a real world scenario was received well for its usability with majority of the participants finding the platform's user interface easy to use, well explained and the navigation intuitive. As a first-of-kind platform providing such functionality and proof-of-concept nature of the platform, an adequate comparison with a similar platform could not be made. 
+  
 </details>
 
 ## Getting Started
@@ -38,6 +40,8 @@ Note: Some python packages like surprise produce an error while installing. For 
 ## Directory structure
 <details>
   <summary>Information on most important files and folders. </summary>
+  
+  
 The project is divided into two independent parts. The frontend directory consists of all files and data pertaining to the web application components while the backend directory contains all data (datasets, recommendation lists, evaluation results and artefacts.) and API functionality.
 ### Backend
 #### data
@@ -55,6 +59,8 @@ The frontend directory resembles a directory structure created automatically by 
 ## Installation
 <details>
   <summary>Expand for detailed installation instruction. </summary>
+  
+  
 This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary. Note that the instructions are based on the default working directory being ./surveyapp/survey.
 ### Installation via script
 The accompanying script in survey directory automates the process and automatically takes the following actions.
@@ -144,20 +150,34 @@ Say you want to have your own logic in place where you select the next item to b
 ## Deployment
 <details>
   <summary>Hosting web app and API, reverse proxying and getting URLs to access the functionalties. </summary>
-Deployment for a productive environment can be done by building an app bundle using NPM for the frontend. Backend can be deployed as is using gunicorn or similar WSGI web servers. Reverse proxy such as Nginx can be using to host both frontend and backend on a server and route traffic based on the URL endpoints.
+Deployment for a productive environment can be done by building an app bundle using NPM for the frontend. Backend can be deployed as is using gunicorn or similar WSGI web servers. Reverse proxy such as Nginx can be using to host both frontend and backend on a server and route traffic based on the URL endpoints. The following steps enable access of the API on URL <yourdomainname>.com/api and the web application on <yourdomainname>.com
+
+Note: The procedure could vary slightly depending upon the installations of nginx.  
+Prerequisite: You have a domain name, possess the SSL certificates to the domain.  
+1. Allow port 80 for HTTP and/or port 443 for HTTPS on firewall.  
+  Make sure you can access the typical ports for HTTP and HTTPS (80 and 443 respectively) from the internet outside your network. On Ubuntu systems, use `ufw allow <port_no>` to open a port. In case you're running a firewall, NAT or any other internet traffic controlling mechanism, make sure you have connection from internet at large to the server.  
+2. Make sure Nginx is installed, running and monitoring on port 80 and 443.  
+  Follow [this guide](https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview) to set up Nginx for the first time.  
+3. Add the configurations to Nginx conf files to redirect traffic to and from the platform.  
+  An example of the configuration files in provided in deployment. Make sure you edit it to your domain name, port numbers and SSL certificates.  
+4. Add SSL certificates on Nginx for HTTPS.  
+  Include the path to SSL certificates in the nginx configuration. Refer to the documentations for how to.  
+5. Reload nginx and test functionality.  
+  `sudo service nginx restart`
 
   </details>
   
 ## Troubleshooting
 <details>
   <summary>Popular troubleshooting topics. </summary>
+  
 ### Killing and restarting
-Since the applications run on the background in shell, it may be difficult to close these, free up the ports they're occupying (ports 3000 and 5000) and restart them. \\
-To restart the API, do the following: \\
-1. On shell terminal, type the command `sudo netstat -nltp`.\\
-You'll get a list of processes with their IDs, names and ports they're occupying.\\
-2. Next, find out the process IDs with process name python port 5000 and type `sudo kill -9 <processID>` to kill the API process.
-3. Follow install instruction above to start the API again.
+Since the applications run on the background in shell, it may be difficult to close these, free up the ports they're occupying (ports 3000 and 5000) and restart them.  
+To restart the API, do the following:  
+1. On shell terminal, type the command `sudo netstat -nltp`.  
+You'll get a list of processes with their IDs, names and ports they're occupying.  
+2. Next, find out the process IDs with process name python port 5000 and type `sudo kill -9 <processID>` to kill the API process.  
+3. Follow install instruction above to start the API again.  
 
 To restart the web application follow the same steps above but with process name "node" and port 3000.
   </details>
