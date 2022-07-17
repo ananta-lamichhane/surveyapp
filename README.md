@@ -13,6 +13,9 @@ The platform, tested in a real world scenario was received well for its usabilit
 ## Getting Started
 
 ### Prerequisites
+<details>
+  <summary>Make sure you have read and taken the following steps before installing the platform.</summary>
+  
 A computer with linux or windows with Python 3.10 and pip for the backend and Node Package Manager (npm) and NodeJS must be installed for the frontend. The code was tested with a Ubuntu 20.04 server with Python 3.10 installed.
 Check if the necessary requirments are installed as follows.
 #### Checking python, NodeJS and pip version
@@ -29,10 +32,12 @@ If not already installed, follow the official documentations to get and install.
 - Python venv: `apt -y install python3-venv`
 
 Note: Some python packages like surprise produce an error while installing. For this, you may need to install some additional packages like build esssential and pyhton3.x-dev. A discussion on stackoverflow is found [here](https://stackoverflow.com/questions/26053982/setup-script-exited-with-error-command-x86-64-linux-gnu-gcc-failed-with-exit). Especially the aforementioned two packages are crucial.
-
+</details>
 
 
 ## Directory structure
+<details>
+  <summary>Information on most important files and folders. </summary>
 The project is divided into two independent parts. The frontend directory consists of all files and data pertaining to the web application components while the backend directory contains all data (datasets, recommendation lists, evaluation results and artefacts.) and API functionality.
 ### Backend
 #### data
@@ -45,7 +50,11 @@ The src folder contains all source code for the API built up using Flask in pyth
 ### Frontend
 The frontend directory resembles a directory structure created automatically by create-react-app. All react components related to the survey frontend are located in the src/components directory.
 
+</details>
+
 ## Installation
+<details>
+  <summary>Expand for detailed installation instruction. </summary>
 This project uses react JS for frontend ans Python Flask as backend / API. To customize and make changes to the project before deployment, following steps are necessary. Note that the instructions are based on the default working directory being ./surveyapp/survey.
 ### Installation via script
 The accompanying script in survey directory automates the process and automatically takes the following actions.
@@ -110,8 +119,11 @@ Certain directories and file name conventions must be followed so that the relev
 #### 6. Get evaluation results
 The results from evaluations are saved in backend/results. The results of online evaluations (surveys) are denoted by the respective survey names.
  
- 
+  </details>
+  
 ## Customization
+<details>
+  <summary> About implementing custom strategies and making UI changes. </summary>
 ### Adding your own next question selection strategy.
 Say you want to have your own logic in place where you select the next item to be rated by the participant based on current ratings and some other criteria (e.g. same genre movies, one of the most popular movies, same director, etc.)\
  This can be achieved by implementing the abstract class Strategy in src/strategies/item_selection/abstract_class/item_selection_base.py
@@ -127,12 +139,18 @@ Say you want to have your own logic in place where you select the next item to b
  
 ### Changing item descriptions.
  This repo uses MovieLens dataset as default and uses the attributes of a movie to create a description so that a participant can have more information about the displayed item. The function create_item_descriptions() in backend/src/utils/create_item_descriptions.py can be edited to fit your dataset. This should be paired with corresponding changes on the frontend. Especially while creating item description in CreateNewPanel() of frontend/utils/create_new_question.js and in the helper functions in frontend/src/components/surveyJSComponents/recommendation_survey.js
- 
+  </details>
+  
 ## Deployment
+<details>
+  <summary>Hosting web app and API, reverse proxying and getting URLs to access the functionalties. </summary>
 Deployment for a productive environment can be done by building an app bundle using NPM for the frontend. Backend can be deployed as is using gunicorn or similar WSGI web servers. Reverse proxy such as Nginx can be using to host both frontend and backend on a server and route traffic based on the URL endpoints.
-<More to come>
 
+  </details>
+  
 ## Troubleshooting
+<details>
+  <summary>Popular troubleshooting topics. </summary>
 ### Killing and restarting
 Since the applications run on the background in shell, it may be difficult to close these, free up the ports they're occupying (ports 3000 and 5000) and restart them. \\
 To restart the API, do the following: \\
@@ -142,4 +160,5 @@ You'll get a list of processes with their IDs, names and ports they're occupying
 3. Follow install instruction above to start the API again.
 
 To restart the web application follow the same steps above but with process name "node" and port 3000.
-
+  </details>
+  
