@@ -29,6 +29,6 @@ surveyapp/
     │   │   ├── App.css                     -- all CSS styles here
     │   │   └── index.js                    -- do not edit except include App.js
     │   ├── node_modules                    -- npm dependencies
-    │   ├── .env
+    │   ├── .env                            -- environment variables for react app
     │   └── package.json                    -- install npm dependencies from here
     └── documentation                       -- API documentation, nginx configs, etc.
