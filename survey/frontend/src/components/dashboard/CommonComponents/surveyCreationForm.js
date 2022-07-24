@@ -1,14 +1,11 @@
 import React from 'react'
 import {useState, useEffect } from 'react'
 import 'survey-react/survey.css'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate} from 'react-router-dom'
 import * as Survey from 'survey-react'
 
 
 import PostData from '../../../utils/postdata'
-import {CreateNewQuestion, CreateTemplatePage, CreateNewPanel} from '../../../utils/create_new_question'
-import { useSearchParams } from "react-router-dom";
-import { create } from '@mui/material/styles/createTransitions'
 
 export const SurveyCreationForm = () =>{
 const [backendData, setBackendData] = useState()
@@ -19,8 +16,8 @@ useEffect(() => {
         setBackendData(data)
     })
 }, [])
-var algorithms = ["NormalPredictor", "BaselineOnly", "KNNBasic", "KNNWithMeans", "KNNWithZScore",
-    "KNNBaseline", "SVD", "SVDpp", "NMF", "SlopeOne", "CoClustering"]
+
+
 var templateJSON = {
     "title": "Create a new survey",
     "name": "recSysSurvey",

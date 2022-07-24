@@ -8,7 +8,6 @@ import PostData from '../../utils/postdata'
 import {CreateTemplatePage, CreateNewPanel} from '../../utils/create_new_question'
 import { useSearchParams } from "react-router-dom";
 import RecomSurvey from "./recommendation_survey"
-import createLoadingPage from './loadingPage'
 import * as widgets from 'surveyjs-widgets';
 import CreateLoadingPage from './loadingPage'
 

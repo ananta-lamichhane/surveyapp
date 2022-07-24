@@ -7,9 +7,6 @@ import { SurveyCreationForm } from './components/dashboard/CommonComponents/surv
 
 
 
-const dashboard = Dashboard
-
-
 function App() {
   return (
     <BrowserRouter>

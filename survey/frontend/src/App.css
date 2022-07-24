@@ -243,7 +243,8 @@ code {
 */
 @media screen and (min-width: 1920px) {
   .App{
-    max-width: 1920px;
+    display: flex;
+    justify-content: center;
   }
 
 
@@ -376,5 +377,10 @@ label:hover ~ input:checked ~ label /* highlight previous selected stars */ { co
 
 
 .mainSurvey{
-  bottom: 100px;
+  bottom: 200px;
+}
+
+/*make next button visible*/
+.control-next{
+  opacity: 100%;
 }
