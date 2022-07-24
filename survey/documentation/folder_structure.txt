@@ -1,0 +1,34 @@
+surveyapp/
+└── survey/                                 -- project base directory
+    ├── backend/
+    │   ├── data                            -- datasets, reclists, etc.
+    │   ├── examples                        -- example datasets, reclists,etc.
+    │   ├── src/                            
+    │   │   ├── database/
+    │   │   │   └── models                  -- sqlalchemy ORM python classes
+    │   │   ├── routes/                     -- flask routes
+    │   │   │   ├── questionnaire           
+    │   │   │   ├── recommendation
+    │   │   │   └── survey
+    │   │   ├── strategies/                 
+    │   │   │   ├── matchmaking/            -- abstract class implementation here
+    │   │   │   │   └── abstract_class      -- implement this abstract class
+    │   │   │   └── next_question_selection/ -- abstract class implementation here
+    │   │   │       └── abstract_class      -- implement this abstract class 
+    │   │   ├── app.py                      -- starting point for flask application, initialization
+    │   │   ├── flask_configs.py            -- put all flask related configs here
+    │   │   └── requirements.txt            -- pip install this file for pyhton dependencies
+    │   └── api_log.log                     
+    ├── frontend/                           -- web application
+    │   ├── public/
+    │   │   └── index.html                  -- create-react-app auto generated starting point for app
+    │   ├── src/
+    │   │   ├── components                  -- ract UI components
+    │   │   ├── utils                       -- helper functions
+    │   │   ├── App.js                      -- bundle of components
+    │   │   ├── App.css                     -- all CSS styles here
+    │   │   └── index.js                    -- do not edit except include App.js
+    │   ├── node_modules                    -- npm dependencies
+    │   ├── .env
+    │   └── package.json                    -- install npm dependencies from here
+    └── documentation                       -- API documentation, nginx configs, etc.
