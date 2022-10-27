@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Author: Ananta Lamichhane
+## Author: Ananta Lamichhane, Soo Min Jeong
 
 ########################## INTRODUCTION AND PURPOSE #############################
 ## This script performs all the steps to install and run both
@@ -21,8 +21,8 @@
 ## run using: source run_and_test.sh
 
 
-API_URL="http://localhost:5000"
-SURVEY_URL="http://localhost:3000/survey"
+BACKEND_URL="http://localhost:5000/survey"
+FRONTEND_URL="http://localhost:3000/survey"
 
 ## copy files from examples to appropriate places
 echo "------------------------------------------------------------"
@@ -63,13 +63,13 @@ echo "Running backend on port 5000."
 gunicorn --bind 0.0.0.0:5000 backend.src.app:app --daemon
 sleep 5
 echo "checking if the server is up"
-HTTP_CODE=$(curl --write-out "%{http_code}\n" "$API_URL" --output output.txt --silent)
+HTTP_CODE=$(curl --write-out "%{http_code}\n" "$BACKEND_URL" --output output.txt --silent)
 
-if [$"HTTP_CODE" -ne 200]
+if [ $HTTP_CODE -ne 200 ]
 then
-    echo "API server is not online. Please check"
+    echo "1: API server is not online. Please check. The HTTP_CODE is $HTTP_CODE"
 else
-    echo "API Server is online."
+    echo "1: API Server is online."
 
     cd frontend
     echo "------------------------------------------------------------"
@@ -87,13 +87,14 @@ else
     sleep 5
     echo "------------------------------------------------------------"
     echo "checking if the server is up"
-    HTTP_CODE=$(curl --write-out "%{http_code}\n" "$SURVEY_URL" --output output.txt --silent)
-    if [$"HTTP_CODE" -ne 200]
+    HTTP_CODE=$(curl --write-out "%{http_code}\n" "$FRONTEND_URL" --output output.txt --silent)
+
+    if [$HTTP_CODE -ne 200]
     then
-    echo "Survey server is not online. Please check"
+      echo "2: Survey server is not online. Please check"
     else
-    echo "------------------------------------------------------------"
-    echo "Survey server is on press any key to exit."
+      echo "------------------------------------------------------------"
+      echo "2: Survey server is on press any key to exit."
     cd ..
     read -n 1 -s -r -p "Press any key to continue"
 
