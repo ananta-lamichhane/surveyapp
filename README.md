@@ -182,4 +182,3 @@ You'll get a list of processes with their IDs, names and ports they're occupying
 To restart the web application follow the same steps above but with process name "node" and port 3000.
   </details>
 
-test
